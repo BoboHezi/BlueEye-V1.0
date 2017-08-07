@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="backcolor" format="color" />
+    
+    <declare-styleable name="TakePhotoView">
+        <attr name="backcolor"/>
+    </declare-styleable>
+
+</resources>
