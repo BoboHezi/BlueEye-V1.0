@@ -28,6 +28,9 @@ import eli.blueeye.util.Util;
 import eli.blueeye.view.TakePhotoView;
 import eli.blueeye.view.VlcPlayer;
 
+/**
+ * Author Eli Chang
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TakePhotoView.LongTouchListener{
 
     /**
