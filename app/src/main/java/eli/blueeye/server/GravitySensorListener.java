@@ -24,12 +24,39 @@ public class GravitySensorListener implements SensorEventListener {
     private Sensor gravitySensor;
     private KeyguardManager keyguardManager;
 
+    private boolean disablePORI = false;
+    private boolean disableLAND = false;
+
+    private boolean sensorLAND = false;
+
     public GravitySensorListener(Context context, ImageButton fullScreen, KeyguardManager keyguardManager) {
         this.context = context;
         this.fullScreen = fullScreen;
         this.keyguardManager = keyguardManager;
         this.initSensor();
         lastTime = SystemClock.elapsedRealtime();
+    }
+
+    /**
+     * 屏蔽横屏指令
+     */
+    public void disableLAND() {
+        disableLAND = true;
+    }
+
+    /**
+     * 屏蔽竖屏指令
+     */
+    public void disablePORI() {
+        disablePORI = true;
+    }
+
+    /**
+     * 传感器方向
+     * @return
+     */
+    public boolean isSensorLAND() {
+        return sensorLAND;
     }
 
     /**
@@ -70,9 +97,34 @@ public class GravitySensorListener implements SensorEventListener {
 
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
-            if ( (!isLand && Math.abs(x) > 7) || (isLand && y > 7)) {
+
+            if (Math.abs(x) > 7) {
+                sensorLAND = true;
+                disablePORI = false;
+            }
+            if (Math.abs(y) > 7) {
+                sensorLAND = false;
+                disableLAND = false;
+            }
+
+            //竖屏转横屏
+            if ( (!isLand && Math.abs(x) > 7)) {
+                if(disableLAND) {
+                    return;
+                }
+
                 if ((SystemClock.elapsedRealtime() - lastTime) > 1000) {
-                    Log.i(TAG, "onSensorChanged: " + (SystemClock.elapsedRealtime() - lastTime) );
+                    lastTime = SystemClock.elapsedRealtime();
+                    fullScreen.performClick();
+                }
+            }
+            //横屏转竖屏
+            if ( (isLand && y > 7) ) {
+                if (disablePORI) {
+                    return;
+                }
+
+                if ((SystemClock.elapsedRealtime() - lastTime) > 1000) {
                     lastTime = SystemClock.elapsedRealtime();
                     fullScreen.performClick();
                 }

@@ -368,6 +368,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //设置竖屏
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
             isLand = false;
+            //当传感器处于横屏时
+            if (sensorListener.isSensorLAND()) {
+                sensorListener.disableLAND();
+            }
         }
         else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             //设置全屏
@@ -375,6 +379,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //设置横屏
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             isLand = true;
+            //当传感器处于竖屏时
+            if (!sensorListener.isSensorLAND()) {
+                sensorListener.disablePORI();
+            }
         }
     }
 
