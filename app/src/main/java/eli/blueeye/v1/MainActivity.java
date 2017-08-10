@@ -24,7 +24,7 @@ import android.widget.RelativeLayout;
 import eli.blueeye.capture.ScreenRecorder;
 import eli.blueeye.capture.ScreenShooter;
 import eli.blueeye.server.GravitySensorListener;
-import eli.blueeye.util.DensityUtil;
+import eli.blueeye.util.Util;
 import eli.blueeye.view.TakePhotoView;
 import eli.blueeye.view.VlcPlayer;
 
@@ -345,12 +345,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void switchControlButton(View v){
         if (isPlayer){
             //暂停
-            DensityUtil.setBackImage(this, v, R.drawable.start);
+            Util.setBackImage(this, v, R.drawable.start);
             vlcPlayer.pause();
         }
         else{
             //开始
-            DensityUtil.setBackImage(this, v, R.drawable.stop);
+            Util.setBackImage(this, v, R.drawable.stop);
             vlcPlayer.play();
         }
         isPlayer = !isPlayer;
@@ -384,9 +384,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void switchFullImage(View v) {
         if (isLand) {
-            DensityUtil.setBackImage(this, v, R.drawable.small);
+            Util.setBackImage(this, v, R.drawable.small);
         } else {
-            DensityUtil.setBackImage(this, v, R.drawable.full);
+            Util.setBackImage(this, v, R.drawable.full);
         }
     }
 
@@ -395,11 +395,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param v 点击事件的View对象
      */
     private void switchShowCamera(View v) {
+
+        if (!Util.isLandscape(this)) {
+            //竖屏
+            return;
+        }
+
         if (isShowCamera) {
-            DensityUtil.setBackImage(this, v, R.drawable.camera);
+            Util.setBackImage(this, v, R.drawable.camera);
             takePhotoView.setVisibility(View.INVISIBLE);
         }else {
-            DensityUtil.setBackImage(this, v, R.drawable.camera_);
+            Util.setBackImage(this, v, R.drawable.camera_);
             takePhotoView.setVisibility(View.VISIBLE);
         }
         isShowCamera = !isShowCamera;
@@ -420,10 +426,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FrameLayout.LayoutParams areaLP = new FrameLayout.LayoutParams(width, height);
         buttonArea.setLayoutParams(areaLP);
 
-        int dip30 = DensityUtil.dip2px(context, 30);
-        int dip50 = DensityUtil.dip2px(context, 50);
-        int dip20 = DensityUtil.dip2px(context, 20);
-        int offset = DensityUtil.dip2px(context, 5);
+        int dip30 = Util.dip2px(context, 30);
+        int dip50 = Util.dip2px(context, 50);
+        int dip20 = Util.dip2px(context, 20);
+        int offset = Util.dip2px(context, 5);
 
         //设置中间按钮位置
         RelativeLayout centerArea = (RelativeLayout) findViewById(R.id.centerButtonArea);
@@ -439,9 +445,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //设置截图按钮位置
         RelativeLayout.LayoutParams takephotoLP ;
-        int takephotoSideLength = DensityUtil.dip2px(context, 30);
+        int takephotoSideLength = Util.dip2px(context, 30);
         if (isLand)
-            takephotoSideLength = DensityUtil.dip2px(context, 50);
+            takephotoSideLength = Util.dip2px(context, 50);
         takephotoLP = new RelativeLayout.LayoutParams(takephotoSideLength, takephotoSideLength);
         takephotoLP.addRule(RelativeLayout.CENTER_VERTICAL);
         takephotoLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
