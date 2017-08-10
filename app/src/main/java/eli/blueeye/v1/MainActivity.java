@@ -395,12 +395,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param v 点击事件的View对象
      */
     private void switchShowCamera(View v) {
-
         if (!Util.isLandscape(this)) {
             //竖屏
             return;
         }
-
         if (isShowCamera) {
             Util.setBackImage(this, v, R.drawable.camera);
             takePhotoView.setVisibility(View.INVISIBLE);
@@ -445,14 +443,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //设置截图按钮位置
         RelativeLayout.LayoutParams takephotoLP ;
-        int takephotoSideLength = Util.dip2px(context, 30);
+        int takePhotoSideLength = Util.dip2px(context, 30);
         if (isLand)
-            takephotoSideLength = Util.dip2px(context, 50);
-        takephotoLP = new RelativeLayout.LayoutParams(takephotoSideLength, takephotoSideLength);
+            takePhotoSideLength = Util.dip2px(context, 50);
+        takephotoLP = new RelativeLayout.LayoutParams(takePhotoSideLength, takePhotoSideLength);
         takephotoLP.addRule(RelativeLayout.CENTER_VERTICAL);
         takephotoLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         takephotoLP.setMargins(0, 0, offset * 2, 0);
         takePhotoView.setLayoutParams(takephotoLP);
+
+        //竖屏下关闭截图按钮的显示
+        if (!Util.isLandscape(this)) {
+            Util.setBackImage(this, camera, R.drawable.camera);
+            takePhotoView.setVisibility(View.INVISIBLE);
+        }
 
         //设置工具条位置
         LinearLayout toolBar = (LinearLayout) findViewById(R.id.toolBar);
