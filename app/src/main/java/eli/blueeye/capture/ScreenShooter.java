@@ -23,11 +23,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.SimpleFormatter;
 
 public class ScreenShooter extends Thread {
 
-    private static final String TAG = "ScreenShoter";
+    private static final String TAG = "ScreenShooter";
     private static final String PATH = Environment.getExternalStorageDirectory().getPath() + "/blueeye/photos/";
 
     private Context context;
@@ -100,12 +99,6 @@ public class ScreenShooter extends Thread {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        //状态栏高度
-        int statusBarHeight = -1;
-        int resourceID = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceID > 0)
-            statusBarHeight = context.getResources().getDimensionPixelSize(resourceID);
-
         final Image.Plane[] planes = image.getPlanes();
         final ByteBuffer buffer = planes[0].getBuffer();
         int pixStride = planes[0].getPixelStride();
@@ -120,22 +113,19 @@ public class ScreenShooter extends Thread {
         width = width - offset * 8;
         height = (int) ((double)width / 1.795);
 
-        //竖屏状态下对图像进行截取
-        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            bitmap = Bitmap.createBitmap(bitmap, offset * 4 , statusBarHeight, width, height);
-        }
         //横屏状态下对图像进行截取
-        else if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             int offsetHeight = bitmap.getHeight() / 2 - height / 2;
-            bitmap = Bitmap.createBitmap(bitmap, 0, offsetHeight, width, height);
+            if (offsetHeight > 0 && width > 0 && height > 0)
+            {
+                bitmap = Bitmap.createBitmap(bitmap, 0, offsetHeight, width, height);
+                //保存
+                saveToFile(bitmap);
+                //提供至主视图
+                postToActivity(bitmap);
+                image.close();
+            }
         }
-
-        //保存
-        saveToFile(bitmap);
-
-        //提供至主视图
-        postToActivity(bitmap);
-        image.close();
     }
 
     public void saveToFile(Bitmap bitmap) {
@@ -152,6 +142,7 @@ public class ScreenShooter extends Thread {
             fos.flush();
             fos.close();
         } catch (IOException e) {
+            return;
         }
     }
 

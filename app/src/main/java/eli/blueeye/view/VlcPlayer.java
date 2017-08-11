@@ -154,7 +154,6 @@ public class VlcPlayer implements SurfaceHolder.Callback{
             screenWidth = (int) (screenHeight / videoAR);
         }
         screenHeight = (screenWidth * 9) / 16;
-        Log.i(TAG, "setSize: \n\tViewWidth:" + viewWidth + "\tViewHeight:" + viewHeight + "\n\tScreenWidth:" + screenWidth + "\tScreenHeight:" + screenHeight);
 
         surfaceHolder.setFixedSize(viewWidth, viewHeight);
 
@@ -188,7 +187,7 @@ public class VlcPlayer implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i(TAG, "\t\tWidth:" + width + "\n\t\tHeight:" + height);
+
     }
 
     @Override

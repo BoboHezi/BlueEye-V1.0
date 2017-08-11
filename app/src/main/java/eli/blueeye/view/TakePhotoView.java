@@ -8,13 +8,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-
 import eli.blueeye.v1.R;
 
 public class TakePhotoView extends View {
@@ -56,11 +53,6 @@ public class TakePhotoView extends View {
         TypedArray ta = context.getTheme().obtainStyledAttributes(attributeSet, R.styleable.TakePhotoView, defStyleAttr, 0);
         backColor = ta.getColor(0, Color.WHITE);
         paint = new Paint();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override

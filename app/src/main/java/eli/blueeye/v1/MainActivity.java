@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onLongTouch() {
-        Log.i(TAG, "正在录像");
         //停止隐藏线程
         removeHiddenThread();
         if (!isRecording)
@@ -243,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (isRecording) {
             isRecording = false;
             stopRecord();
-            Log.i(TAG, "录像结束");
             //重新开始隐藏线程
             addHiddenThread();
         }
@@ -293,19 +291,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (isScreenShoot) {
-            Log.i(TAG, "onActivityResult: 截屏");
             if (screenShooter == null) {
                 screenShooter = new ScreenShooter(this, photoHandler);
             }
-            screenShooter.prepareCapture(resultCode, data);
-            screenShooter.start();
+            if (screenShooter.getState() == Thread.State.NEW) {
+                screenShooter.prepareCapture(resultCode, data);
+                screenShooter.start();
+            }
         } else if(isRecording) {
-            Log.i(TAG, "onActivityResult: 录屏");
             if (screenRecorder == null) {
                 screenRecorder = new ScreenRecorder(this);
             }
-            screenRecorder.prepareCapture(resultCode, data);
-            screenRecorder.start();
+            if (screenRecorder.getState() == Thread.State.NEW) {
+                screenRecorder.prepareCapture(resultCode, data);
+                screenRecorder.start();
+            }
         }
     }
 
@@ -454,9 +454,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //设置截图按钮位置
         RelativeLayout.LayoutParams takephotoLP ;
-        int takePhotoSideLength = Util.dip2px(context, 30);
+        int takePhotoSideLength = dip30;
         if (isLand)
-            takePhotoSideLength = Util.dip2px(context, 50);
+            takePhotoSideLength = dip50;
         takephotoLP = new RelativeLayout.LayoutParams(takePhotoSideLength, takePhotoSideLength);
         takephotoLP.addRule(RelativeLayout.CENTER_VERTICAL);
         takephotoLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
