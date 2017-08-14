@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,9 +77,10 @@ public class TakePhotoView extends View {
         //按下按钮
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-            /*  背景颜色设为红色
-                透明度设为0
-            */
+            /**
+             * 背景颜色设为红色
+             * 不透明度设为255
+             */
             backColor = Color.RED;
             alpha = 255;
             this.animate().scaleX(scale).scaleY(scale).setDuration(duration).setInterpolator(interpolator);
@@ -92,9 +92,10 @@ public class TakePhotoView extends View {
         //抬起按钮
         else if (event.getAction() == MotionEvent.ACTION_UP) {
 
-            /*  背景颜色设为红色
-                透明度设为70
-            */
+            /**
+             * 背景颜色设为红色
+             * 不透明度设为150
+             */
             backColor = Color.WHITE;
             alpha = 150;
             this.animate().scaleX(1).scaleY(1).setDuration(duration).setInterpolator(interpolator);
@@ -113,10 +114,6 @@ public class TakePhotoView extends View {
     public void setOnLongTouchListener(LongTouchListener listener, int time) {
         this.longTouchListener = listener;
         this.longTouchTime = time;
-    }
-
-    public long getThreadTime() {
-        return SystemClock.currentThreadTimeMillis();
     }
 
     /**
