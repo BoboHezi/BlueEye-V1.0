@@ -58,18 +58,19 @@ public class TakePhotoView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        int paintWidth = getMeasuredWidth() / 25;
+        int width = getMeasuredWidth() > getMeasuredHeight() ? getMeasuredHeight() : getMeasuredWidth();
+        int paintWidth = width / 25;
         paint.setColor(backColor);
         paint.setAlpha(alpha);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(paintWidth);
         //绘制外环
-        canvas.drawCircle(getMeasuredWidth()/2, getMeasuredHeight()/2, getMeasuredHeight()/2 - paintWidth/2, paint);
+        canvas.drawCircle(width / 2, width / 2, width / 2 - paintWidth * 2, paint);
 
         paint.setStyle(Paint.Style.FILL);
         //绘制内圆
-        canvas.drawCircle(getMeasuredWidth()/2, getMeasuredHeight()/2, getMeasuredHeight()/2 - paintWidth * 2, paint);
+        canvas.drawCircle(width / 2, width / 2, width / 2 - paintWidth * 3, paint);
     }
 
     @Override
@@ -82,8 +83,8 @@ public class TakePhotoView extends View {
             */
             backColor = Color.RED;
             alpha = 255;
-            postInvalidate();
             this.animate().scaleX(scale).scaleY(scale).setDuration(duration).setInterpolator(interpolator);
+            postInvalidate();
 
             isTouch = true;
             new LongTouchTask().execute();
@@ -96,8 +97,8 @@ public class TakePhotoView extends View {
             */
             backColor = Color.WHITE;
             alpha = 150;
-            postInvalidate();
             this.animate().scaleX(1).scaleY(1).setDuration(duration).setInterpolator(interpolator);
+            postInvalidate();
 
             isTouch = false;
         }

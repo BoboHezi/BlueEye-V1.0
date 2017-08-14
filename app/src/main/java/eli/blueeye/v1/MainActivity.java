@@ -240,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onTouchStop() {
         if (isRecording) {
-            isRecording = false;
             stopRecord();
             //重新开始隐藏线程
             addHiddenThread();
@@ -313,6 +312,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 截屏
      */
     private void startCapture() {
+        if (!vlcPlayer.isPlaying()) {
+            //当视频停止时，不进行截图
+            return;
+        }
         isRecording = false;
         isScreenShoot = true;
         if (screenShooter == null) {
@@ -325,6 +328,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 开始录屏
      */
     private void startRecord() {
+        if (!vlcPlayer.isPlaying()) {
+            //当视频停止时，不进行录像
+            return;
+        }
         isRecording = true;
         isScreenShoot = false;
         if (screenRecorder == null) {
@@ -337,8 +344,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 结束录屏
      */
     private void stopRecord() {
-        screenRecorder.quit();
-        screenRecorder = null;
+        if (screenRecorder != null) {
+            isRecording = false;
+            screenRecorder.quit();
+            screenRecorder = null;
+        }
     }
 
     /**
@@ -453,15 +463,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         playerControl.setLayoutParams(controlLP);
 
         //设置截图按钮位置
-        RelativeLayout.LayoutParams takephotoLP ;
-        int takePhotoSideLength = dip30;
-        if (isLand)
-            takePhotoSideLength = dip50;
-        takephotoLP = new RelativeLayout.LayoutParams(takePhotoSideLength, takePhotoSideLength);
-        takephotoLP.addRule(RelativeLayout.CENTER_VERTICAL);
-        takephotoLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        takephotoLP.setMargins(0, 0, offset * 2, 0);
-        takePhotoView.setLayoutParams(takephotoLP);
+        RelativeLayout.LayoutParams takePhotoLP ;
+        int takePhotoSideLength = dip50;
+        takePhotoLP = new RelativeLayout.LayoutParams(takePhotoSideLength, takePhotoSideLength);
+        takePhotoLP.addRule(RelativeLayout.CENTER_VERTICAL);
+        takePhotoLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        takePhotoLP.setMargins(0, 0, offset * 2, 0);
+        takePhotoView.setLayoutParams(takePhotoLP);
 
         //竖屏下关闭截图按钮的显示
         if (!Util.isLandscape(this)) {
