@@ -2,7 +2,6 @@ package eli.blueeye.v1;
 
 import android.app.KeyguardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -21,8 +19,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import eli.blueeye.capture.ScreenRecorder;
-import eli.blueeye.capture.ScreenShooter;
 import eli.blueeye.server.GravitySensorListener;
 import eli.blueeye.util.Util;
 import eli.blueeye.view.TakePhotoView;
@@ -37,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4
      * http://img95.699pic.com/videos/2016/09/19/eb3b9233-d919-46ce-b2d5-a30e4dd9fcdb.mp4
      * http://img95.699pic.com/videos/2016/09/18/38d63eab-796a-43be-998f-c00308d186f0.mp4
+     * rtsp://10.42.0.1/
      */
 
     private static final String TAG = "MainActivity";
@@ -55,15 +52,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isPlayer = true;
     private boolean isLand = false;
     private boolean isShowCamera = false;
-    private boolean isScreenShoot = false;
-    private boolean isRecording = false;
 
     private PhotoHandler photoHandler;
     private Handler hiddenHandler;
     private HiddenRunnable hiddenRunnable;
     private GravitySensorListener sensorListener;
-    private ScreenShooter screenShooter;
-    private ScreenRecorder screenRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         vlcPlayer.play();
         //初始化Handler和线程
         initHandlerThread();
-        //初始化截录屏工具
-        initCapture();
     }
 
     @Override
@@ -164,18 +155,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 初始化截录屏工具
-     */
-    private void initCapture() {
-        if (screenShooter == null) {
-            screenShooter = new ScreenShooter(this, photoHandler);
-        }
-        if (screenRecorder == null) {
-            screenRecorder = new ScreenRecorder(this);
-        }
-    }
-
-    /**
      * 按键监听事件
      * @param keyCode   按键代码
      * @param event     事件
@@ -230,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onLongTouch() {
         //停止隐藏线程
         removeHiddenThread();
-        if (!isRecording)
+        if (!vlcPlayer.isRecording())
             startRecord();
     }
 
@@ -239,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onTouchStop() {
-        if (isRecording) {
+        if (vlcPlayer.isRecording()) {
             stopRecord();
             //重新开始隐藏线程
             addHiddenThread();
@@ -281,73 +260,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 处理截录屏请求
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (isScreenShoot) {
-            if (screenShooter == null) {
-                screenShooter = new ScreenShooter(this, photoHandler);
-            }
-            if (screenShooter.getState() == Thread.State.NEW) {
-                screenShooter.prepareCapture(resultCode, data);
-                screenShooter.start();
-            }
-        } else if(isRecording) {
-            if (screenRecorder == null) {
-                screenRecorder = new ScreenRecorder(this);
-            }
-            if (screenRecorder.getState() == Thread.State.NEW) {
-                screenRecorder.prepareCapture(resultCode, data);
-                screenRecorder.start();
-            }
-        }
-    }
-
-    /**
      * 截屏
      */
     private void startCapture() {
-        if (!vlcPlayer.isPlaying()) {
+        if (vlcPlayer == null || !vlcPlayer.isPlaying()) {
             //当视频停止时，不进行截图
             return;
         }
-        isRecording = false;
-        isScreenShoot = true;
-        if (screenShooter == null) {
-            screenShooter = new ScreenShooter(this, photoHandler);
+
+        if (!vlcPlayer.isRecording()) {
+            vlcPlayer.snapShot();
         }
-        startActivityForResult(screenShooter.mediaManager.createScreenCaptureIntent(), 1);
     }
 
     /**
      * 开始录屏
      */
     private void startRecord() {
-        if (!vlcPlayer.isPlaying()) {
+        if (vlcPlayer == null || !vlcPlayer.isPlaying()) {
             //当视频停止时，不进行录像
             return;
         }
-        isRecording = true;
-        isScreenShoot = false;
-        if (screenRecorder == null) {
-            screenRecorder = new ScreenRecorder(this);
+
+        if (!vlcPlayer.isRecording()) {
+            vlcPlayer.startRecord();
         }
-        startActivityForResult(screenRecorder.mediaProjectionManager.createScreenCaptureIntent(), 1);
     }
 
     /**
      * 结束录屏
      */
     private void stopRecord() {
-        if (screenRecorder != null) {
-            isRecording = false;
-            screenRecorder.quit();
-            screenRecorder = null;
+        if (vlcPlayer == null || !vlcPlayer.isPlaying()) {
+            //当视频停止时，不进行录像
+            return;
+        }
+
+        if (vlcPlayer.isRecording()) {
+            vlcPlayer.stopRecord();
         }
     }
 
@@ -565,8 +515,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (msg.what == 1) {
                 //获取到截取的图片
                 Bitmap bitmap = msg.getData().getParcelable("photo");
-                screenShooter = null;
-                isScreenShoot = false;
             }
         }
     }

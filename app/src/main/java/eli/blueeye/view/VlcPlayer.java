@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -15,7 +16,12 @@ import org.videolan.libvlc.IVideoPlayer;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaList;
+import org.videolan.libvlc.Util;
+
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class VlcPlayer implements SurfaceHolder.Callback{
 
@@ -32,6 +38,8 @@ public class VlcPlayer implements SurfaceHolder.Callback{
 
     private static final int VideoSizeChanged = -1;
     private static final String TAG = "VlcPlayer";
+    private static final String VID_FOLDER = Environment.getExternalStorageDirectory().getPath() + "/blueeye/videos/";
+    private static final String IMG_FOLDER = Environment.getExternalStorageDirectory().getPath() + "/blueeye/photos/";
 
     public VlcPlayer(SurfaceView surfaceView, Activity activity, String url) {
         this.surfaceView = surfaceView;
@@ -49,8 +57,7 @@ public class VlcPlayer implements SurfaceHolder.Callback{
     public void createPlayer() {
         releasePlayer();
         try {
-            libVLC = new LibVLC();
-            libVLC.setHardwareAcceleration(LibVLC.HW_ACCELERATION_DISABLED);
+            libVLC = Util.getLibVlcInstance();
             libVLC.setSubtitlesEncoding("");
             libVLC.setAout(LibVLC.AOUT_OPENSLES);
             libVLC.setTimeStretching(true);
@@ -111,17 +118,58 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      * @return
      */
     public boolean isPlaying() {
-        if (libVLC == null)
+        if (libVLC == null) {
             return false;
+        }
         return libVLC.isPlaying();
     }
 
     /**
-     * 获取当前帧
+     * 是否处于录屏状态
      * @return
      */
-    public byte[] getCurrentFrame() {
-        return libVLC.getThumbnail(LibVLC.PathToURI(url), viewWidth, viewHeight);
+    public boolean isRecording() {
+        if (libVLC == null) {
+            return false;
+        }
+        return libVLC.videoIsRecording();
+    }
+
+    /**
+     * 截图
+     */
+    public void snapShot() {
+        new TakePhotoThread().start();
+    }
+
+    /**
+     * 开始录像
+     */
+    public void startRecord() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String path = VID_FOLDER + "VID_" + sdf.format(new Date());
+        while (true) {
+            if (!libVLC.videoIsRecording()) {
+                libVLC.videoRecordStart(path);
+            }
+            if (libVLC.videoIsRecording()) {
+                return;
+            }
+        }
+    }
+
+    /**
+     * 结束录像
+     */
+    public void stopRecord() {
+        while (true) {
+            if (libVLC.videoIsRecording()) {
+                libVLC.videoRecordStop();
+            }
+            if (!libVLC.videoIsRecording()) {
+                return;
+            }
+        }
     }
 
     /**
@@ -130,6 +178,9 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      * @param height    画面高度
      */
     private void setSize(int width, int height) {
+        if (surfaceHolder == null || surfaceView == null) {
+            return;
+        }
         viewWidth = width;
         viewHeight = height;
 
@@ -171,11 +222,6 @@ public class VlcPlayer implements SurfaceHolder.Callback{
             Message msg = Message.obtain(handler, VideoSizeChanged, width, height);
             msg.sendToTarget();
         }
-
-        @Override
-        public void eventHardwareAccelerationError() {
-
-        }
     };
 
     @Override
@@ -187,12 +233,10 @@ public class VlcPlayer implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
     }
 
     class SurfaceHandler extends Handler {
@@ -200,7 +244,7 @@ public class VlcPlayer implements SurfaceHolder.Callback{
         private WeakReference<VlcPlayer> owner;
 
         public SurfaceHandler(VlcPlayer owner) {
-            this.owner = new WeakReference<VlcPlayer>(owner);
+            this.owner = new WeakReference<>(owner);
         }
 
         @Override
@@ -214,7 +258,6 @@ public class VlcPlayer implements SurfaceHolder.Callback{
 
             Bundle b = msg.getData();
             switch (b.getInt("event")) {
-
                 case EventHandler.MediaPlayerEndReached:
                     player.releasePlayer();
                     break;
@@ -222,6 +265,31 @@ public class VlcPlayer implements SurfaceHolder.Callback{
                 case EventHandler.MediaPlayerPaused:break;
                 case EventHandler.MediaPlayerStopped:break;
                 default:break;
+            }
+        }
+    }
+
+    /**
+     * 截图的线程
+     */
+    private class TakePhotoThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                String path = IMG_FOLDER + "IMG_" + sdf.format(new Date()) + ".png";
+                File file = new File(path);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                if (viewWidth > 0 && viewHeight > 0) {
+                    if(!libVLC.takeSnapShot(path, viewWidth, viewHeight)) {
+                        file.delete();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
