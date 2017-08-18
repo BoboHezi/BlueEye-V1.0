@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -48,10 +49,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton fullScreen;
     private TakePhotoView takePhotoView;
     private ImageButton camera ;
+    private ImageButton setUp;
 
     private boolean isPlayer = true;
-    private boolean isLand = false;
     private boolean isShowCamera = false;
+    private boolean isShowSetup = false;
 
     private PhotoHandler photoHandler;
     private Handler hiddenHandler;
@@ -100,23 +102,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 初始化视图
      */
     private void initView(){
-        surfaceView = (SurfaceView) findViewById(R.id.surface);
+        surfaceView = (SurfaceView) findViewById(R.id.main_surface);
         surfaceView.setOnClickListener(this);
 
-        playerControl = (ImageButton) findViewById(R.id.control);
+        playerControl = (ImageButton) findViewById(R.id.main_control_button);
         playerControl.setOnClickListener(this);
 
-        fullScreen = (ImageButton) findViewById(R.id.fullScreen);
+        fullScreen = (ImageButton) findViewById(R.id.main_fullScreen_button);
         fullScreen.setOnClickListener(this);
 
-        buttonArea = (LinearLayout) findViewById(R.id.buttonarea);
+        buttonArea = (LinearLayout) findViewById(R.id.main_button_area);
 
-        camera = (ImageButton) findViewById(R.id.camera);
+        camera = (ImageButton) findViewById(R.id.main_camera_button);
         camera.setOnClickListener(this);
 
-        takePhotoView = (TakePhotoView) findViewById(R.id.takephoto);
+        takePhotoView = (TakePhotoView) findViewById(R.id.main_takePhoto_button);
         takePhotoView.setOnClickListener(this);
         takePhotoView.setOnLongTouchListener(this, 500);
+
+        setUp = (ImageButton) findViewById(R.id.main_setup_button);
+        setUp.setOnClickListener(this);
 
         resetViewSize();
     }
@@ -162,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && isLand)
+        if (keyCode == KeyEvent.KEYCODE_BACK && Util.isLandscape(context))
             fullScreen.performClick();
         return super.onKeyDown(keyCode, event);
     }
@@ -175,29 +180,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v){
         switch (v.getId()){
 
-            case R.id.control:
+            case R.id.main_control_button:
                 //播放、暂停
                 switchControlButton(v);
                 break;
 
-            case R.id.surface:
+            case R.id.main_surface:
                 //显示、隐藏功能按钮
                 switchShowArea();
                 break;
 
-            case R.id.fullScreen:
+            case R.id.main_fullScreen_button:
                 //切换横竖屏
                 switchScreenOrientation();
                 break;
 
-            case R.id.takephoto:
+            case R.id.main_takePhoto_button:
                 //截图
                 startCapture();
                 break;
 
-            case R.id.camera:
+            case R.id.main_camera_button:
                 //切换显示摄像头
                 switchShowCamera(v);
+                break;
+
+            case R.id.main_setup_button:
+                //设置按钮
+                switchShowSetup(v);
                 break;
         }
     }
@@ -320,6 +330,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 切换控制区域的显示
+     */
+    private void switchShowSetup(View v) {
+        //当处于竖屏状态下吗，则不进行更新
+        if (!Util.isLandscape(context)) {
+            return;
+        }
+
+        LinearLayout setupArea = (LinearLayout) findViewById(R.id.main_control_area);
+        if (!isShowSetup) {
+            v.animate().rotation(90f).setDuration(100).start();
+            //添加控制区域的滑入动画
+            setupArea.animate().translationX(Util.dip2px(context, 300)).setDuration(300).start();
+        } else {
+            v.animate().rotation(0).setDuration(100).start();
+            //添加控制区域的滑出动画
+            setupArea.animate().translationX(0).setDuration(300).start();
+        }
+        isShowSetup = !isShowSetup;
+    }
+
+    /**
      * 全屏/非全屏、横屏/竖屏的切换
      */
     private void switchScreenOrientation() {
@@ -330,7 +362,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             //设置竖屏
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            isLand = false;
             //当传感器处于横屏时
             if (sensorListener.isSensorLAND()) {
                 sensorListener.disableLAND();
@@ -341,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             //设置横屏
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            isLand = true;
             //当传感器处于竖屏时
             if (!sensorListener.isSensorLAND()) {
                 sensorListener.disablePORI();
@@ -354,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param v 点击事件的View对象
      */
     private void switchFullImage(View v) {
-        if (isLand) {
+        if (Util.isLandscape(context)) {
             Util.setBackImage(this, v, R.drawable.small);
         } else {
             Util.setBackImage(this, v, R.drawable.full);
@@ -386,10 +416,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param height    总体高度
      */
     private void setToolBarPosition(int width, int height) {
-        /*//获取视频宽高
-        int mWidth = player.getVideoWidth();
-        int mHeight = player.getVideoHeight();
-        }*/
 
         //设置功能区域宽高
         FrameLayout.LayoutParams areaLP = new FrameLayout.LayoutParams(width, height);
@@ -399,9 +425,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int dip50 = Util.dip2px(context, 50);
         int dip20 = Util.dip2px(context, 20);
         int offset = Util.dip2px(context, 5);
+        int dip300 = Util.dip2px(context, 300);
 
         //设置中间按钮位置
-        RelativeLayout centerArea = (RelativeLayout) findViewById(R.id.centerButtonArea);
+        RelativeLayout centerArea = (RelativeLayout) findViewById(R.id.main_centerButton_Area);
         LinearLayout.LayoutParams centerAreaLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip50);
         centerAreaLP.setMargins(0, height/2 - dip50/2, 0, 0);
         centerArea.setLayoutParams(centerAreaLP);
@@ -428,17 +455,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //设置工具条位置
-        LinearLayout toolBar = (LinearLayout) findViewById(R.id.toolBar);
+        LinearLayout toolBar = (LinearLayout) findViewById(R.id.main_toolBar_area);
         LinearLayout.LayoutParams toolBarLP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dip20);
         toolBarLP.setMargins(0, height/2-dip50/2-dip20-offset, 0, 0);
         toolBar.setLayoutParams(toolBarLP);
 
-        //设置文件区是否显示
-        LinearLayout fileArea = (LinearLayout) findViewById(R.id.fileArea);
-        if (isLand)
-            fileArea.setVisibility(View.INVISIBLE);
-        else
-            fileArea.setVisibility(View.VISIBLE);
+        //控制区域
+        LinearLayout setupArea = (LinearLayout) findViewById(R.id.main_control_area);
+        if (isShowSetup) {
+            //当设置按钮处于旋转90度的状态，将其动画复位
+            setUp.animate().rotation(0).setDuration(1).start();
+            setupArea.animate().translationX(0).setDuration(1).start();
+        }
+        isShowSetup = false;
+        if (Util.isLandscape(context)) {
+            FrameLayout.LayoutParams controlAreaLP = new FrameLayout.LayoutParams(dip300, height * 3 / 4);
+            controlAreaLP.setMarginStart(-dip300);
+            controlAreaLP.setMargins(0, height / 8, 0, 0);
+            setupArea.setLayoutParams(controlAreaLP);
+            setupArea.setVisibility(View.VISIBLE);
+        } else {
+            setupArea.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
