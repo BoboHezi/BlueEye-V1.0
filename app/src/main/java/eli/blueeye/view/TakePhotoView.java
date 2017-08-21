@@ -37,6 +37,8 @@ public class TakePhotoView extends View {
     private static final float scale = 0.9f;
     //延时
     private static final int duration = 150;
+    //点击
+    private boolean clickAble = false;
 
     public TakePhotoView(Context context) {
         this(context, null);
@@ -57,7 +59,7 @@ public class TakePhotoView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        int width = getMeasuredWidth() > getMeasuredHeight() ? getMeasuredHeight() : getMeasuredWidth();
+        int width = Math.min(getMeasuredHeight(), getMeasuredWidth());
         int paintWidth = width / 25;
         paint.setColor(backColor);
         paint.setAlpha(alpha);
@@ -72,8 +74,33 @@ public class TakePhotoView extends View {
         canvas.drawCircle(width / 2, width / 2, width / 2 - paintWidth * 3, paint);
     }
 
+    /**
+     * 设置为可见状态
+     */
+    public void setVisible() {
+        this.alpha = 255;
+        this.setClickable(true);
+        this.clickAble = true;
+        postInvalidate();
+    }
+
+    /**
+     * 设置为不可见状态
+     */
+    public void setInVisible() {
+        this.alpha = 0;
+        this.setClickable(false);
+        this.clickAble = false;
+        postInvalidate();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        //当组件被设置为不可点击，则退出
+        if (!clickAble)
+            return true;
+
         //按下按钮
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
 

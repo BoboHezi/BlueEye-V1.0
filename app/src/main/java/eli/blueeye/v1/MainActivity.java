@@ -402,10 +402,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (isShowCamera) {
             Util.setBackImage(this, v, R.drawable.camera);
-            takePhotoView.setVisibility(View.INVISIBLE);
+            //takePhotoView.setVisibility(View.INVISIBLE);
+            takePhotoView.setInVisible();
         }else {
             Util.setBackImage(this, v, R.drawable.camera_);
-            takePhotoView.setVisibility(View.VISIBLE);
+            //takePhotoView.setVisibility(View.VISIBLE);
+            takePhotoView.setVisible();
         }
         isShowCamera = !isShowCamera;
     }
@@ -451,7 +453,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //竖屏下关闭截图按钮的显示
         if (!Util.isLandscape(this)) {
             Util.setBackImage(this, camera, R.drawable.camera);
-            takePhotoView.setVisibility(View.INVISIBLE);
+            //takePhotoView.setVisibility(View.INVISIBLE);
+            takePhotoView.setInVisible();
         }
 
         //设置工具条位置
