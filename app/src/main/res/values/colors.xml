@@ -4,6 +4,7 @@
     <!--状态栏颜色-->
     <color name="colorPrimaryDark">#329097</color>
     <color name="colorAccent">#FF4081</color>
-
     <color name="navigationBarColor">#3a756c</color>
+    <color name="gray">#e6e6e6</color>
+    <color name="light">#ffffff</color>
 </resources>

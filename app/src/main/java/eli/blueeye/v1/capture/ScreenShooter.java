@@ -1,4 +1,4 @@
-package eli.blueeye.capture;
+package eli.blueeye.v1.capture;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,14 +30,14 @@ public class ScreenShooter extends Thread {
     private static final String PATH = Environment.getExternalStorageDirectory().getPath() + "/blueeye/photos/";
 
     private Context context;
-    private int windowWidth;
-    private int windowHeight;
-    private int screenDensity;
-    private WindowManager windowManager;
-    private ImageReader imageReader;
+    private int eWindowWidth;
+    private int eWindowHeight;
+    private int eScreenDensity;
+    private WindowManager eWindowManager;
+    private ImageReader eImageReader;
 
-    public MediaProjectionManager mediaManager;
-    private MediaProjection mediaProjection;
+    public MediaProjectionManager eMediaManager;
+    private MediaProjection eMediaProjection;
 
     private Handler handler;
 
@@ -53,14 +53,14 @@ public class ScreenShooter extends Thread {
     }
 
     private void createEnvironment() {
-        mediaManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(dm);
-        windowWidth = dm.widthPixels;
-        windowHeight = dm.heightPixels;
-        screenDensity = dm.densityDpi;
-        imageReader = ImageReader.newInstance(windowWidth, windowHeight, 0x1, 2);
+        eMediaManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        eWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        eWindowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        eWindowWidth = displayMetrics.widthPixels;
+        eWindowHeight = displayMetrics.heightPixels;
+        eScreenDensity = displayMetrics.densityDpi;
+        eImageReader = ImageReader.newInstance(eWindowWidth, eWindowHeight, 0x1, 2);
     }
 
     public void prepareCapture(int resultCode, Intent resultData) {
@@ -77,19 +77,19 @@ public class ScreenShooter extends Thread {
     }
 
     private void setMediaProjection(int resultCode, Intent resultData) {
-        mediaProjection = mediaManager.getMediaProjection(resultCode, resultData);
+        eMediaProjection = eMediaManager.getMediaProjection(resultCode, resultData);
     }
 
     private void setVirtualDisplay() {
-        mediaProjection.createVirtualDisplay("ScreenCapture", windowWidth, windowHeight,
-                screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                imageReader.getSurface(), null, null);
+        eMediaProjection.createVirtualDisplay("ScreenCapture", eWindowWidth, eWindowHeight,
+                eScreenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                eImageReader.getSurface(), null, null);
     }
 
     public void startCapture() {
 
         SystemClock.sleep(100);
-        Image image = imageReader.acquireNextImage();
+        Image image = eImageReader.acquireNextImage();
         if (image == null) {
             Log.e(TAG, "Image is NULL...");
             return;

@@ -1,4 +1,4 @@
-package eli.blueeye.view;
+package eli.blueeye.v1.view;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -15,7 +15,7 @@ import eli.blueeye.v1.R;
 
 public class TakePhotoView extends View {
 
-    private static final String TAG = "TakePhotoView";
+    private static final String TAG = "styleable_take_photo";
 
     //触摸标记
     private boolean isTouch = false;
@@ -51,7 +51,7 @@ public class TakePhotoView extends View {
     public TakePhotoView(Context context, AttributeSet attributeSet, int defStyleAttr) {
         super(context, attributeSet, defStyleAttr);
 
-        TypedArray ta = context.getTheme().obtainStyledAttributes(attributeSet, R.styleable.TakePhotoView, defStyleAttr, 0);
+        TypedArray ta = context.getTheme().obtainStyledAttributes(attributeSet, R.styleable.styleable_take_photo, defStyleAttr, 0);
         backColor = ta.getColor(0, Color.WHITE);
         paint = new Paint();
     }

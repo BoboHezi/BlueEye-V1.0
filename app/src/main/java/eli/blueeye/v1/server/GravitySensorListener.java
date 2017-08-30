@@ -1,4 +1,4 @@
-package eli.blueeye.server;
+package eli.blueeye.v1.server;
 
 import android.app.KeyguardManager;
 import android.content.Context;
@@ -7,34 +7,33 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
-import android.util.Log;
 import android.widget.ImageButton;
 
 public class GravitySensorListener implements SensorEventListener {
 
     private static final String TAG = "GravitySensorListener";
-    private long lastTime ;
+    private long eLastTime;
 
     //触发点击事件的组件
-    private ImageButton fullScreen;
+    private ImageButton eFullScreen;
     //当前是否横屏
     private boolean isLand;
     private Context context;
-    private SensorManager sensorManager;
-    private Sensor gravitySensor;
-    private KeyguardManager keyguardManager;
+    private SensorManager eSensorManager;
+    private Sensor eGravitySensor;
+    private KeyguardManager eKeyguardManager;
 
     private boolean disablePORI = false;
     private boolean disableLAND = false;
 
     private boolean sensorLAND = false;
 
-    public GravitySensorListener(Context context, ImageButton fullScreen, KeyguardManager keyguardManager) {
+    public GravitySensorListener(Context context, ImageButton eFullScreen, KeyguardManager eKeyguardManager) {
         this.context = context;
-        this.fullScreen = fullScreen;
-        this.keyguardManager = keyguardManager;
+        this.eFullScreen = eFullScreen;
+        this.eKeyguardManager = eKeyguardManager;
         this.initSensor();
-        lastTime = SystemClock.elapsedRealtime();
+        eLastTime = SystemClock.elapsedRealtime();
     }
 
     /**
@@ -64,9 +63,9 @@ public class GravitySensorListener implements SensorEventListener {
      */
     private void initSensor() {
         if(context != null ) {
-            sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-            gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-            sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_UI);
+            eSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            eGravitySensor = eSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+            eSensorManager.registerListener(this, eGravitySensor, SensorManager.SENSOR_DELAY_UI);
         }
     }
 
@@ -93,7 +92,7 @@ public class GravitySensorListener implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         //需要在未锁屏的状态下激活
-        if ( (sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) && !keyguardManager.inKeyguardRestrictedInputMode()) {
+        if ( (sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) && !eKeyguardManager.inKeyguardRestrictedInputMode()) {
 
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
@@ -113,9 +112,9 @@ public class GravitySensorListener implements SensorEventListener {
                     return;
                 }
 
-                if ((SystemClock.elapsedRealtime() - lastTime) > 1000) {
-                    lastTime = SystemClock.elapsedRealtime();
-                    fullScreen.performClick();
+                if ((SystemClock.elapsedRealtime() - eLastTime) > 1000) {
+                    eLastTime = SystemClock.elapsedRealtime();
+                    eFullScreen.performClick();
                 }
             }
             //横屏转竖屏
@@ -124,9 +123,9 @@ public class GravitySensorListener implements SensorEventListener {
                     return;
                 }
 
-                if ((SystemClock.elapsedRealtime() - lastTime) > 1000) {
-                    lastTime = SystemClock.elapsedRealtime();
-                    fullScreen.performClick();
+                if ((SystemClock.elapsedRealtime() - eLastTime) > 1000) {
+                    eLastTime = SystemClock.elapsedRealtime();
+                    eFullScreen.performClick();
                 }
             }
         }

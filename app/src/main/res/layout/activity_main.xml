@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="eli.blueeye.v1.MainActivity">
+    tools:context="eli.blueeye.v1.activity.MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,18 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="220dp" />
 
-        <!--控制区域-->
-        <LinearLayout
-            android:id="@+id/main_control_area"
-            android:layout_width="1px"
-            android:layout_height="1px"
-            android:orientation="vertical"
-            android:layout_marginBottom="-1px"
-            android:clickable="true"
-            android:background="#88777777">
-        </LinearLayout>
-
-        <!--按钮区域-->
+        <!--功能按钮区域-->
         <LinearLayout
             android:id="@+id/main_button_area"
             android:layout_width="match_parent"
@@ -36,7 +25,7 @@
 
             <!--屏幕中间按钮-->
             <RelativeLayout
-                android:id="@+id/main_centerButton_Area"
+                android:id="@+id/main_center_button_area"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
@@ -45,7 +34,7 @@
 
                 <!--控制播放的按钮-->
                 <ImageButton
-                    android:id="@+id/main_control_button"
+                    android:id="@+id/main_button_play_control"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -54,61 +43,61 @@
                     android:background="@drawable/stop"/>
 
                 <!--截图按钮-->
-                <eli.blueeye.view.TakePhotoView
-                    android:id="@+id/main_takePhoto_button"
+                <eli.blueeye.v1.view.TakePhotoView
+                    android:id="@+id/main_button_take_photo"
                     android:layout_height="50dp"
                     android:layout_width="50dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
-                    app:backcolor="#fff"/>
+                    app:photo_backColor="#fff"/>
             </RelativeLayout>
 
             <!--底部工具栏-->
             <LinearLayout
-                android:id="@+id/main_toolBar_area"
+                android:id="@+id/main_tool_bar_area"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:orientation="horizontal"
                 android:layout_weight="1"
                 android:layout_marginTop="60dp">
 
-                <!--设置按钮-->
                 <RelativeLayout
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <!--设置按钮-->
                     <ImageButton
-                        android:id="@+id/main_setup_button"
+                        android:id="@+id/main_button_setup"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/setup"/>
                 </RelativeLayout>
 
-                <!--录像按钮-->
                 <RelativeLayout
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <!--录像按钮-->
                     <ImageButton
-                        android:id="@+id/main_camera_button"
+                        android:id="@+id/main_button_camera"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/camera"/>
                 </RelativeLayout>
 
-                <!--全屏按钮-->
                 <RelativeLayout
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <!--全屏按钮-->
                     <ImageButton
-                        android:id="@+id/main_fullScreen_button"
+                        android:id="@+id/main_button_full_screen"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerHorizontal="true"
@@ -116,5 +105,72 @@
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
+
+        <!--文件管理部分-->
+        <FrameLayout
+            android:id="@+id/main_file_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="220dp">
+
+            <!--文件列表-->
+            <eli.blueeye.v1.view.CustomListView
+                android:id="@+id/main_list_files"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:listSelector="@drawable/back_list_item"
+                android:cacheColorHint="@android:color/transparent"
+                android:clickable="true"/>
+
+            <!--底部按钮区域-->
+            <LinearLayout
+                android:id="@+id/main_file_bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="-40dp"
+                android:layout_gravity="bottom"
+                android:background="#cc999999"
+                android:clickable="true"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <!--分享按钮-->
+                        <ImageButton
+                            android:id="@+id/main_button_share"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/back_button_share"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1">
+
+                        <!--删除按钮-->
+                        <ImageButton
+                            android:id="@+id/main_button_delete"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/back_dialog_delete"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

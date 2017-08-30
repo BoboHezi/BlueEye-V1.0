@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <attr name="backcolor" format="color" />
     
-    <declare-styleable name="TakePhotoView">
-        <attr name="backcolor"/>
+    <declare-styleable name="styleable_take_photo">
+        <attr name="photo_backColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="styleable_video_seekBar">
+        <attr name="seekBar_backColor" format="color"></attr>
+        <attr name="seekBar_backHeight" format="dimension"></attr>
+        <attr name="seekBar_progressColor" format="color"></attr>
+        <attr name="seekBar_progressHeight" format="dimension"></attr>
+        <attr name="seekBar_textColor" format="color"></attr>
+        <attr name="seekBar_textHeight" format="dimension"></attr>
+        <attr name="seekBar_totalTime" format="integer"></attr>
     </declare-styleable>
 
 </resources>

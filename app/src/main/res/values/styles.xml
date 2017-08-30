@@ -14,4 +14,41 @@
         <!--<item name="android:navigationBarColor">@color/navigationBarColor</item>-->
     </style>
 
+    <!--图片/视频，播放Dialog动画-->
+    <style name="animation_dialog">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_popup_exit</item>
+    </style>
+
+    <!--更多操作Dialog动画-->
+    <style name="animation_dialog_action">
+        <item name="android:windowEnterAnimation">@anim/anim_action_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_action_exit</item>
+    </style>
+
+    <!--删除Dialog动画-->
+    <style name="animation_dialog_delete">
+        <item name="android:windowEnterAnimation">@anim/anim_delete_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_delete_exit</item>
+    </style>
+
+    <!--图片/视频 查看器风格-->
+    <style name="style_dialog" parent="@android:style/Theme.Dialog">
+        <!--边框-->
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <!--更多操作Dialog风格-->
+    <style name="style_dialog_action" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
 </resources>

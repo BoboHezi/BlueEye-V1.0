@@ -1,4 +1,4 @@
-package eli.blueeye.view;
+package eli.blueeye.v1.entity;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -23,32 +22,38 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import eli.blueeye.v1.activity.MainActivity;
+
 public class VlcPlayer implements SurfaceHolder.Callback{
 
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
+    private SurfaceView eSurfaceView;
+    private SurfaceHolder eSurfaceHolder;
     private Activity activity;
-    private String url;
+    private String eURL;
+    MainActivity.SnapHandler ePhotoHandler;
 
-    private Handler handler = new SurfaceHandler(this);
+    private Handler eHandler;
 
-    private LibVLC libVLC;
-    private int viewWidth;
-    private int viewHeight;
+    private LibVLC eLibVLC;
+    private int eViewWidth;
+    private int eViewHeight;
+    private String eScreenCapturePath;
+    private String eScreenRecodePath;
 
     private static final int VideoSizeChanged = -1;
     private static final String TAG = "VlcPlayer";
     private static final String VID_FOLDER = Environment.getExternalStorageDirectory().getPath() + "/blueeye/videos/";
     private static final String IMG_FOLDER = Environment.getExternalStorageDirectory().getPath() + "/blueeye/photos/";
 
-    public VlcPlayer(SurfaceView surfaceView, Activity activity, String url) {
-        this.surfaceView = surfaceView;
+    public VlcPlayer(SurfaceView eSurfaceView, Activity activity, String eURL, MainActivity.SnapHandler ePhotoHandler) {
+        this.eSurfaceView = eSurfaceView;
         this.activity = activity;
-        this.url = url;
-
-        this.surfaceView.setKeepScreenOn(true);
-        this.surfaceHolder = surfaceView.getHolder();
-        this.surfaceHolder.addCallback(this);
+        this.eURL = eURL;
+        this.ePhotoHandler = ePhotoHandler;
+        this.eSurfaceView.setKeepScreenOn(true);
+        this.eSurfaceHolder = eSurfaceView.getHolder();
+        this.eSurfaceHolder.addCallback(this);
+        this.eHandler = new SurfaceHandler(this);
     }
 
     /**
@@ -57,23 +62,23 @@ public class VlcPlayer implements SurfaceHolder.Callback{
     public void createPlayer() {
         releasePlayer();
         try {
-            libVLC = Util.getLibVlcInstance();
-            libVLC.setSubtitlesEncoding("");
-            libVLC.setAout(LibVLC.AOUT_OPENSLES);
-            libVLC.setTimeStretching(true);
-            libVLC.setChroma("RV32");
-            libVLC.setVerboseMode(true);
-            libVLC.restart(activity);
-            EventHandler.getInstance().addHandler(handler);
-            surfaceHolder.setFormat(PixelFormat.RGBX_8888);
-            surfaceHolder.setKeepScreenOn(true);
-            MediaList list = libVLC.getMediaList();
+            eLibVLC = Util.getLibVlcInstance();
+            eLibVLC.setSubtitlesEncoding("");
+            eLibVLC.setAout(LibVLC.AOUT_OPENSLES);
+            eLibVLC.setTimeStretching(true);
+            eLibVLC.setChroma("RV32");
+            eLibVLC.setVerboseMode(true);
+            eLibVLC.restart(activity);
+            EventHandler.getInstance().addHandler(eHandler);
+            eSurfaceHolder.setFormat(PixelFormat.RGBX_8888);
+            eSurfaceHolder.setKeepScreenOn(true);
+            MediaList list = eLibVLC.getMediaList();
             list.clear();
-            Media media = new Media(libVLC, LibVLC.PathToURI(url));
+            Media media = new Media(eLibVLC, LibVLC.PathToURI(eURL));
             media.getWidth();
             media.getHeight();
             list.add(media, false);
-            libVLC.playIndex(0);
+            eLibVLC.playIndex(0);
         } catch (Exception e) {
         }
     }
@@ -82,35 +87,35 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      * 开始播放
      */
     public void play() {
-        if (libVLC == null)
+        if (eLibVLC == null)
             createPlayer();
-        libVLC.play();
+        eLibVLC.play();
     }
 
     /**
      * 暂停播放
      */
     public void pause() {
-        if (libVLC != null)
-            libVLC.pause();
+        if (eLibVLC != null)
+            eLibVLC.pause();
     }
 
     /**
      * 释放资源
      */
     public void releasePlayer() {
-        if (libVLC == null)
+        if (eLibVLC == null)
             return;
-        EventHandler.getInstance().removeHandler(handler);
-        libVLC.stop();
-        libVLC.detachSurface();
-        surfaceHolder = null;
-        libVLC.closeAout();
-        libVLC.destroy();
-        libVLC = null;
+        EventHandler.getInstance().removeHandler(eHandler);
+        eLibVLC.stop();
+        eLibVLC.detachSurface();
+        eSurfaceHolder = null;
+        eLibVLC.closeAout();
+        eLibVLC.destroy();
+        eLibVLC = null;
 
-        viewWidth = 0;
-        viewHeight = 0;
+        eViewWidth = 0;
+        eViewHeight = 0;
     }
 
     /**
@@ -118,10 +123,10 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      * @return
      */
     public boolean isPlaying() {
-        if (libVLC == null) {
+        if (eLibVLC == null) {
             return false;
         }
-        return libVLC.isPlaying();
+        return eLibVLC.isPlaying();
     }
 
     /**
@@ -129,10 +134,10 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      * @return
      */
     public boolean isRecording() {
-        if (libVLC == null) {
+        if (eLibVLC == null) {
             return false;
         }
-        return libVLC.videoIsRecording();
+        return eLibVLC.videoIsRecording();
     }
 
     /**
@@ -146,13 +151,13 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      * 开始录像
      */
     public void startRecord() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String path = VID_FOLDER + "VID_" + sdf.format(new Date());
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        eScreenRecodePath = VID_FOLDER + "VID_" + format.format(new Date());
         while (true) {
-            if (!libVLC.videoIsRecording()) {
-                libVLC.videoRecordStart(path);
+            if (!eLibVLC.videoIsRecording()) {
+                eLibVLC.videoRecordStart(eScreenRecodePath);
             }
-            if (libVLC.videoIsRecording()) {
+            if (eLibVLC.videoIsRecording()) {
                 return;
             }
         }
@@ -163,10 +168,14 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      */
     public void stopRecord() {
         while (true) {
-            if (libVLC.videoIsRecording()) {
-                libVLC.videoRecordStop();
+            if (eLibVLC.videoIsRecording()) {
+                eLibVLC.videoRecordStop();
+                if (eScreenRecodePath != null) {
+                    sendSnapResult(MainActivity.CAPTURE_VIDEO, eScreenRecodePath);
+                    eScreenRecodePath = null;
+                }
             }
-            if (!libVLC.videoIsRecording()) {
+            if (!eLibVLC.videoIsRecording()) {
                 return;
             }
         }
@@ -178,56 +187,69 @@ public class VlcPlayer implements SurfaceHolder.Callback{
      * @param height    画面高度
      */
     private void setSize(int width, int height) {
-        if (surfaceHolder == null || surfaceView == null) {
+        if (eSurfaceHolder == null || eSurfaceView == null) {
             return;
         }
-        viewWidth = width;
-        viewHeight = height;
+        //设置视频宽高
+        eViewWidth = width;
+        eViewHeight = height;
 
-        if (viewWidth * viewHeight <= 1)
+        if (eViewWidth * eViewHeight <= 1)
             return;
 
+        //获取屏幕宽高
         int screenWidth = activity.getWindow().getDecorView().getWidth();
         int screenHeight = activity.getWindow().getDecorView().getHeight();
 
+        //屏幕方向
         boolean isPortrait = activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
+        //重置屏幕宽高
         if ( (screenWidth > screenHeight && isPortrait) || (screenWidth < screenHeight && !isPortrait) ) {
             int i = screenWidth;
             screenWidth = screenHeight;
             screenHeight = i;
         }
 
-        float videoAR = (float) viewWidth / (float) viewHeight;
+        //计算比例
+        float videoAR = (float) eViewWidth / (float) eViewHeight;
         float screenAR = (float) screenWidth / (float) screenHeight;
 
         if (screenAR >= videoAR) {
             screenWidth = (int) (screenHeight / videoAR);
         }
+        //设置画面为16 : 9
         screenHeight = (screenWidth * 9) / 16;
 
-        surfaceHolder.setFixedSize(viewWidth, viewHeight);
+        //设置画面宽高
+        eSurfaceHolder.setFixedSize(eViewWidth, eViewHeight);
 
-        ViewGroup.LayoutParams lp = surfaceView.getLayoutParams();
-        lp.width = screenWidth;
-        lp.height = screenHeight;
-        surfaceView.setLayoutParams(lp);
-        surfaceView.invalidate();
+        //设置播放器宽高
+        ViewGroup.LayoutParams lp = eSurfaceView.getLayoutParams();
+        if (isPortrait) {
+            lp.width = screenWidth;
+            lp.height = screenHeight;
+        } else {
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+        eSurfaceView.setLayoutParams(lp);
+        eSurfaceView.invalidate();
     }
 
     //定义播放器接口
     IVideoPlayer videoPlayer = new IVideoPlayer() {
         @Override
         public void setSurfaceSize(int width, int height, int visible_width, int visible_height, int sar_num, int sar_den) {
-            Message msg = Message.obtain(handler, VideoSizeChanged, width, height);
+            Message msg = Message.obtain(eHandler, VideoSizeChanged, width, height);
             msg.sendToTarget();
         }
     };
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (libVLC != null) {
-            libVLC.attachSurface(holder.getSurface(), videoPlayer);
+        if (eLibVLC != null) {
+            eLibVLC.attachSurface(holder.getSurface(), videoPlayer);
         }
     }
 
@@ -270,22 +292,49 @@ public class VlcPlayer implements SurfaceHolder.Callback{
     }
 
     /**
+     * 发送截录屏结果和对应文件路径
+     */
+    private void sendSnapResult(int fileType, String path) {
+        final Message msg = ePhotoHandler.obtainMessage();
+        msg.what = fileType;
+        Bundle bundle = new Bundle();
+        bundle.putString("path", path);
+        msg.setData(bundle);
+
+        if (fileType == MainActivity.CAPTURE_VIDEO) {
+            ePhotoHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ePhotoHandler.sendMessage(msg);
+                }
+            }, 2000);
+        } else {
+            ePhotoHandler.sendMessage(msg);
+        }
+    }
+
+    /**
      * 截图的线程
      */
     private class TakePhotoThread extends Thread {
         @Override
         public void run() {
             try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String path = IMG_FOLDER + "IMG_" + sdf.format(new Date()) + ".png";
-                File file = new File(path);
+                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                eScreenCapturePath = IMG_FOLDER + "IMG_" + format.format(new Date()) + ".png";
+                File file = new File(eScreenCapturePath);
                 if (!file.exists()) {
                     file.createNewFile();
                 }
 
-                if (viewWidth > 0 && viewHeight > 0) {
-                    if(!libVLC.takeSnapShot(path, viewWidth, viewHeight)) {
+                if (eViewWidth > 0 && eViewHeight > 0) {
+                    if(!eLibVLC.takeSnapShot(eScreenCapturePath, eViewWidth, eViewHeight)) {
                         file.delete();
+                    } else {
+                        if (eScreenCapturePath != null) {
+                            sendSnapResult(MainActivity.CAPTURE_PHOTO, eScreenCapturePath);
+                            eScreenCapturePath = null;
+                        }
                     }
                 }
             } catch (Exception e) {
