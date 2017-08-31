@@ -1,5 +1,6 @@
 package eli.blueeye.v1.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
@@ -7,21 +8,28 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.entity.LoadListView;
 
+/**
+ * 删除确定的Dialog
+ *
+ * @author eli chang
+ */
 public class CustomDeleteDialog extends BaseDialog implements View.OnClickListener {
 
     private final String TAG = this.getClass().getName();
 
     private Context context;
+    private boolean isMultiImage = false;
+
     private Button eButtonCancel;
     private Button eButtonDelete;
-
     private LoadListView.RefreshHandler eRefreshHandler;
 
-    public CustomDeleteDialog(Context context, LoadListView.RefreshHandler eRefreshHandler) {
-        super(context, null, null, R.style.style_dialog_action);
+    public CustomDeleteDialog(Context context, Activity activity, LoadListView.RefreshHandler eRefreshHandler) {
+        super(context, activity, null, null, R.style.style_dialog_action);
         this.context = context;
         this.eRefreshHandler = eRefreshHandler;
         initView();
@@ -63,6 +71,15 @@ public class CustomDeleteDialog extends BaseDialog implements View.OnClickListen
         getWindow().setWindowAnimations(R.style.animation_dialog_delete);
     }
 
+    /**
+     * 标记为删除多张图片
+     *
+     * @param isMultiImage
+     */
+    public void setIsMultiImage(boolean isMultiImage) {
+        this.isMultiImage = isMultiImage;
+    }
+
     @Override
     public void onClick(View view) {
 
@@ -73,7 +90,13 @@ public class CustomDeleteDialog extends BaseDialog implements View.OnClickListen
 
             case R.id.dialog_delete_button_confirm:
                 dismiss();
-                eRefreshHandler.sendEmptyMessage(LoadListView.HANDLER_STATE_DELETE);
+                if (isMultiImage) {
+                    //删除多张
+                    eRefreshHandler.sendEmptyMessage(LoadListView.HANDLER_STATE_DELETE_MULTI);
+                } else {
+                    //删除一张
+                    eRefreshHandler.sendEmptyMessage(LoadListView.HANDLER_STATE_DELETE);
+                }
                 break;
         }
     }

@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+
 import org.videolan.libvlc.EventHandler;
 import org.videolan.libvlc.IVideoPlayer;
 import org.videolan.libvlc.LibVLC;
@@ -24,7 +26,12 @@ import java.util.Date;
 
 import eli.blueeye.v1.activity.MainActivity;
 
-public class VlcPlayer implements SurfaceHolder.Callback{
+/**
+ * vlc-android实现类
+ *
+ * @author eli chang
+ */
+public class VlcPlayer implements SurfaceHolder.Callback {
 
     private SurfaceView eSurfaceView;
     private SurfaceHolder eSurfaceHolder;
@@ -120,6 +127,7 @@ public class VlcPlayer implements SurfaceHolder.Callback{
 
     /**
      * 是否正在播放
+     *
      * @return
      */
     public boolean isPlaying() {
@@ -131,6 +139,7 @@ public class VlcPlayer implements SurfaceHolder.Callback{
 
     /**
      * 是否处于录屏状态
+     *
      * @return
      */
     public boolean isRecording() {
@@ -183,8 +192,9 @@ public class VlcPlayer implements SurfaceHolder.Callback{
 
     /**
      * 重置画面
-     * @param width     画面宽度
-     * @param height    画面高度
+     *
+     * @param width  画面宽度
+     * @param height 画面高度
      */
     private void setSize(int width, int height) {
         if (eSurfaceHolder == null || eSurfaceView == null) {
@@ -205,7 +215,7 @@ public class VlcPlayer implements SurfaceHolder.Callback{
         boolean isPortrait = activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         //重置屏幕宽高
-        if ( (screenWidth > screenHeight && isPortrait) || (screenWidth < screenHeight && !isPortrait) ) {
+        if ((screenWidth > screenHeight && isPortrait) || (screenWidth < screenHeight && !isPortrait)) {
             int i = screenWidth;
             screenWidth = screenHeight;
             screenHeight = i;
@@ -283,10 +293,14 @@ public class VlcPlayer implements SurfaceHolder.Callback{
                 case EventHandler.MediaPlayerEndReached:
                     player.releasePlayer();
                     break;
-                case EventHandler.MediaPlayerPlaying:break;
-                case EventHandler.MediaPlayerPaused:break;
-                case EventHandler.MediaPlayerStopped:break;
-                default:break;
+                case EventHandler.MediaPlayerPlaying:
+                    break;
+                case EventHandler.MediaPlayerPaused:
+                    break;
+                case EventHandler.MediaPlayerStopped:
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -328,7 +342,7 @@ public class VlcPlayer implements SurfaceHolder.Callback{
                 }
 
                 if (eViewWidth > 0 && eViewHeight > 0) {
-                    if(!eLibVLC.takeSnapShot(eScreenCapturePath, eViewWidth, eViewHeight)) {
+                    if (!eLibVLC.takeSnapShot(eScreenCapturePath, eViewWidth, eViewHeight)) {
                         file.delete();
                     } else {
                         if (eScreenCapturePath != null) {

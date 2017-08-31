@@ -9,6 +9,11 @@ import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.widget.ImageButton;
 
+/**
+ * 重力传感器检测类
+ *
+ * @author eli chang
+ */
 public class GravitySensorListener implements SensorEventListener {
 
     private static final String TAG = "GravitySensorListener";
@@ -52,6 +57,7 @@ public class GravitySensorListener implements SensorEventListener {
 
     /**
      * 传感器方向
+     *
      * @return
      */
     public boolean isSensorLAND() {
@@ -62,7 +68,7 @@ public class GravitySensorListener implements SensorEventListener {
      * 初始化重力传感器
      */
     private void initSensor() {
-        if(context != null ) {
+        if (context != null) {
             eSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             eGravitySensor = eSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
             eSensorManager.registerListener(this, eGravitySensor, SensorManager.SENSOR_DELAY_UI);
@@ -71,6 +77,7 @@ public class GravitySensorListener implements SensorEventListener {
 
     /**
      * 设置当前的屏幕方向
+     *
      * @param isLand 是否横屏
      */
     public void setOrientation(boolean isLand) {
@@ -84,15 +91,16 @@ public class GravitySensorListener implements SensorEventListener {
 
     /**
      * 传感器状态改变
-     *  当处于竖屏，x方向的重力加速度绝对值大于7
-     *  或者处于横屏，y方向的重力加速度绝对值大于7
-     *  触发横竖屏切换操作
+     * 当处于竖屏，x方向的重力加速度绝对值大于7
+     * 或者处于横屏，y方向的重力加速度绝对值大于7
+     * 触发横竖屏切换操作
+     *
      * @param sensorEvent
      */
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         //需要在未锁屏的状态下激活
-        if ( (sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) && !eKeyguardManager.inKeyguardRestrictedInputMode()) {
+        if ((sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) && !eKeyguardManager.inKeyguardRestrictedInputMode()) {
 
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
@@ -107,8 +115,8 @@ public class GravitySensorListener implements SensorEventListener {
             }
 
             //竖屏转横屏
-            if ( (!isLand && Math.abs(x) > 7)) {
-                if(disableLAND) {
+            if ((!isLand && Math.abs(x) > 7)) {
+                if (disableLAND) {
                     return;
                 }
 
@@ -118,7 +126,7 @@ public class GravitySensorListener implements SensorEventListener {
                 }
             }
             //横屏转竖屏
-            if ( (isLand && y > 7) ) {
+            if ((isLand && y > 7)) {
                 if (disablePORI) {
                     return;
                 }

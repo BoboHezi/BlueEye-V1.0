@@ -43,21 +43,21 @@ public class EventHandler {
     //public static final int MediaPlayerNothingSpecial       = 0x101;
     //public static final int MediaPlayerOpening              = 0x102;
     //public static final int MediaPlayerBuffering            = 0x103;
-    public static final int MediaPlayerPlaying                = 0x104;
-    public static final int MediaPlayerPaused                 = 0x105;
-    public static final int MediaPlayerStopped                = 0x106;
+    public static final int MediaPlayerPlaying = 0x104;
+    public static final int MediaPlayerPaused = 0x105;
+    public static final int MediaPlayerStopped = 0x106;
     //public static final int MediaPlayerForward              = 0x107;
     //public static final int MediaPlayerBackward             = 0x108;
-    public static final int MediaPlayerEndReached             = 0x109;
-    public static final int MediaPlayerEncounteredError       = 0x10a;
+    public static final int MediaPlayerEndReached = 0x109;
+    public static final int MediaPlayerEncounteredError = 0x10a;
     //public static final int MediaPlayerTimeChanged          = 0x10b;
-    public static final int MediaPlayerPositionChanged        = 0x10c;
+    public static final int MediaPlayerPositionChanged = 0x10c;
     //public static final int MediaPlayerSeekableChanged      = 0x10d;
     //public static final int MediaPlayerPausableChanged      = 0x10e;
     //public static final int MediaPlayerTitleChanged         = 0x10f;
     //public static final int MediaPlayerSnapshotTaken        = 0x110;
     //public static final int MediaPlayerLengthChanged        = 0x111;
-    public static final int MediaPlayerVout                   = 0x112;
+    public static final int MediaPlayerVout = 0x112;
 
     //public static final int MediaListItemAdded              = 0x200;
     //public static final int MediaListWillAddItem            = 0x201;
@@ -88,10 +88,10 @@ public class EventHandler {
     //public static final int VlmMediaInstanceStatusEnd       = 0x609;
     //public static final int VlmMediaInstanceStatusError     = 0x60a;
 
-    public static final int CustomMediaListExpanding          = 0x2000;
-    public static final int CustomMediaListExpandingEnd       = 0x2001;
-    public static final int CustomMediaListItemAdded          = 0x2002;
-    public static final int CustomMediaListItemDeleted        = 0x2003;
+    public static final int CustomMediaListExpanding = 0x2000;
+    public static final int CustomMediaListExpandingEnd = 0x2001;
+    public static final int CustomMediaListItemAdded = 0x2002;
+    public static final int CustomMediaListItemDeleted = 0x2003;
 
     private ArrayList<Handler> mEventHandler;
     private static EventHandler mInstance;
@@ -116,7 +116,9 @@ public class EventHandler {
         mEventHandler.remove(handler);
     }
 
-    /** This method is called by a native thread **/
+    /**
+     * This method is called by a native thread
+     **/
     public void callback(int event, Bundle b) {
         b.putInt("event", event);
         for (int i = 0; i < mEventHandler.size(); i++) {

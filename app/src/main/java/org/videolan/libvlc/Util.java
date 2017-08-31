@@ -55,6 +55,7 @@ import java.util.StringTokenizer;
 public class Util {
     public final static String TAG = "VLC/Util";
     private final static boolean hasNavBar;
+
     /** A set of utility functions for the VLC application */
 
     static {
@@ -125,28 +126,25 @@ public class Util {
         int aout;
         try {
             aout = Integer.parseInt(pref.getString("aout", "-1"));
-        }
-        catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             aout = -1;
         }
         int vout;
         try {
-        	vout = Integer.parseInt(pref.getString("vout", "-1"));
-        }
-        catch (NumberFormatException nfe) {
-        	vout = -1;
+            vout = Integer.parseInt(pref.getString("vout", "-1"));
+        } catch (NumberFormatException nfe) {
+            vout = -1;
         }
         int deblocking;
         try {
             deblocking = Integer.parseInt(pref.getString("deblocking", "-1"));
-        }
-        catch(NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             deblocking = -1;
         }
         int networkCaching = pref.getInt("network_caching_value", 0);
-        if(networkCaching > 60000)
+        if (networkCaching > 60000)
             networkCaching = 60000;
-        else if(networkCaching < 0)
+        else if (networkCaching < 0)
             networkCaching = 0;
         instance.setAout(aout);
         instance.setVout(vout);
@@ -154,7 +152,9 @@ public class Util {
         instance.setNetworkCaching(networkCaching);
     }
 
-    /** Print an on-screen message to alert the user */
+    /**
+     * Print an on-screen message to alert the user
+     */
     public static void toaster(Context context, int stringId, int duration) {
         Toast.makeText(context, stringId, duration).show();
     }
@@ -164,7 +164,7 @@ public class Util {
     }
 
     public static String stripTrailingSlash(String s) {
-        if( s.endsWith("/") && s.length() > 1 )
+        if (s.endsWith("/") && s.length() > 1)
             return s.substring(0, s.length() - 1);
         return s;
     }
@@ -175,10 +175,10 @@ public class Util {
             BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF8"));
             StringBuilder sb = new StringBuilder();
             String line = r.readLine();
-            if(line != null) {
+            if (line != null) {
                 sb.append(line);
                 line = r.readLine();
-                while(line != null) {
+                while (line != null) {
                     sb.append('\n');
                     sb.append(line);
                     line = r.readLine();
@@ -192,21 +192,21 @@ public class Util {
 
     /**
      * Convert time to a string
+     *
      * @param millis e.g.time/length from file
      * @return formated string (hh:)mm:ss
      */
-    public static String millisToString(long millis)
-    {
+    public static String millisToString(long millis) {
         return millisToString(millis, false);
     }
 
     /**
      * Convert time to a string
+     *
      * @param millis e.g.time/length from file
      * @return formated string "[hh]h[mm]min" / "[mm]min[s]s"
      */
-    public static String millisToText(long millis)
-    {
+    public static String millisToText(long millis) {
         return millisToString(millis, true);
     }
 
@@ -231,8 +231,7 @@ public class Util {
                 time = (negative ? "-" : "") + min + "min";
             else
                 time = (negative ? "-" : "") + sec + "s";
-        }
-        else {
+        } else {
             if (millis > 0)
                 time = (negative ? "-" : "") + hours + ":" + format.format(min) + ":" + format.format(sec);
             else
@@ -256,14 +255,13 @@ public class Util {
         return bitmap;
     }
 
-    public static Bitmap cropBorders(Bitmap bitmap, int width, int height)
-    {
+    public static Bitmap cropBorders(Bitmap bitmap, int width, int height) {
         int top = 0;
         for (int i = 0; i < height / 2; i++) {
             int pixel1 = bitmap.getPixel(width / 2, i);
             int pixel2 = bitmap.getPixel(width / 2, height - i - 1);
             if ((pixel1 == 0 || pixel1 == -16777216) &&
-                (pixel2 == 0 || pixel2 == -16777216)) {
+                    (pixel2 == 0 || pixel2 == -16777216)) {
                 top = i;
             } else {
                 break;
@@ -275,7 +273,7 @@ public class Util {
             int pixel1 = bitmap.getPixel(i, height / 2);
             int pixel2 = bitmap.getPixel(width - i - 1, height / 2);
             if ((pixel1 == 0 || pixel1 == -16777216) &&
-                (pixel2 == 0 || pixel2 == -16777216)) {
+                    (pixel2 == 0 || pixel2 == -16777216)) {
                 left = i;
             } else {
                 break;
@@ -290,15 +288,14 @@ public class Util {
                 (width - (2 * left)), (height - (2 * top)));
     }
 
-    public static Bitmap getPictureFromCache(Media media)
-    {
+    public static Bitmap getPictureFromCache(Media media) {
         // mPicture is not null only if passed through
         // the ctor which is deprecated by now.
         Bitmap b = media.getPicture();
-        if(b == null) {
+        if (b == null) {
             BitmapCache cache = BitmapCache.getInstance();
             Bitmap picture = cache.getBitmapFromMemCache(media.getLocation());
-            if(picture == null) {
+            if (picture == null) {
                 /* Not in memcache:
                  * serving the file from the database and
                  * adding it to the memcache for later use.
@@ -317,23 +314,22 @@ public class Util {
         Log.d(TAG, "Setting new picture for " + m.getTitle());
         try {
             MediaDatabase.getInstance(context).updateMedia(
-                m.getLocation(),
-                MediaDatabase.mediaColumn.MEDIA_PICTURE,
-                p);
+                    m.getLocation(),
+                    MediaDatabase.mediaColumn.MEDIA_PICTURE,
+                    p);
         } catch (SQLiteFullException e) {
             Log.d(TAG, "SQLiteFullException while setting picture");
         }
         m.setPictureParsed(true);
     }
 
-    public static String getValue(String string, int defaultId)
-    {
+    public static String getValue(String string, int defaultId) {
         return (string != null && string.length() > 0) ?
                 string : VLCApplication.getAppContext().getString(defaultId);
     }
 
     public static int convertPxToDp(int px) {
-        WindowManager wm = (WindowManager)VLCApplication.getAppContext().
+        WindowManager wm = (WindowManager) VLCApplication.getAppContext().
                 getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -346,32 +342,27 @@ public class Util {
     public static int convertDpToPx(int dp) {
         return Math.round(
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                VLCApplication.getAppResources().getDisplayMetrics())
-                         );
+                        VLCApplication.getAppResources().getDisplayMetrics())
+        );
     }
 
-    public static boolean isFroyoOrLater()
-    {
+    public static boolean isFroyoOrLater() {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO;
     }
 
-    public static boolean isGingerbreadOrLater()
-    {
+    public static boolean isGingerbreadOrLater() {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD;
     }
 
-    public static boolean isHoneycombOrLater()
-    {
+    public static boolean isHoneycombOrLater() {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
     }
 
-    public static boolean isICSOrLater()
-    {
+    public static boolean isICSOrLater() {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH;
     }
 
-    public static boolean isJellyBeanOrLater()
-    {
+    public static boolean isJellyBeanOrLater() {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN;
     }
 
@@ -379,29 +370,29 @@ public class Util {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
-    public static boolean hasNavBar()
-    {
+    public static boolean hasNavBar() {
         return hasNavBar;
     }
 
-    /** hasCombBar test if device has Combined Bar : only for tablet with Honeycomb or ICS */
+    /**
+     * hasCombBar test if device has Combined Bar : only for tablet with Honeycomb or ICS
+     */
     public static boolean hasCombBar() {
         return (!isPhone()
                 && ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) &&
-                    (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.JELLY_BEAN)));
+                (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.JELLY_BEAN)));
     }
 
-    public static boolean isPhone(){
-        TelephonyManager manager = (TelephonyManager)VLCApplication.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
-        if(manager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE){
+    public static boolean isPhone() {
+        TelephonyManager manager = (TelephonyManager) VLCApplication.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
+        if (manager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public static String[] getStorageDirectories()
-    {
+    public static String[] getStorageDirectories() {
         String[] dirs = null;
         BufferedReader bufReader = null;
         try {
@@ -409,9 +400,9 @@ public class Util {
             ArrayList<String> list = new ArrayList<String>();
             list.add(Environment.getExternalStorageDirectory().getPath());
             String line;
-            while((line = bufReader.readLine()) != null) {
-                if(line.contains("vfat") || line.contains("exfat") ||
-                   line.contains("/mnt") || line.contains("/Removable")) {
+            while ((line = bufReader.readLine()) != null) {
+                if (line.contains("vfat") || line.contains("exfat") ||
+                        line.contains("/mnt") || line.contains("/Removable")) {
                     StringTokenizer tokens = new StringTokenizer(line, " ");
                     String s = tokens.nextToken();
                     s = tokens.nextToken(); // Take the second token, i.e. mount point
@@ -421,12 +412,12 @@ public class Util {
 
                     if (line.contains("/dev/block/vold")) {
                         if (!line.startsWith("tmpfs") &&
-                            !line.startsWith("/dev/mapper") &&
-                            !s.startsWith("/mnt/secure") &&
-                            !s.startsWith("/mnt/shell") &&
-                            !s.startsWith("/mnt/asec") &&
-                            !s.startsWith("/mnt/obb")
-                            ) {
+                                !line.startsWith("/dev/mapper") &&
+                                !s.startsWith("/mnt/secure") &&
+                                !s.startsWith("/mnt/shell") &&
+                                !s.startsWith("/mnt/asec") &&
+                                !s.startsWith("/mnt/obb")
+                                ) {
                             list.add(s);
                         }
                     }
@@ -437,15 +428,14 @@ public class Util {
             for (int i = 0; i < list.size(); i++) {
                 dirs[i] = list.get(i);
             }
-        }
-        catch (FileNotFoundException e) {}
-        catch (IOException e) {}
-        finally {
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        } finally {
             if (bufReader != null) {
                 try {
                     bufReader.close();
+                } catch (IOException e) {
                 }
-                catch (IOException e) {}
             }
         }
         return dirs;
@@ -454,7 +444,7 @@ public class Util {
     public static String[] getCustomDirectories() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(VLCApplication.getAppContext());
         final String custom_paths = preferences.getString("custom_paths", "");
-        if(custom_paths.equals(""))
+        if (custom_paths.equals(""))
             return new String[0];
         else
             return custom_paths.split(":");
@@ -475,7 +465,7 @@ public class Util {
         dirs.add(path);
         StringBuilder builder = new StringBuilder();
         builder.append(dirs.remove(0));
-        for(String s : dirs) {
+        for (String s : dirs) {
             builder.append(":");
             builder.append(s);
         }
@@ -486,17 +476,17 @@ public class Util {
 
     public static void removeCustomDirectory(String path) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(VLCApplication.getAppContext());
-        if(!preferences.getString("custom_paths", "").contains(path))
+        if (!preferences.getString("custom_paths", "").contains(path))
             return;
         ArrayList<String> dirs = new ArrayList<String>(
                 Arrays.asList(preferences.getString("custom_paths", "").split(
                         ":")));
         dirs.remove(path);
         String custom_path;
-        if(dirs.size() > 0) {
+        if (dirs.size() > 0) {
             StringBuilder builder = new StringBuilder();
             builder.append(dirs.remove(0));
-            for(String s : dirs) {
+            for (String s : dirs) {
                 builder.append(":");
                 builder.append(s);
             }

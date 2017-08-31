@@ -13,7 +13,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_marginLeft="30dp"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical" />
 
         <TextView
             android:id="@+id/item_text_create_time"
@@ -33,16 +33,16 @@
             android:id="@+id/item_view_thumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"/>
+            android:layout_marginLeft="70dp" />
     </LinearLayout>
 
     <View
         android:layout_width="wrap_content"
         android:layout_height="2px"
-        android:background="#cccccc"/>
+        android:background="#cccccc" />
 
     <View
         android:layout_width="wrap_content"
         android:layout_height="5dp"
-        android:background="#e9e9e9"/>
+        android:background="#e9e9e9" />
 </LinearLayout>

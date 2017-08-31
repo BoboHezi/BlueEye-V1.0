@@ -1,20 +1,31 @@
 package eli.blueeye.v1.entity;
 
+import android.os.Environment;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * 读取文件和缩略图的实体
+ *
+ * @author eli chang
+ */
 public class ReadFiles {
+
+    private static final String photoPath = Environment.getExternalStorageDirectory() + "/blueeye/photos/";
+    private static final String videoPath = Environment.getExternalStorageDirectory() + "/blueeye/videos/";
 
     /**
      * 读取所有的文件
+     *
      * @return
      */
     public List readFiles() {
-        File photoFolder = new File("/sdcard/blueeye/photos/");
-        File videoFolder = new File("/sdcard/blueeye/videos/");
+        File photoFolder = new File(photoPath);
+        File videoFolder = new File(videoPath);
 
         if (!photoFolder.exists()) {
             photoFolder.mkdirs();

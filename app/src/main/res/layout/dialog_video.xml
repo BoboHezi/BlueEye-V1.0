@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000" >
+    android:background="#000">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +13,7 @@
         <RelativeLayout
             android:layout_marginTop="40dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/dialog_video_text_time"
@@ -22,7 +21,7 @@
                 android:layout_height="30dp"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:text="2017-07-31 12:35:05"/>
+                android:text="2017-07-31 12:35:05" />
 
             <ImageButton
                 android:id="@+id/dialog_video_button_more"
@@ -32,7 +31,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="30dp"
                 android:adjustViewBounds="true"
-                android:background="@drawable/back_button_more"/>
+                android:background="@drawable/back_button_more" />
 
         </RelativeLayout>
 
@@ -61,7 +60,7 @@
                 android:layout_marginTop="10dp"
                 android:clickable="true"
                 app:seekBar_backColor="#33ffffff"
-                app:seekBar_progressColor="#fff"/>
+                app:seekBar_progressColor="#fff" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

@@ -8,14 +8,20 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+
 import java.util.Random;
 
+/**
+ * 自定义view，显示一个随机颜色的小球，可以被更新为选择的状态
+ *
+ * @author eli chang
+ */
 public class RandomCirclePoint extends View {
 
     //默认状态下的颜色
     private final int RANDOM_COLOR = getRandomColor();
     //选中状态在的颜色
-    private final int SELECTED_COLOR = Color.parseColor("#047AD4");
+    private final int SELECTED_COLOR = 0xff047AD4;
     //画笔颜色
     private int ePaintColor;
     //画笔
@@ -47,6 +53,7 @@ public class RandomCirclePoint extends View {
 
     /**
      * 绘制小球
+     *
      * @param canvas
      */
     @Override
@@ -62,12 +69,12 @@ public class RandomCirclePoint extends View {
             paint.setColor(Color.WHITE);
             paint.setStrokeWidth(2);
             paint.setStrokeCap(Paint.Cap.ROUND);
-            int startX  = (int) (width * 0.3);
-            int startY  = (int) (width * 0.5);
+            int startX = (int) (width * 0.3);
+            int startY = (int) (width * 0.5);
             int centerX = (int) (width * 0.5);
             int centerY = (int) (width * 0.71);
-            int endX    = (int) (width * 0.8);
-            int endY    = (int) (width * 0.35);
+            int endX = (int) (width * 0.8);
+            int endY = (int) (width * 0.35);
             canvas.drawLine(startX, startY, centerX, centerY, paint);
             canvas.drawLine(centerX, centerY, endX, endY, paint);
         }
@@ -93,6 +100,7 @@ public class RandomCirclePoint extends View {
 
     /**
      * 获取是否被选中
+     *
      * @return
      */
     public boolean isSelected() {
@@ -101,6 +109,7 @@ public class RandomCirclePoint extends View {
 
     /**
      * 获取随机的颜色
+     *
      * @return
      */
     private int getRandomColor() {

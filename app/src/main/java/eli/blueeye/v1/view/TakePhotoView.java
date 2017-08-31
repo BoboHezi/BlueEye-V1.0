@@ -11,8 +11,15 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import eli.blueeye.v1.R;
 
+import eli.blueeye.v1.R;
+import eli.blueeye.v1.inter.LongTouchListener;
+
+/**
+ * 截屏和录屏的按钮，实现单击和长按不同的接口(单击截图， 长按录屏)
+ *
+ * @author eli chang
+ */
 public class TakePhotoView extends View {
 
     private static final String TAG = "styleable_take_photo";
@@ -29,7 +36,7 @@ public class TakePhotoView extends View {
     //背景色
     private int eBackColor;
     //透明度
-    private int eAlpha = 200;
+    private int eAlpha = 150;
 
     //插值器
     private static final TimeInterpolator interpolator = new DecelerateInterpolator();
@@ -133,9 +140,8 @@ public class TakePhotoView extends View {
     }
 
     /**
-     *
-     * @param listener  监听器
-     * @param time      回调的时间间隔
+     * @param listener 监听器
+     * @param time     回调的时间间隔
      */
     public void setOnLongTouchListener(LongTouchListener listener, int time) {
         this.eLongTouchListener = listener;
@@ -149,12 +155,12 @@ public class TakePhotoView extends View {
 
         /**
          * 异步任务
-         *
-         *      1.当处于触摸状态下，会每隔1000毫秒的时间回调onProgressUpdate
-         *      onProgressUpdate中调用onLongTouch方法，触发长按事件
-         *
-         *      2.首次触发事件时，会延时一个自定义的时间间隔，
-         *      用来区分长按和点击
+         * <p>
+         * 1.当处于触摸状态下，会每隔1000毫秒的时间回调onProgressUpdate
+         * onProgressUpdate中调用onLongTouch方法，触发长按事件
+         * <p>
+         * 2.首次触发事件时，会延时一个自定义的时间间隔，
+         * 用来区分长按和点击
          *
          * @param params
          * @return
@@ -167,8 +173,7 @@ public class TakePhotoView extends View {
                 if (isFirst) {
                     sleep(eLongTouchTime);
                     isFirst = false;
-                }
-                else
+                } else
                     sleep(1000);
                 if (isTouch)
                     publishProgress(0);
@@ -178,6 +183,7 @@ public class TakePhotoView extends View {
 
         /**
          * 触摸事件结束后，调用onTouchStop()方法，触发长按结束事件
+         *
          * @param aVoid
          */
         @Override
@@ -189,6 +195,7 @@ public class TakePhotoView extends View {
 
         /**
          * 调用onLongTouch(),触发长按事件
+         *
          * @param values
          */
         @Override
@@ -199,27 +206,15 @@ public class TakePhotoView extends View {
 
         /**
          * 延时
+         *
          * @param time 需要延时的时间
          */
         private void sleep(int time) {
             try {
                 Thread.sleep(time);
-            }catch(InterruptedException e) {
+            } catch (InterruptedException e) {
 
             }
         }
-    }
-
-    /**
-     * 长按监听接口
-     */
-    public interface LongTouchListener {
-        /**
-         * 处理长按的方法
-         */
-        void onLongTouch();
-
-        void onTouchStop();
-
     }
 }

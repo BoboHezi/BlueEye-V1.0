@@ -1,5 +1,6 @@
 package eli.blueeye.v1.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
@@ -7,24 +8,33 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import eli.blueeye.v1.entity.LoadListView;
 
+/**
+ * Dialog基类，所有实例化的Dialog需要继承该类
+ *
+ * @author eli chang
+ */
 public abstract class BaseDialog extends Dialog {
 
     public final String TAG = this.getClass().getName();
 
     private Context context;
+    private Activity activity;
     protected TextView eTimeTextView;
-    protected File file;
+    protected File[] files;
     private LoadListView.RefreshHandler eRefreshHandler;
 
-    public BaseDialog(Context context, File file, LoadListView.RefreshHandler eRefreshHandler, int style) {
+    public BaseDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler eRefreshHandler, int style) {
         super(context, style);
         this.context = context;
-        this.file = file;
+        this.activity = activity;
+        this.files = files;
         this.eRefreshHandler = eRefreshHandler;
     }
 
@@ -39,7 +49,7 @@ public abstract class BaseDialog extends Dialog {
      * 弹出对话框
      */
     protected void showActionDialog() {
-        CustomActionDialog actionDialog = new CustomActionDialog(context,file, eRefreshHandler);
+        CustomActionDialog actionDialog = new CustomActionDialog(context, activity, files, eRefreshHandler);
         actionDialog.show();
     }
 
@@ -62,7 +72,7 @@ public abstract class BaseDialog extends Dialog {
      */
     protected void showTime() {
         if (eTimeTextView != null) {
-            Date date = new Date(file.lastModified());
+            Date date = new Date(files[0].lastModified());
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             String timeText = format.format(date);
             eTimeTextView.setText(timeText);

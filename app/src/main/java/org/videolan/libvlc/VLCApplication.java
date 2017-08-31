@@ -45,13 +45,13 @@ public class VLCApplication extends Application {
         if (p != null && !p.equals("")) {
             Locale locale;
             // workaround due to region code
-            if(p.equals("zh-TW")) {
+            if (p.equals("zh-TW")) {
                 locale = Locale.TRADITIONAL_CHINESE;
-            } else if(p.startsWith("zh")) {
+            } else if (p.startsWith("zh")) {
                 locale = Locale.CHINA;
-            } else if(p.equals("pt-BR")) {
+            } else if (p.equals("pt-BR")) {
                 locale = new Locale("pt", "BR");
-            } else if(p.equals("bn-IN") || p.startsWith("bn")) {
+            } else if (p.equals("bn-IN") || p.startsWith("bn")) {
                 locale = new Locale("bn", "IN");
             } else {
                 /**
@@ -59,7 +59,7 @@ public class VLCApplication extends Application {
                  * java.lang.AssertionError: couldn't initialize LocaleData for locale
                  * if the user enters nonsensical region codes.
                  */
-                if(p.contains("-"))
+                if (p.contains("-"))
                     p = p.substring(0, p.indexOf('-'));
                 locale = new Locale(p);
             }
@@ -92,17 +92,15 @@ public class VLCApplication extends Application {
     /**
      * @return the main context of the Application
      */
-    public static Context getAppContext()
-    {
+    public static Context getAppContext() {
         return instance;
     }
 
     /**
      * @return the main resources from the Application
      */
-    public static Resources getAppResources()
-    {
-        if(instance == null) return null;
+    public static Resources getAppResources() {
+        if (instance == null) return null;
         return instance.getResources();
     }
 }

@@ -16,6 +16,13 @@ import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.widget.Scroller;
 
+import eli.blueeye.v1.inter.OnPressActionListener;
+
+/**
+ * 自定义ImageView，可以实现放大、缩小、平移、双击放大、溢出缩小的功能
+ *
+ * @author eli chang
+ */
 public class CustomImageView extends AppCompatImageView implements ScaleGestureDetector.OnScaleGestureListener, View.OnTouchListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     private final String TAG = this.getClass().getName();
@@ -25,7 +32,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
     private Matrix eScaleMatrix;
     private VelocityTracker eVelocityTracker;
     private FlingRunnable eFlingRunnable;
-    private PressAction ePressAction;
+    private OnPressActionListener eOnPressActionListener;
 
     private boolean isFirst = false;
     private boolean isAutoScale = false;
@@ -82,15 +89,15 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
              */
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (ePressAction != null)
-                    ePressAction.singleTap();
+                if (eOnPressActionListener != null)
+                    eOnPressActionListener.singleTap();
                 return true;
             }
 
             @Override
             public void onLongPress(MotionEvent e) {
-                if (ePressAction != null)
-                    ePressAction.longPress();
+                if (eOnPressActionListener != null)
+                    eOnPressActionListener.longPress();
                 super.onLongPress(e);
             }
         });
@@ -98,10 +105,11 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
 
     /**
      * 设置点击消失的接口
-     * @param pressAction
+     *
+     * @param onPressActionListener
      */
-    public void setOnPressAction(PressAction pressAction) {
-        this.ePressAction = pressAction;
+    public void setOnPressAction(OnPressActionListener onPressActionListener) {
+        this.eOnPressActionListener = onPressActionListener;
     }
 
     @Override
@@ -158,6 +166,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
 
     /**
      * 获取当前缩放比例
+     *
      * @return
      */
     private final float getScale() {
@@ -168,6 +177,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
 
     /**
      * 根据当前图片的Matrix获得图片的范围
+     *
      * @return
      */
     private RectF getMatrixRectF() {
@@ -249,6 +259,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
 
     /**
      * 缩放
+     *
      * @param detector
      * @return
      */
@@ -294,7 +305,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
         float y = 0.0f;
 
         int pointCount = motionEvent.getPointerCount();
-        for (int i = 0; i<pointCount; i++) {
+        for (int i = 0; i < pointCount; i++) {
             x += motionEvent.getX(i);
             y += motionEvent.getY(i);
         }
@@ -384,7 +395,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                         final float vY = eVelocityTracker.getYVelocity();
 
                         eFlingRunnable = new FlingRunnable(getContext());
-                        eFlingRunnable.fling(getWidth(), getHeight(), (int)-vX, (int)-vY);
+                        eFlingRunnable.fling(getWidth(), getHeight(), (int) -vX, (int) -vY);
                         post(eFlingRunnable);
                     }
                 }
@@ -427,6 +438,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                 tempScale = SMALLER;
             }
         }
+
         @Override
         public void run() {
             eScaleMatrix.postScale(tempScale, tempScale, x, y);
@@ -435,7 +447,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
 
             float currentScale = getScale();
 
-            if ( (tempScale > 1.0f) && currentScale < targetScale || (tempScale < 1.0f) && currentScale > targetScale ) {
+            if ((tempScale > 1.0f) && currentScale < targetScale || (tempScale < 1.0f) && currentScale > targetScale) {
                 postDelayed(this, 16);
             } else {
                 float scale = targetScale / currentScale;
@@ -455,9 +467,11 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
         public FlingRunnable(Context context) {
             scroller = new Scroller(context);
         }
+
         public void cancelFling() {
             scroller.forceFinished(true);
         }
+
         public void fling(int viewWidth, int viewHeight, int velocityX, int velocityY) {
             RectF rectF = getMatrixRectF();
             if (rectF == null)
@@ -505,10 +519,5 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                 postDelayed(this, 16);
             }
         }
-    }
-
-    public interface PressAction {
-        void singleTap();
-        void longPress();
     }
 }

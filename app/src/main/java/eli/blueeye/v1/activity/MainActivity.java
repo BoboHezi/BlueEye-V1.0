@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -18,17 +19,22 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.entity.LoadListView;
+import eli.blueeye.v1.entity.ShareEntity;
+import eli.blueeye.v1.inter.LongTouchListener;
 import eli.blueeye.v1.server.GravitySensorListener;
 import eli.blueeye.v1.util.Util;
 import eli.blueeye.v1.view.TakePhotoView;
 import eli.blueeye.v1.entity.VlcPlayer;
 
 /**
- * Author Eli Chang
+ * Activity
+ *
+ * @author eli chang
  */
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, TakePhotoView.LongTouchListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, LongTouchListener {
 
     /**
      * http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int CAPTURE_PHOTO = 1;
     public static final int CAPTURE_VIDEO = 2;
     //路径
-    private static final String eUrl = "sdcard/1/video.mov";
+    private static final String eUrl = "rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov";
     //上下文
     private Context context;
     //按键管理
@@ -65,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton eCameraButton;
     //设置按钮
     private ImageButton eSetUpButton;
+    //分享按钮
+    private ImageButton eShareButton;
+    //删除按钮
+    private ImageButton eDeleteButton;
 
     //播放状态
     private boolean isPlayer = true;
@@ -83,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GravitySensorListener eSensorListener;
     //文件管理实现类
     private LoadListView eLoadListView;
+    //分享实现类
+    private ShareEntity eShareEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         //初始化传感器
         eSensorListener = new GravitySensorListener(context, eFullScreenButton, eKeyguardManager);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //设置视频尺寸
-        resetViewSize();
+        //实例化文件管理部分
+        eLoadListView = new LoadListView(this, this);
+        eLoadListView.loadFiles();
         //初始化Handler和线程
         initHandlerThread();
         //初始化播放器
@@ -109,13 +117,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onResume() {
+        Log.i(TAG, "onResume: ");
+        if (eVlcPlayer != null) {
+            eVlcPlayer.play();
+        }
+        super.onResume();
+        //设置视频尺寸
+        resetViewSize();
+    }
+
+    @Override
     protected void onStop() {
+        Log.i(TAG, "onStop: ");
+        //应用失去焦点时，暂停播放
+        /*if (eVlcPlayer != null) {
+            eVlcPlayer.pause();
+        }*/
         super.onStop();
         //显示按钮区域
         setAreaVisibility(true);
         removeHiddenThread();
-        //暂停播放
-        eVlcPlayer.pause();
     }
 
     @Override
@@ -128,31 +150,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 初始化视图
      */
-    private void initView(){
+    private void initView() {
+        //播放界面
         eSurfaceView = (SurfaceView) findViewById(R.id.main_surface);
         eSurfaceView.setOnClickListener(this);
 
+        //播放控制按钮
         ePlayerControlButton = (ImageButton) findViewById(R.id.main_button_play_control);
         ePlayerControlButton.setOnClickListener(this);
 
+        //全屏切换按钮
         eFullScreenButton = (ImageButton) findViewById(R.id.main_button_full_screen);
         eFullScreenButton.setOnClickListener(this);
 
+        //按钮区域
         eButtonArea = (LinearLayout) findViewById(R.id.main_button_area);
 
+        //摄像头按钮
         eCameraButton = (ImageButton) findViewById(R.id.main_button_camera);
         eCameraButton.setOnClickListener(this);
 
+        //截录屏按钮
         eTakePhotoView = (TakePhotoView) findViewById(R.id.main_button_take_photo);
         eTakePhotoView.setOnClickListener(this);
         eTakePhotoView.setOnLongTouchListener(this, 500);
 
+        //设置按钮
         eSetUpButton = (ImageButton) findViewById(R.id.main_button_setup);
         eSetUpButton.setOnClickListener(this);
 
-        //实例化文件管理部分
-        eLoadListView = new LoadListView(this, this);
-        eLoadListView.loadFiles();
+        //分享按钮
+        eShareButton = (ImageButton) findViewById(R.id.main_button_share);
+        eShareButton.setOnClickListener(this);
+        //删除按钮
+        eDeleteButton = (ImageButton) findViewById(R.id.main_button_delete);
+        eDeleteButton.setOnClickListener(this);
     }
 
     /**
@@ -173,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 初始化隐藏Handler和线程
      */
-    private void initHandlerThread(){
+    private void initHandlerThread() {
         if (eSnapHandler == null)
             eSnapHandler = new SnapHandler();
         if (eHiddenHandler == null)
@@ -187,13 +219,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initSurface() {
         eVlcPlayer = new VlcPlayer(eSurfaceView, this, eUrl, eSnapHandler);
         eVlcPlayer.createPlayer();
-        eVlcPlayer.play();
     }
 
     /**
      * 按键监听事件
-     * @param keyCode   按键代码
-     * @param event     事件
+     *
+     * @param keyCode 按键代码
+     * @param event   事件
      * @return
      */
     @Override
@@ -212,11 +244,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 点击事件
+     *
      * @param view
      */
     @Override
-    public void onClick(View view){
-        switch (view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.main_button_play_control:
                 //播放、暂停
                 switchControlButton(view);
@@ -238,13 +271,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.main_button_camera:
-                //切换显示摄像头
+                //切换摄像头
                 switchShowCamera(view);
                 break;
 
             case R.id.main_button_setup:
-                //设置按钮
+                //设置
                 switchShowSetup(view);
+                break;
+
+            case R.id.main_button_share:
+                //分享
+                if (eLoadListView != null) {
+                    eLoadListView.shareSelectedItems();
+                }
+                break;
+
+            case R.id.main_button_delete:
+                //删除
+                if (eLoadListView != null) {
+                    eLoadListView.deleteSelectedItems();
+                }
                 break;
         }
     }
@@ -276,6 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 切换横竖屏
+     *
      * @param newConfig
      */
     @Override
@@ -297,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setToolBarPosition(screenWidth, screenHeight);
         }
         //竖屏
-        else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             int height = (screenWidth * 9) / 16;
             layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
             eSurfaceView.setLayoutParams(layoutParams);
@@ -350,15 +398,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 实现播放暂停的切换，图标的切换
+     *
      * @param view 点击事件的View对象
      */
-    private void switchControlButton(View view){
-        if (isPlayer){
+    private void switchControlButton(View view) {
+        if (isPlayer) {
             //播放暂停
             Util.setBackImage(context, view, R.drawable.start);
             eVlcPlayer.pause();
-        }
-        else{
+        } else {
             //播放开始
             Util.setBackImage(context, view, R.drawable.stop);
             eVlcPlayer.play();
@@ -398,8 +446,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (eSensorListener.isSensorLAND()) {
                 eSensorListener.disableLAND();
             }
-        }
-        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             //设置全屏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             //设置横屏
@@ -413,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 切换全屏按钮的图标
+     *
      * @param view 点击事件的View对象
      */
     private void switchFullImage(View view) {
@@ -425,6 +473,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 切换截图按钮的显示
+     *
      * @param view 点击事件的View对象
      */
     private void switchShowCamera(View view) {
@@ -436,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //隐藏截屏按钮
             Util.setBackImage(context, view, R.drawable.camera);
             eTakePhotoView.setInVisible();
-        }else {
+        } else {
             //显示截屏按钮
             Util.setBackImage(context, view, R.drawable.camera_);
             eTakePhotoView.setVisible();
@@ -446,15 +495,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 更改功能区组件布局
-     * @param width     总体宽度
-     * @param height    总体高度
+     *
+     * @param width  总体宽度
+     * @param height 总体高度
      */
     private void setToolBarPosition(int width, int height) {
         //判断屏幕方向
         final boolean isLand = Util.isLandscape(context);
 
         final int dip30 = Util.dip2px(context, 30);
-        final int dip50 = Util.dip2px(context, 50);
+        final int dip60 = Util.dip2px(context, 60);
         final int dip20 = Util.dip2px(context, 20);
         final int offset = Util.dip2px(context, 5);
 
@@ -464,8 +514,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //设置中间按钮位置
         RelativeLayout centerArea = (RelativeLayout) findViewById(R.id.main_center_button_area);
-        LinearLayout.LayoutParams centerAreaLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip50);
-        centerAreaLP.setMargins(0, height/2 - dip50/2, 0, 0);
+        LinearLayout.LayoutParams centerAreaLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip60);
+        centerAreaLP.setMargins(0, height / 2 - dip60 / 2, 0, 0);
         centerArea.setLayoutParams(centerAreaLP);
 
         //设置播放按钮位置
@@ -475,8 +525,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ePlayerControlButton.setLayoutParams(playControlLP);
 
         //设置截图按钮位置
-        RelativeLayout.LayoutParams takePhotoLP ;
-        int takePhotoSideLength = dip50;
+        RelativeLayout.LayoutParams takePhotoLP;
+        int takePhotoSideLength = dip60;
         takePhotoLP = new RelativeLayout.LayoutParams(takePhotoSideLength, takePhotoSideLength);
         takePhotoLP.addRule(RelativeLayout.CENTER_VERTICAL);
         takePhotoLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -492,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //设置工具条位置
         LinearLayout toolBar = (LinearLayout) findViewById(R.id.main_tool_bar_area);
         LinearLayout.LayoutParams toolBarLP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dip20);
-        toolBarLP.setMargins(0, height/2-dip50/2-dip20-offset, 0, 0);
+        toolBarLP.setMargins(0, height / 2 - dip60 / 2 - dip20 - offset, 0, 0);
         toolBar.setLayoutParams(toolBarLP);
 
         if (isShowSetup) {
@@ -529,7 +579,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 设置按钮区是否可见
-     * @param isVisibility  可见状态
+     *
+     * @param isVisibility 可见状态
      */
     private void setAreaVisibility(boolean isVisibility) {
         if (isVisibility) {

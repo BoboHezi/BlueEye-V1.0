@@ -8,8 +8,14 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
 import eli.blueeye.v1.R;
 
+/**
+ * 自定义进度条
+ *
+ * @author eli chang
+ */
 public class CustomSeekBar extends View {
 
     private static final String TAG = "CustomSeekBar";
@@ -63,7 +69,7 @@ public class CustomSeekBar extends View {
         //计算控件实际宽度
         int realWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         //计算分割点位置
-        float end_X = (getCurrentTime() * 1.0f/ eTotalTime) * realWidth;
+        float end_X = (getCurrentTime() * 1.0f / eTotalTime) * realWidth;
         //设置时间数字
         String text = formatTime(eCurrentTime / 1000) + "/" + formatTime(eTotalTime / 1000);
 
@@ -86,7 +92,7 @@ public class CustomSeekBar extends View {
             paint.setColor(eBackColor);
             paint.setStrokeWidth(eBackHeight);
             paint.setAntiAlias(true);
-            canvas.drawLine(end_X , 10, realWidth, 10, paint);
+            canvas.drawLine(end_X, 10, realWidth, 10, paint);
         }
 
         //绘制过去的时间线
@@ -94,7 +100,7 @@ public class CustomSeekBar extends View {
             paint.setAntiAlias(true);
             paint.setColor(eProgressColor);
             paint.setStrokeWidth(eProgressHeight);
-            canvas.drawLine(0, 10, end_X , 10, paint);
+            canvas.drawLine(0, 10, end_X, 10, paint);
             canvas.drawCircle(end_X, 10, 8, paint);
         }
     }
@@ -136,6 +142,7 @@ public class CustomSeekBar extends View {
 
     /**
      * 格式化显示的时间
+     *
      * @param time
      * @return
      */
@@ -149,6 +156,7 @@ public class CustomSeekBar extends View {
 
     /**
      * 处理触摸事件
+     *
      * @param event
      * @return
      */

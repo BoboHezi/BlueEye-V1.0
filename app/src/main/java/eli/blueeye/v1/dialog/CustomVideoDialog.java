@@ -1,5 +1,6 @@
 package eli.blueeye.v1.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
@@ -10,31 +11,38 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import java.io.File;
 import java.io.IOException;
+
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.entity.LoadListView;
 import eli.blueeye.v1.view.CustomSeekBar;
 
+/**
+ * 播放视频的Dialog
+ *
+ * @author eli chang
+ */
 public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callback, View.OnClickListener {
 
     private SurfaceView eSurfaceView;
     private SurfaceHolder eSurfaceHolder;
     private MediaPlayer eMediaPlayer;
     private ImageButton eButtonMore;
-    private File file;
+    private File[] files;
     private GestureDetector eGestureDetector;
 
     private CustomSeekBar eSeekBar;
     private UpdateThread eUpdateThread;
 
-    public CustomVideoDialog(Context context, File file, LoadListView.RefreshHandler refreshHandler) {
-        super(context, file, refreshHandler, R.style.style_dialog);
-        this.file = file;
+    public CustomVideoDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
+        super(context, activity, files, refreshHandler, R.style.style_image_dialog);
+        this.files = files;
         initView();
         initVideo();
 
-        eGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
+        eGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             /**
              * 单击屏幕 退出
              * @param e
@@ -89,7 +97,7 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
      */
     @Override
     public void setWindowAnimation() {
-        getWindow().setWindowAnimations(R.style.animation_dialog);
+        getWindow().setWindowAnimations(R.style.animation_image_dialog);
     }
 
     @Override
@@ -100,7 +108,7 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
         eMediaPlayer.reset();
         eMediaPlayer.setLooping(true);
         try {
-            eMediaPlayer.setDataSource(file.getPath());
+            eMediaPlayer.setDataSource(files[0].getPath());
             eMediaPlayer.prepareAsync();
             eMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -132,6 +140,7 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
 
     /**
      * 按钮点击
+     *
      * @param view
      */
     @Override
@@ -142,6 +151,7 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
     /**
      * 重写触摸方法
      * 将数据传给GestureDetector判断事件
+     *
      * @param event
      * @return
      */
@@ -157,7 +167,7 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
     class UpdateThread extends Thread {
         @Override
         public void run() {
-            while(eMediaPlayer != null && !this.isInterrupted()) {
+            while (eMediaPlayer != null && !this.isInterrupted()) {
                 try {
                     //当进度条被重新定位时，更新播放的位置
                     if (eSeekBar.isSeek()) {

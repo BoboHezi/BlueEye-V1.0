@@ -6,6 +6,13 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import eli.blueeye.v1.inter.OnLoadMoreListener;
+
+/**
+ * 自定义ListView，实现了下拉载入的功能
+ *
+ * @author eli chang
+ */
 public class CustomListView extends ListView implements AbsListView.OnScrollListener {
 
     private static final String TAG = "CustomListView";
@@ -35,16 +42,19 @@ public class CustomListView extends ListView implements AbsListView.OnScrollList
 
     /**
      * 滚动监听
+     *
      * @param absListView
      * @param i
      * @param i1
      * @param i2
      */
     @Override
-    public void onScroll(AbsListView absListView, int i, int i1, int i2) { }
+    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+    }
 
     /**
      * 滚动状态监听
+     *
      * @param absListView
      * @param scrollstate
      */
@@ -80,10 +90,5 @@ public class CustomListView extends ListView implements AbsListView.OnScrollList
     //设置当前是否加载
     public void setLoadState(boolean isLoading) {
         this.isLoading = isLoading;
-    }
-
-    //加载监听器
-    public interface OnLoadMoreListener {
-        void loadMore();
     }
 }

@@ -38,10 +38,15 @@ public class MediaList {
         boolean noOmx; // default false
 
         public MediaHolder(Media media) {
-            m = media; noVideo = false; noOmx = false;
+            m = media;
+            noVideo = false;
+            noOmx = false;
         }
+
         public MediaHolder(Media m_, boolean noVideo_, boolean noOmx_) {
-            m = m_; noVideo = noVideo_; noOmx = noOmx_;
+            m = m_;
+            noVideo = noVideo_;
+            noOmx = noOmx_;
         }
     }
 
@@ -59,20 +64,22 @@ public class MediaList {
     /**
      * Adds a media URI to the media list.
      *
-     * @param mrl
-     *            The MRL to add. Must be a location and not a path.
+     * @param mrl The MRL to add. Must be a location and not a path.
      *            {@link LibVLC#PathToURI(String)} can be used to convert a path
      *            to a MRL.
      */
     public void add(String mrl) {
         add(new Media(mLibVLC, mrl));
     }
+
     public void add(Media media) {
         add(media, false, false);
     }
+
     public void add(Media media, boolean noVideo) {
         add(media, noVideo, false);
     }
+
     public void add(Media media, boolean noVideo, boolean noOmx) {
         mInternalList.add(new MediaHolder(media, noVideo, noOmx));
         signal_list_event(EventHandler.CustomMediaListItemAdded, mInternalList.size() - 1, media.getLocation());
@@ -83,7 +90,7 @@ public class MediaList {
      */
     public void clear() {
         // Signal to observers of media being deleted.
-        for(int i = 0; i < mInternalList.size(); i++) {
+        for (int i = 0; i < mInternalList.size(); i++) {
             signal_list_event(EventHandler.CustomMediaListItemDeleted, i, mInternalList.get(i).m.getLocation());
         }
         mInternalList.clear();
@@ -104,31 +111,34 @@ public class MediaList {
     public int expandMedia(int position) {
         ArrayList<String> children = new ArrayList<String>();
         int ret = expandMedia(mLibVLC, position, children);
-        if(ret == 0) {
+        if (ret == 0) {
             mEventHandler.callback(EventHandler.CustomMediaListExpanding, new Bundle());
             this.remove(position);
-            for(String mrl : children) {
+            for (String mrl : children) {
                 this.insert(position, mrl);
             }
             mEventHandler.callback(EventHandler.CustomMediaListExpandingEnd, new Bundle());
         }
         return ret;
     }
+
     private native int expandMedia(LibVLC libvlc_instance, int position, ArrayList<String> children);
 
     public void loadPlaylist(String mrl) {
         ArrayList<String> items = new ArrayList<String>();
         loadPlaylist(mLibVLC, mrl, items);
         this.clear();
-        for(String item : items) {
+        for (String item : items) {
             this.add(item);
         }
     }
+
     private native void loadPlaylist(LibVLC libvlc_instance, String mrl, ArrayList<String> items);
 
     public void insert(int position, String mrl) {
         insert(position, new Media(mLibVLC, mrl));
     }
+
     public void insert(int position, Media media) {
         mInternalList.add(position, new MediaHolder(media));
         signal_list_event(EventHandler.CustomMediaListItemAdded, position, media.getLocation());
@@ -165,8 +175,7 @@ public class MediaList {
     public String[] getMediaOptions(int position) {
         boolean noOmx = !mLibVLC.useIOMX();
         boolean noVideo = false;
-        if (isValid(position))
-        {
+        if (isValid(position)) {
             if (!noOmx)
                 noOmx = mInternalList.get(position).noOmx;
             noVideo = mInternalList.get(position).noVideo;
@@ -201,8 +210,8 @@ public class MediaList {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("LibVLC Media List: {");
-        for(int i = 0; i < size(); i++) {
-            sb.append(((Integer)i).toString());
+        for (int i = 0; i < size(); i++) {
+            sb.append(((Integer) i).toString());
             sb.append(": ");
             sb.append(getMRL(i));
             sb.append(", ");

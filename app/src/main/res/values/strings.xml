@@ -4,4 +4,15 @@
     <string name="cancel">取消</string>
     <string name="delete">删除</string>
     <string name="share">分享</string>
+    <string name="share_to">分享到</string>
+    <string name="platform_sina">新浪微博</string>
+    <string name="platform_circle_friends">朋友圈</string>
+    <string name="platform_we_chat">微信</string>
+    <string name="platform_qq">QQ</string>
+    <string name="platform_qq_zone">QQ空间</string>
+    <string name="errcode_success">发送成功</string>
+    <string name="errcode_cancel">发送取消</string>
+    <string name="errcode_deny">发送被拒绝</string>
+    <string name="errcode_unsupported">不支持错误</string>
+    <string name="errcode_unknown">发送返回</string>
 </resources>

@@ -15,7 +15,7 @@
     </style>
 
     <!--图片/视频，播放Dialog动画-->
-    <style name="animation_dialog">
+    <style name="animation_image_dialog">
         <item name="android:windowEnterAnimation">@anim/anim_dialog_popup_enter</item>
         <item name="android:windowExitAnimation">@anim/anim_dialog_popup_exit</item>
     </style>
@@ -33,8 +33,7 @@
     </style>
 
     <!--图片/视频 查看器风格-->
-    <style name="style_dialog" parent="@android:style/Theme.Dialog">
-        <!--边框-->
+    <style name="style_image_dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -51,4 +50,16 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
+    <!--分享平台选择Dialog-->
+    <style name="dialog_share_platform" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <!--分享平台动画-->
+    <style name="animation_share_dialog">
+        <item name="android:windowEnterAnimation">@anim/share_platform_enter</item>
+        <item name="android:windowExitAnimation">@anim/share_platform_exit</item>
+    </style>
 </resources>

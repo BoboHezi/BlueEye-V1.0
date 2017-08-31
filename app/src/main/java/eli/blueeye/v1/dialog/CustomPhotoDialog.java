@@ -1,24 +1,33 @@
 package eli.blueeye.v1.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import java.io.File;
+
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.entity.LoadListView;
+import eli.blueeye.v1.inter.OnPressActionListener;
 import eli.blueeye.v1.view.CustomImageView;
 
-public class CustomPhotoDialog extends BaseDialog implements CustomImageView.PressAction, View.OnClickListener {
+/**
+ * 显示图片的Dialog
+ *
+ * @author eli chang
+ */
+public class CustomPhotoDialog extends BaseDialog implements OnPressActionListener, View.OnClickListener {
 
     private CustomImageView eImageView;
     private ImageButton eButtonMore;
     private Bitmap bitmap;
 
-    public CustomPhotoDialog(Context context, File file, LoadListView.RefreshHandler refreshHandler) {
-        super(context, file, refreshHandler, R.style.style_dialog);
+    public CustomPhotoDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
+        super(context, activity, files, refreshHandler, R.style.style_image_dialog);
         initView();
     }
 
@@ -44,7 +53,7 @@ public class CustomPhotoDialog extends BaseDialog implements CustomImageView.Pre
      */
     @Override
     public void setWindowAnimation() {
-        getWindow().setWindowAnimations(R.style.animation_dialog);
+        getWindow().setWindowAnimations(R.style.animation_image_dialog);
     }
 
     /**
@@ -52,7 +61,7 @@ public class CustomPhotoDialog extends BaseDialog implements CustomImageView.Pre
      */
     public void showPicture() {
         try {
-            bitmap = BitmapFactory.decodeFile(file.getPath());
+            bitmap = BitmapFactory.decodeFile(files[0].getPath());
             eImageView.setImageBitmap(bitmap);
         } catch (Exception e) {
         }
@@ -77,6 +86,7 @@ public class CustomPhotoDialog extends BaseDialog implements CustomImageView.Pre
 
     /**
      * 按钮点击事件
+     *
      * @param view
      */
     @Override

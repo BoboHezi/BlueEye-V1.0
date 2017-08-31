@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -23,6 +24,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 录屏
+ *
+ * @author eli chang
+ */
 public class ScreenRecorder extends Thread {
 
     private static final String TAG = "ScreenRecorder";
@@ -107,7 +113,7 @@ public class ScreenRecorder extends Thread {
     }
 
     public final void quit() {
-            eQuit.set(true);
+        eQuit.set(true);
     }
 
     @Override
@@ -184,7 +190,7 @@ public class ScreenRecorder extends Thread {
         isMixerStarted = true;
     }
 
-    private void prepareEncoder(){
+    private void prepareEncoder() {
 
         MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE, eWindowWidth, eWindowHeight);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);

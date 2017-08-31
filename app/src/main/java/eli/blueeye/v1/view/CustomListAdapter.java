@@ -10,12 +10,19 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import eli.blueeye.v1.R;
 
+/**
+ * 自定义ListView的适配器
+ *
+ * @author eli chang
+ */
 public class CustomListAdapter extends BaseAdapter {
 
     private static final String TAG = "ListAdapter";
@@ -64,6 +71,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     /**
      * 删除某条
+     *
      * @param index
      */
     public void removeItem(int index) {
@@ -74,7 +82,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ItemView itemView ;
+        ItemView itemView;
 
         if (convertView == null) {
             itemView = new ItemView();
@@ -93,7 +101,7 @@ public class CustomListAdapter extends BaseAdapter {
         itemView.itemTime.setText((String) eListData.get(position).get("time"));
         itemView.itemThumbnail.setImageBitmap((Bitmap) eListData.get(position).get("image"));
 
-        if (eSelectedItem.contains(position)) {
+        if (eSelectedItem != null && eSelectedItem.contains(position)) {
             itemView.typeColor.setFocus();
         } else {
             itemView.typeColor.setDismiss();
@@ -104,6 +112,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     /**
      * 设置被选中的记录
+     *
      * @param eSelectedItem
      */
     public void setSelectedItem(List<Integer> eSelectedItem) {

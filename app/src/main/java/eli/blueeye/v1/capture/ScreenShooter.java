@@ -17,6 +17,7 @@ import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +25,11 @@ import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 截屏
+ *
+ * @author eli chang
+ */
 public class ScreenShooter extends Thread {
 
     private static final String TAG = "ScreenShooter";
@@ -111,13 +117,12 @@ public class ScreenShooter extends Thread {
 
         int offset = rowPadding / pixStride;
         width = width - offset * 8;
-        height = (int) ((double)width / 1.795);
+        height = (int) ((double) width / 1.795);
 
         //横屏状态下对图像进行截取
         if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             int offsetHeight = bitmap.getHeight() / 2 - height / 2;
-            if (offsetHeight > 0 && width > 0 && height > 0)
-            {
+            if (offsetHeight > 0 && width > 0 && height > 0) {
                 bitmap = Bitmap.createBitmap(bitmap, 0, offsetHeight, width, height);
                 //保存
                 saveToFile(bitmap);

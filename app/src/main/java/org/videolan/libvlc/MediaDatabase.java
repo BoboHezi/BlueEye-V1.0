@@ -117,10 +117,10 @@ public class MediaDatabase {
             SQLiteDatabase db;
             try {
                 return super.getWritableDatabase();
-            } catch(SQLiteException e) {
+            } catch (SQLiteException e) {
                 try {
                     db = SQLiteDatabase.openOrCreateDatabase(VLCApplication.getAppContext().getDatabasePath(DB_NAME), null);
-                } catch(SQLiteException e2) {
+                } catch (SQLiteException e2) {
                     Log.w(TAG, "SQLite database could not be created! Media library cannot be saved.");
                     db = SQLiteDatabase.create(null);
                 }
@@ -218,6 +218,7 @@ public class MediaDatabase {
 
     /**
      * Get all playlists in the database
+     *
      * @return
      */
     public String[] getPlaylists() {
@@ -226,7 +227,7 @@ public class MediaDatabase {
 
         cursor = mDb.query(
                 PLAYLIST_TABLE_NAME,
-                new String[] { PLAYLIST_NAME },
+                new String[]{PLAYLIST_NAME},
                 null, null, null, null, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -240,6 +241,7 @@ public class MediaDatabase {
 
     /**
      * Add new playlist
+     *
      * @param name
      * @return id of the new playlist
      */
@@ -251,7 +253,7 @@ public class MediaDatabase {
 
     public void deletePlaylist(String name) {
         mDb.delete(PLAYLIST_TABLE_NAME, PLAYLIST_NAME + "=?",
-                new String[] { name });
+                new String[]{name});
     }
 
     public void addMediaToPlaylist(String playlistName, String mediaPath) {
@@ -264,11 +266,12 @@ public class MediaDatabase {
         mDb.delete(PLAYLIST_MEDIA_TABLE_NAME,
                 PLAYLIST_MEDIA_PLAYLISTNAME + "=? "
                         + PLAYLIST_MEDIA_MEDIAPATH + "=?",
-                new String[] { playlistName, mediaPath });
+                new String[]{playlistName, mediaPath});
     }
 
     /**
      * Add a new media to the database. The picture can only added by update.
+     *
      * @param media which you like to add to the database
      */
     public synchronized void addMedia(Media media) {
@@ -295,15 +298,16 @@ public class MediaDatabase {
 
     /**
      * Check if the item is already in the database
+     *
      * @param location of the item (primary key)
      * @return True if the item exists, false if it does not
      */
     public synchronized boolean mediaItemExists(String location) {
         try {
             Cursor cursor = mDb.query(MEDIA_TABLE_NAME,
-                    new String[] { MEDIA_LOCATION },
+                    new String[]{MEDIA_LOCATION},
                     MEDIA_LOCATION + "=?",
-                    new String[] { location },
+                    new String[]{location},
                     null, null, null);
             boolean exists = cursor.moveToFirst();
             cursor.close();
@@ -316,6 +320,7 @@ public class MediaDatabase {
 
     /**
      * Get all paths from the items in the database
+     *
      * @return list of File
      */
     @SuppressWarnings("unused")
@@ -326,7 +331,7 @@ public class MediaDatabase {
 
         cursor = mDb.query(
                 MEDIA_TABLE_NAME,
-                new String[] { MEDIA_LOCATION },
+                new String[]{MEDIA_LOCATION},
                 null, null, null, null, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -440,25 +445,25 @@ public class MediaDatabase {
 
         try {
             cursor = mDb.query(
-                MEDIA_TABLE_NAME,
-                new String[] {
-                        MEDIA_TIME, //0 long
-                        MEDIA_LENGTH, //1 long
-                        MEDIA_TYPE, //2 int
-                        MEDIA_TITLE, //3 string
-                        MEDIA_ARTIST, //4 string
-                        MEDIA_GENRE, //5 string
-                        MEDIA_ALBUM, //6 string
-                        MEDIA_WIDTH, //7 int
-                        MEDIA_HEIGHT, //8 int
-                        MEDIA_ARTWORKURL, //9 string
-                        MEDIA_AUDIOTRACK, //10 string
-                        MEDIA_SPUTRACK //11 string
-                },
-                MEDIA_LOCATION + "=?",
-                new String[] { location },
-                null, null, null);
-        } catch(IllegalArgumentException e) {
+                    MEDIA_TABLE_NAME,
+                    new String[]{
+                            MEDIA_TIME, //0 long
+                            MEDIA_LENGTH, //1 long
+                            MEDIA_TYPE, //2 int
+                            MEDIA_TITLE, //3 string
+                            MEDIA_ARTIST, //4 string
+                            MEDIA_GENRE, //5 string
+                            MEDIA_ALBUM, //6 string
+                            MEDIA_WIDTH, //7 int
+                            MEDIA_HEIGHT, //8 int
+                            MEDIA_ARTWORKURL, //9 string
+                            MEDIA_AUDIOTRACK, //10 string
+                            MEDIA_SPUTRACK //11 string
+                    },
+                    MEDIA_LOCATION + "=?",
+                    new String[]{location},
+                    null, null, null);
+        } catch (IllegalArgumentException e) {
             // java.lang.IllegalArgumentException: the bind value at index 1 is null
             return null;
         }
@@ -490,9 +495,9 @@ public class MediaDatabase {
 
         cursor = mDb.query(
                 MEDIA_TABLE_NAME,
-                new String[] { MEDIA_PICTURE },
+                new String[]{MEDIA_PICTURE},
                 MEDIA_LOCATION + "=?",
-                new String[] { location },
+                new String[]{location},
                 null, null, null);
         if (cursor.moveToFirst()) {
             blob = cursor.getBlob(0);
@@ -506,14 +511,14 @@ public class MediaDatabase {
     }
 
     public synchronized void removeMedia(String location) {
-        mDb.delete(MEDIA_TABLE_NAME, MEDIA_LOCATION + "=?", new String[] { location });
+        mDb.delete(MEDIA_TABLE_NAME, MEDIA_LOCATION + "=?", new String[]{location});
     }
 
     public void removeMedias(Set<String> locations) {
         mDb.beginTransaction();
         try {
             for (String location : locations)
-                mDb.delete(MEDIA_TABLE_NAME, MEDIA_LOCATION + "=?", new String[] { location });
+                mDb.delete(MEDIA_TABLE_NAME, MEDIA_LOCATION + "=?", new String[]{location});
             mDb.setTransactionSuccessful();
         } finally {
             mDb.endTransaction();
@@ -534,31 +539,30 @@ public class MediaDatabase {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     picture.compress(Bitmap.CompressFormat.JPEG, 90, out);
                     values.put(MEDIA_PICTURE, out.toByteArray());
-                }
-                else {
+                } else {
                     values.put(MEDIA_PICTURE, new byte[1]);
                 }
                 break;
             case MEDIA_TIME:
                 if (object != null)
-                    values.put(MEDIA_TIME, (Long)object);
+                    values.put(MEDIA_TIME, (Long) object);
                 break;
             case MEDIA_AUDIOTRACK:
                 if (object != null)
-                    values.put(MEDIA_AUDIOTRACK, (Integer)object);
+                    values.put(MEDIA_AUDIOTRACK, (Integer) object);
                 break;
             case MEDIA_SPUTRACK:
                 if (object != null)
-                    values.put(MEDIA_SPUTRACK, (Integer)object);
+                    values.put(MEDIA_SPUTRACK, (Integer) object);
                 break;
             case MEDIA_LENGTH:
                 if (object != null)
-                    values.put(MEDIA_LENGTH, (Long)object);
+                    values.put(MEDIA_LENGTH, (Long) object);
                 break;
             default:
                 return;
         }
-        mDb.update(MEDIA_TABLE_NAME, values, MEDIA_LOCATION + "=?", new String[] { location });
+        mDb.update(MEDIA_TABLE_NAME, values, MEDIA_LOCATION + "=?", new String[]{location});
     }
 
     /**
@@ -580,11 +584,10 @@ public class MediaDatabase {
      * @param path
      */
     public synchronized void removeDir(String path) {
-        mDb.delete(DIR_TABLE_NAME, DIR_ROW_PATH + "=?", new String[] { path });
+        mDb.delete(DIR_TABLE_NAME, DIR_ROW_PATH + "=?", new String[]{path});
     }
 
     /**
-     *
      * @return
      */
     public synchronized List<File> getMediaDirs() {
@@ -594,7 +597,7 @@ public class MediaDatabase {
 
         cursor = mDb.query(
                 DIR_TABLE_NAME,
-                new String[] { DIR_ROW_PATH },
+                new String[]{DIR_ROW_PATH},
                 null, null, null, null, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -610,9 +613,9 @@ public class MediaDatabase {
 
     private synchronized boolean mediaDirExists(String path) {
         Cursor cursor = mDb.query(DIR_TABLE_NAME,
-                new String[] { DIR_ROW_PATH },
+                new String[]{DIR_ROW_PATH},
                 DIR_ROW_PATH + "=?",
-                new String[] { path },
+                new String[]{path},
                 null, null, null);
         boolean exists = cursor.moveToFirst();
         cursor.close();
@@ -620,7 +623,6 @@ public class MediaDatabase {
     }
 
     /**
-     *
      * @param key
      */
     public synchronized void addSearchhistoryItem(String key) {
@@ -638,7 +640,7 @@ public class MediaDatabase {
         ArrayList<String> history = new ArrayList<String>();
 
         Cursor cursor = mDb.query(SEARCHHISTORY_TABLE_NAME,
-                new String[] { SEARCHHISTORY_KEY },
+                new String[]{SEARCHHISTORY_KEY},
                 null, null, null, null,
                 SEARCHHISTORY_DATE + " DESC",
                 Integer.toString(size));
