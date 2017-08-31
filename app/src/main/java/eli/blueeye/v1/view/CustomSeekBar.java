@@ -14,22 +14,21 @@ public class CustomSeekBar extends View {
 
     private static final String TAG = "CustomSeekBar";
 
-    private int backColor;
-    private int progressColor;
-    private float backHeight;
-    private float progressHeight;
-    private int textColor;
-    private float textHeight;
-    private int totalTime;
+    private int eBackColor;
+    private int eProgressColor;
+    private float eBackHeight;
+    private float eProgressHeight;
+    private int eTextColor;
+    private float eTextHeight;
+    private int eTotalTime;
 
     private boolean isTouching = false;
     private boolean isSeek = false;
-    private int seekTime;
-    private float touchX;
+    private int eSeekTime;
+    private float eTouchX;
 
     private Paint paint;
-    private int currentTime;
-
+    private int eCurrentTime;
 
     public CustomSeekBar(Context context) {
         this(context, null);
@@ -43,18 +42,18 @@ public class CustomSeekBar extends View {
         super(context, attributeSet, defStyleAttr);
 
         paint = new Paint();
-        TypedArray ta = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_video_seekBar);
-        backColor = ta.getColor(R.styleable.styleable_video_seekBar_seekBar_backColor, Color.GRAY);
-        backHeight = ta.getDimension(R.styleable.styleable_video_seekBar_seekBar_backHeight, 5);
+        TypedArray typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_video_seek_bar);
+        eBackColor = typedArray.getColor(R.styleable.styleable_video_seek_bar_seekBar_backColor, Color.GRAY);
+        eBackHeight = typedArray.getDimension(R.styleable.styleable_video_seek_bar_seekBar_backHeight, 5);
 
-        progressColor = ta.getColor(R.styleable.styleable_video_seekBar_seekBar_progressColor, Color.RED);
-        progressHeight = ta.getDimension(R.styleable.styleable_video_seekBar_seekBar_progressHeight, 5);
+        eProgressColor = typedArray.getColor(R.styleable.styleable_video_seek_bar_seekBar_progressColor, Color.RED);
+        eProgressHeight = typedArray.getDimension(R.styleable.styleable_video_seek_bar_seekBar_progressHeight, 5);
 
-        textColor = ta.getColor(R.styleable.styleable_video_seekBar_seekBar_textColor, Color.WHITE);
-        textHeight = ta.getDimension(R.styleable.styleable_video_seekBar_seekBar_textHeight, 30);
+        eTextColor = typedArray.getColor(R.styleable.styleable_video_seek_bar_seekBar_textColor, Color.WHITE);
+        eTextHeight = typedArray.getDimension(R.styleable.styleable_video_seek_bar_seekBar_textHeight, 30);
 
-        totalTime = ta.getInt(R.styleable.styleable_video_seekBar_seekBar_totalTime, 100);
-        ta.recycle();
+        eTotalTime = typedArray.getInt(R.styleable.styleable_video_seek_bar_seekBar_totalTime, 100);
+        typedArray.recycle();
     }
 
     @Override
@@ -64,52 +63,52 @@ public class CustomSeekBar extends View {
         //计算控件实际宽度
         int realWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         //计算分割点位置
-        float end_X = (getCurrentTime() * 1.0f/ totalTime) * realWidth;
+        float end_X = (getCurrentTime() * 1.0f/ eTotalTime) * realWidth;
         //设置时间数字
-        String text = formatTime(currentTime / 1000) + "/" + formatTime(totalTime / 1000);
+        String text = formatTime(eCurrentTime / 1000) + "/" + formatTime(eTotalTime / 1000);
 
         if (isTouching) {
             //处于触摸状态下，通过触摸点来设置分割点和数字
-            end_X = touchX;
-            seekTime = (int) (end_X / realWidth * totalTime);
-            text = formatTime(seekTime / 1000) + "/" + formatTime(totalTime / 1000);
+            end_X = eTouchX;
+            eSeekTime = (int) (end_X / realWidth * eTotalTime);
+            text = formatTime(eSeekTime / 1000) + "/" + formatTime(eTotalTime / 1000);
         }
 
         //文字
-        paint.setColor(textColor);
-        paint.setTextSize(textHeight);
+        paint.setColor(eTextColor);
+        paint.setTextSize(eTextHeight);
         int textWidth = (int) paint.measureText(text);
         int y = (int) (-(paint.descent() + paint.ascent()) / 2) + 30;
         canvas.drawText(text, realWidth - textWidth, y, paint);
 
-        //绘制未来的时间
-        if (currentTime < totalTime) {
-            paint.setColor(backColor);
-            paint.setStrokeWidth(backHeight);
+        //绘制将来的时间线
+        if (eCurrentTime < eTotalTime) {
+            paint.setColor(eBackColor);
+            paint.setStrokeWidth(eBackHeight);
             paint.setAntiAlias(true);
             canvas.drawLine(end_X , 10, realWidth, 10, paint);
         }
 
-        //绘制过去的时间
-        if (currentTime > 0) {
+        //绘制过去的时间线
+        if (eCurrentTime > 0) {
             paint.setAntiAlias(true);
-            paint.setColor(progressColor);
-            paint.setStrokeWidth(progressHeight);
+            paint.setColor(eProgressColor);
+            paint.setStrokeWidth(eProgressHeight);
             canvas.drawLine(0, 10, end_X , 10, paint);
             canvas.drawCircle(end_X, 10, 8, paint);
         }
     }
 
     public synchronized void setTime(int time) {
-        this.totalTime = time;
+        this.eTotalTime = time;
     }
 
     public synchronized int getCurrentTime() {
-        return currentTime;
+        return eCurrentTime;
     }
 
     public synchronized int getSeekTime() {
-        return this.seekTime;
+        return this.eSeekTime;
     }
 
     public synchronized boolean isSeek() {
@@ -125,16 +124,21 @@ public class CustomSeekBar extends View {
             throw new IllegalStateException("time will not less than 0.");
         }
 
-        if (time > totalTime) {
-            time = totalTime;
+        if (time > eTotalTime) {
+            time = eTotalTime;
         }
 
-        if (time <= totalTime) {
-            this.currentTime = time;
+        if (time <= eTotalTime) {
+            this.eCurrentTime = time;
             postInvalidate();
         }
     }
 
+    /**
+     * 格式化显示的时间
+     * @param time
+     * @return
+     */
     private String formatTime(int time) {
         String result;
         int min = time / 60;
@@ -160,7 +164,7 @@ public class CustomSeekBar extends View {
 
         //获得屏幕的横向定位
         if (isTouching) {
-            touchX = event.getX();
+            eTouchX = event.getX();
         }
         return super.onTouchEvent(event);
     }

@@ -3,8 +3,6 @@ package eli.blueeye.v1.entity;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -61,7 +59,7 @@ public class LoadListView implements CustomListView.OnLoadMoreListener, AdapterV
 
         this.eFileListView.setOnItemClickListener(this);
         this.eFileListView.setOnItemLongClickListener(this);
-        this.eFileListView.setLoadMoreListener(this);
+        this.eFileListView.seteLoadMoreListener(this);
 
         initList();
     }

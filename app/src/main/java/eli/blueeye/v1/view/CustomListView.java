@@ -12,13 +12,13 @@ public class CustomListView extends ListView implements AbsListView.OnScrollList
     public static final boolean LOAD_STATE_LOADING = true;
     public static final boolean LOAD_STATE_NON_LOADING = false;
 
-    private int lastVisiblePosition = 0;
+    private int eLastVisiblePosition = 0;
 
     //是否加载标记
     private boolean isLoading = false;
 
     //加载更多监听器
-    private OnLoadMoreListener loadMoreListener;
+    private OnLoadMoreListener eLoadMoreListener;
 
     public CustomListView(Context context) {
         this(context, null);
@@ -63,18 +63,18 @@ public class CustomListView extends ListView implements AbsListView.OnScrollList
         //当list滑动至底部、未处于加载之中
         //触发加载动作
         if ((this.getLastVisiblePosition() == this.getAdapter().getCount() - 1) && (scrollstate == SCROLL_STATE_IDLE)) {
-            if (lastVisiblePosition == y) {
-                this.loadMoreListener.loadMore();
-                lastVisiblePosition = 0;
+            if (eLastVisiblePosition == y) {
+                this.eLoadMoreListener.loadMore();
+                eLastVisiblePosition = 0;
             } else {
-                lastVisiblePosition = y;
+                eLastVisiblePosition = y;
             }
         }
     }
 
     //设置加载监听器
-    public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
-        this.loadMoreListener = loadMoreListener;
+    public void seteLoadMoreListener(OnLoadMoreListener eLoadMoreListener) {
+        this.eLoadMoreListener = eLoadMoreListener;
     }
 
     //设置当前是否加载

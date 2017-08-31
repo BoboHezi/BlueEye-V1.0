@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-
 import java.util.Random;
 
 public class RandomCirclePoint extends View {
@@ -18,10 +17,11 @@ public class RandomCirclePoint extends View {
     //选中状态在的颜色
     private final int SELECTED_COLOR = Color.parseColor("#047AD4");
     //画笔颜色
-    private int paintColor;
+    private int ePaintColor;
+    //画笔
     private Paint paint;
     //插值器
-    private static final TimeInterpolator interpolator = new DecelerateInterpolator();
+    private TimeInterpolator eInterpolator;
 
     public RandomCirclePoint(Context context) {
         this(context, null);
@@ -33,10 +33,11 @@ public class RandomCirclePoint extends View {
 
     public RandomCirclePoint(Context context, AttributeSet attributeSet, int defStyleAttr) {
         super(context, attributeSet, defStyleAttr);
-        paintColor = RANDOM_COLOR;
+        ePaintColor = RANDOM_COLOR;
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
+        eInterpolator = new DecelerateInterpolator();
     }
 
     @Override
@@ -53,11 +54,11 @@ public class RandomCirclePoint extends View {
         super.onDraw(canvas);
         int width = Math.min(getMeasuredHeight(), getMeasuredWidth());
 
-        paint.setColor(paintColor);
+        paint.setColor(ePaintColor);
         canvas.drawCircle(width / 2, width / 2, width / 2, paint);
 
         //绘制折线
-        if (paintColor == SELECTED_COLOR) {
+        if (ePaintColor == SELECTED_COLOR) {
             paint.setColor(Color.WHITE);
             paint.setStrokeWidth(2);
             paint.setStrokeCap(Paint.Cap.ROUND);
@@ -76,8 +77,8 @@ public class RandomCirclePoint extends View {
      * 设置被选中的状态
      */
     public void setFocus() {
-        paintColor = SELECTED_COLOR;
-        this.animate().scaleX(2.0f).scaleY(2.0f).setDuration(200).setInterpolator(interpolator);
+        ePaintColor = SELECTED_COLOR;
+        this.animate().scaleX(2.0f).scaleY(2.0f).setDuration(200).setInterpolator(eInterpolator);
         postInvalidate();
     }
 
@@ -85,8 +86,8 @@ public class RandomCirclePoint extends View {
      * 取消被选中状态
      */
     public void setDismiss() {
-        paintColor = RANDOM_COLOR;
-        this.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(interpolator);
+        ePaintColor = RANDOM_COLOR;
+        this.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(eInterpolator);
         postInvalidate();
     }
 
@@ -95,7 +96,7 @@ public class RandomCirclePoint extends View {
      * @return
      */
     public boolean isSelected() {
-        return paintColor == SELECTED_COLOR;
+        return ePaintColor == SELECTED_COLOR;
     }
 
     /**

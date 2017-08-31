@@ -20,29 +20,29 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
 
     private final String TAG = this.getClass().getName();
 
-    private ScaleGestureDetector scaleGestureDetector;
-    private GestureDetector gestureDetector;
-    private Matrix scaleMatrix;
-    private VelocityTracker velocityTracker;
-    private FlingRunnable flingRunnable;
-    private PressAction pressAction;
+    private ScaleGestureDetector eScaleGestureDetector;
+    private GestureDetector eGestureDetector;
+    private Matrix eScaleMatrix;
+    private VelocityTracker eVelocityTracker;
+    private FlingRunnable eFlingRunnable;
+    private PressAction ePressAction;
 
     private boolean isFirst = false;
     private boolean isAutoScale = false;
-    private float initScale;
-    private float maxScale;
-    private float midScale;
-    private float minScale;
-    private float maxOverScale;
-
-    private int lastPointCount;
     private boolean isCanDrag = false;
-    private float lastX;
-    private float lastY;
-
-    private int touchSlop;
     private boolean isCheckLeftAndRight;
     private boolean isCheckTopAndBottom;
+
+    private float eInitScale;
+    private float eMaxScale;
+    private float eMidScale;
+    private float eMinScale;
+    private float eMaxOverScale;
+
+    private int eLastPointCount;
+    private float eLastX;
+    private float eLastY;
+    private int eTouchSlop;
 
     public CustomImageView(Context context) {
         this(context, null);
@@ -55,11 +55,11 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
     public CustomImageView(final Context context, AttributeSet attributeSet, int defStyleAttr) {
         super(context, attributeSet, defStyleAttr);
         setScaleType(ScaleType.MATRIX);
-        scaleGestureDetector = new ScaleGestureDetector(context, this);
-        scaleMatrix = new Matrix();
+        eScaleGestureDetector = new ScaleGestureDetector(context, this);
+        eScaleMatrix = new Matrix();
         this.setOnTouchListener(this);
-        touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+        eTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        eGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 if (isAutoScale)
@@ -67,10 +67,10 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                 float x = e.getX();
                 float y = e.getY();
 
-                if (getScale() < midScale) {
-                    post(new AutoScaleRunnable(midScale, x, y));
+                if (getScale() < eMidScale) {
+                    post(new AutoScaleRunnable(eMidScale, x, y));
                 } else {
-                    post(new AutoScaleRunnable(initScale, x, y));
+                    post(new AutoScaleRunnable(eInitScale, x, y));
                 }
                 return true;
             }
@@ -82,15 +82,15 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
              */
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (pressAction != null)
-                    pressAction.singleTap();
+                if (ePressAction != null)
+                    ePressAction.singleTap();
                 return true;
             }
 
             @Override
             public void onLongPress(MotionEvent e) {
-                if (pressAction != null)
-                    pressAction.longPress();
+                if (ePressAction != null)
+                    ePressAction.longPress();
                 super.onLongPress(e);
             }
         });
@@ -101,7 +101,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
      * @param pressAction
      */
     public void setOnPressAction(PressAction pressAction) {
-        this.pressAction = pressAction;
+        this.ePressAction = pressAction;
     }
 
     @Override
@@ -144,15 +144,15 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
             int dx = width / 2 - dw / 2;
             int dy = height / 2 - dh / 2;
 
-            scaleMatrix.postTranslate(dx, dy);
-            scaleMatrix.postScale(scale, scale, width / 2, height / 2);
-            setImageMatrix(scaleMatrix);
+            eScaleMatrix.postTranslate(dx, dy);
+            eScaleMatrix.postScale(scale, scale, width / 2, height / 2);
+            setImageMatrix(eScaleMatrix);
 
-            initScale = scale;
-            maxScale = scale * 4;
-            midScale = scale * 2;
-            minScale = initScale / 4;
-            maxOverScale = maxScale * 2;
+            eInitScale = scale;
+            eMaxScale = scale * 4;
+            eMidScale = scale * 2;
+            eMinScale = eInitScale / 4;
+            eMaxOverScale = eMaxScale * 2;
         }
     }
 
@@ -162,7 +162,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
      */
     private final float getScale() {
         float[] values = new float[9];
-        scaleMatrix.getValues(values);
+        eScaleMatrix.getValues(values);
         return values[Matrix.MSCALE_X];
     }
 
@@ -171,7 +171,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
      * @return
      */
     private RectF getMatrixRectF() {
-        Matrix matrix = scaleMatrix;
+        Matrix matrix = eScaleMatrix;
         RectF rect = new RectF();
         Drawable drawable = getDrawable();
         if (drawable != null) {
@@ -214,9 +214,12 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
         if (rect.height() < height) {
             deltaY = height * 0.5f - rect.bottom + rect.height() * 0.5f;
         }
-        scaleMatrix.postTranslate(deltaX, deltaY);
+        eScaleMatrix.postTranslate(deltaX, deltaY);
     }
 
+    /**
+     * 平移时，检测图片的左右边界
+     */
     private void checkBorderWhenTranslate() {
         RectF rectF = getMatrixRectF();
         float deltaX = 0.0f;
@@ -241,9 +244,14 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                 deltaY = height - rectF.bottom;
             }
         }
-        scaleMatrix.postTranslate(deltaX, deltaY);
+        eScaleMatrix.postTranslate(deltaX, deltaY);
     }
 
+    /**
+     * 缩放
+     * @param detector
+     * @return
+     */
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         float scaleFactor = detector.getScaleFactor();
@@ -252,16 +260,16 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
         if (getDrawable() == null)
             return true;
 
-        if ((scaleFactor > 1.0f && scaleFactor * scale < maxOverScale) || (scaleFactor < 1.0f && scaleFactor * scale > minScale)) {
-            if (scale * scaleFactor > maxOverScale + 0.01f) {
-                scaleFactor = maxOverScale / scale;
+        if ((scaleFactor > 1.0f && scaleFactor * scale < eMaxOverScale) || (scaleFactor < 1.0f && scaleFactor * scale > eMinScale)) {
+            if (scale * scaleFactor > eMaxOverScale + 0.01f) {
+                scaleFactor = eMaxOverScale / scale;
             }
-            if (scale * scaleFactor < minScale + 0.01f) {
-                scaleFactor = minScale / scale;
+            if (scale * scaleFactor < eMinScale + 0.01f) {
+                scaleFactor = eMinScale / scale;
             }
-            scaleMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
+            eScaleMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
             checkBorderAndCenterWhenScale();
-            setImageMatrix(scaleMatrix);
+            setImageMatrix(eScaleMatrix);
         }
         return true;
     }
@@ -278,9 +286,9 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        if (gestureDetector.onTouchEvent(motionEvent))
+        if (eGestureDetector.onTouchEvent(motionEvent))
             return true;
-        scaleGestureDetector.onTouchEvent(motionEvent);
+        eScaleGestureDetector.onTouchEvent(motionEvent);
 
         float x = 0.0f;
         float y = 0.0f;
@@ -294,23 +302,23 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
         x /= pointCount;
         y /= pointCount;
 
-        if (lastPointCount != pointCount) {
+        if (eLastPointCount != pointCount) {
             isCanDrag = false;
-            lastX = x;
-            lastY = y;
+            eLastX = x;
+            eLastY = y;
         }
-        lastPointCount = pointCount;
+        eLastPointCount = pointCount;
         RectF rectF = getMatrixRectF();
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                velocityTracker = VelocityTracker.obtain();
-                if (velocityTracker != null) {
-                    velocityTracker.addMovement(motionEvent);
+                eVelocityTracker = VelocityTracker.obtain();
+                if (eVelocityTracker != null) {
+                    eVelocityTracker.addMovement(motionEvent);
                 }
-                if (flingRunnable != null) {
-                    flingRunnable.cancelFling();
-                    flingRunnable = null;
+                if (eFlingRunnable != null) {
+                    eFlingRunnable.cancelFling();
+                    eFlingRunnable = null;
                 }
 
                 isCanDrag = false;
@@ -327,8 +335,8 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                     }
                 }
 
-                float dx = x - lastX;
-                float dy = y - lastY;
+                float dx = x - eLastX;
+                float dy = y - eLastY;
 
                 if (!isCanDrag) {
                     isCanDrag = isMoveAction(dx, dy);
@@ -337,8 +345,8 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                 if (isCanDrag) {
                     if (getDrawable() != null) {
 
-                        if (velocityTracker != null) {
-                            velocityTracker.addMovement(motionEvent);
+                        if (eVelocityTracker != null) {
+                            eVelocityTracker.addMovement(motionEvent);
                         }
 
                         isCheckLeftAndRight = true;
@@ -353,38 +361,38 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                             isCheckTopAndBottom = false;
                         }
                     }
-                    scaleMatrix.postTranslate(dx, dy);
+                    eScaleMatrix.postTranslate(dx, dy);
                     checkBorderWhenTranslate();
-                    setImageMatrix(scaleMatrix);
+                    setImageMatrix(eScaleMatrix);
                 }
-                lastX = x;
-                lastY = y;
+                eLastX = x;
+                eLastY = y;
                 break;
             case MotionEvent.ACTION_UP:
-                lastPointCount = 0;
-                if (getScale() < initScale) {
-                    post(new AutoScaleRunnable(initScale, getWidth() / 2, getHeight() / 2));
+                eLastPointCount = 0;
+                if (getScale() < eInitScale) {
+                    post(new AutoScaleRunnable(eInitScale, getWidth() / 2, getHeight() / 2));
                 }
-                if (getScale() > maxScale) {
-                    post(new AutoScaleRunnable(maxScale, getWidth() / 2, getHeight() / 2));
+                if (getScale() > eMaxScale) {
+                    post(new AutoScaleRunnable(eMaxScale, getWidth() / 2, getHeight() / 2));
                 }
                 if (isCanDrag) {
-                    if (velocityTracker != null) {
-                        velocityTracker.addMovement(motionEvent);
-                        velocityTracker.computeCurrentVelocity(1000);
-                        final float vX = velocityTracker.getXVelocity();
-                        final float vY = velocityTracker.getYVelocity();
+                    if (eVelocityTracker != null) {
+                        eVelocityTracker.addMovement(motionEvent);
+                        eVelocityTracker.computeCurrentVelocity(1000);
+                        final float vX = eVelocityTracker.getXVelocity();
+                        final float vY = eVelocityTracker.getYVelocity();
 
-                        flingRunnable = new FlingRunnable(getContext());
-                        flingRunnable.fling(getWidth(), getHeight(), (int)-vX, (int)-vY);
-                        post(flingRunnable);
+                        eFlingRunnable = new FlingRunnable(getContext());
+                        eFlingRunnable.fling(getWidth(), getHeight(), (int)-vX, (int)-vY);
+                        post(eFlingRunnable);
                     }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
-                if (velocityTracker != null) {
-                    velocityTracker.recycle();
-                    velocityTracker = null;
+                if (eVelocityTracker != null) {
+                    eVelocityTracker.recycle();
+                    eVelocityTracker = null;
                 }
                 break;
         }
@@ -395,7 +403,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
      * 判断是否是移动的操作
      */
     private boolean isMoveAction(float dx, float dy) {
-        return Math.sqrt(dx * dx + dy * dy) > touchSlop;
+        return Math.sqrt(dx * dx + dy * dy) > eTouchSlop;
     }
 
     private class AutoScaleRunnable implements Runnable {
@@ -421,9 +429,9 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
         }
         @Override
         public void run() {
-            scaleMatrix.postScale(tempScale, tempScale, x, y);
+            eScaleMatrix.postScale(tempScale, tempScale, x, y);
             checkBorderAndCenterWhenScale();
-            setImageMatrix(scaleMatrix);
+            setImageMatrix(eScaleMatrix);
 
             float currentScale = getScale();
 
@@ -431,9 +439,9 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
                 postDelayed(this, 16);
             } else {
                 float scale = targetScale / currentScale;
-                scaleMatrix.postScale(scale, scale, x, y);
+                eScaleMatrix.postScale(scale, scale, x, y);
                 checkBorderAndCenterWhenScale();
-                setImageMatrix(scaleMatrix);
+                setImageMatrix(eScaleMatrix);
                 isAutoScale = false;
             }
         }
@@ -487,9 +495,9 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
             if (scroller.computeScrollOffset()) {
                 final int newX = scroller.getCurrX();
                 final int newY = scroller.getCurrY();
-                scaleMatrix.postTranslate(currentX - newX, currentY - newY);
+                eScaleMatrix.postTranslate(currentX - newX, currentY - newY);
                 checkBorderWhenTranslate();
-                setImageMatrix(scaleMatrix);
+                setImageMatrix(eScaleMatrix);
 
                 currentX = newX;
                 currentY = newY;
@@ -500,7 +508,7 @@ public class CustomImageView extends AppCompatImageView implements ScaleGestureD
     }
 
     public interface PressAction {
-        public void singleTap();
-        public void longPress();
+        void singleTap();
+        void longPress();
     }
 }

@@ -20,16 +20,16 @@ public class TakePhotoView extends View {
     //触摸标记
     private boolean isTouch = false;
     //延时间隔
-    private int longTouchTime;
+    private int eLongTouchTime;
     //长按的回调接口
-    private LongTouchListener longTouchListener;
+    private LongTouchListener eLongTouchListener;
 
     //定义画笔
     private Paint paint;
     //背景色
-    private int backColor;
+    private int eBackColor;
     //透明度
-    private int alpha = 200;
+    private int eAlpha = 200;
 
     //插值器
     private static final TimeInterpolator interpolator = new DecelerateInterpolator();
@@ -52,7 +52,7 @@ public class TakePhotoView extends View {
         super(context, attributeSet, defStyleAttr);
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(attributeSet, R.styleable.styleable_take_photo, defStyleAttr, 0);
-        backColor = ta.getColor(0, Color.WHITE);
+        eBackColor = ta.getColor(0, Color.WHITE);
         paint = new Paint();
     }
 
@@ -61,8 +61,8 @@ public class TakePhotoView extends View {
 
         int width = Math.min(getMeasuredHeight(), getMeasuredWidth());
         int paintWidth = width / 25;
-        paint.setColor(backColor);
-        paint.setAlpha(alpha);
+        paint.setColor(eBackColor);
+        paint.setAlpha(eAlpha);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(paintWidth);
@@ -78,7 +78,7 @@ public class TakePhotoView extends View {
      * 设置为可见状态
      */
     public void setVisible() {
-        this.alpha = 255;
+        this.eAlpha = 255;
         this.setClickable(true);
         this.clickAble = true;
         postInvalidate();
@@ -88,7 +88,7 @@ public class TakePhotoView extends View {
      * 设置为不可见状态
      */
     public void setInVisible() {
-        this.alpha = 0;
+        this.eAlpha = 0;
         this.setClickable(false);
         this.clickAble = false;
         postInvalidate();
@@ -96,7 +96,6 @@ public class TakePhotoView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         //当组件被设置为不可点击，则退出
         if (!clickAble)
             return true;
@@ -108,8 +107,8 @@ public class TakePhotoView extends View {
              * 背景颜色设为红色
              * 不透明度设为255
              */
-            backColor = Color.RED;
-            alpha = 255;
+            eBackColor = Color.RED;
+            eAlpha = 255;
             this.animate().scaleX(scale).scaleY(scale).setDuration(duration).setInterpolator(interpolator);
             postInvalidate();
 
@@ -123,8 +122,8 @@ public class TakePhotoView extends View {
              * 背景颜色设为红色
              * 不透明度设为150
              */
-            backColor = Color.WHITE;
-            alpha = 150;
+            eBackColor = Color.WHITE;
+            eAlpha = 150;
             this.animate().scaleX(1).scaleY(1).setDuration(duration).setInterpolator(interpolator);
             postInvalidate();
 
@@ -139,8 +138,8 @@ public class TakePhotoView extends View {
      * @param time      回调的时间间隔
      */
     public void setOnLongTouchListener(LongTouchListener listener, int time) {
-        this.longTouchListener = listener;
-        this.longTouchTime = time;
+        this.eLongTouchListener = listener;
+        this.eLongTouchTime = time;
     }
 
     /**
@@ -166,7 +165,7 @@ public class TakePhotoView extends View {
 
             while (isTouch) {
                 if (isFirst) {
-                    sleep(longTouchTime);
+                    sleep(eLongTouchTime);
                     isFirst = false;
                 }
                 else
@@ -183,8 +182,8 @@ public class TakePhotoView extends View {
          */
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (longTouchListener != null) {
-                longTouchListener.onTouchStop();
+            if (eLongTouchListener != null) {
+                eLongTouchListener.onTouchStop();
             }
         }
 
@@ -194,8 +193,8 @@ public class TakePhotoView extends View {
          */
         @Override
         protected void onProgressUpdate(Integer... values) {
-            if (longTouchListener != null)
-                longTouchListener.onLongTouch();
+            if (eLongTouchListener != null)
+                eLongTouchListener.onLongTouch();
         }
 
         /**
@@ -215,7 +214,6 @@ public class TakePhotoView extends View {
      * 长按监听接口
      */
     public interface LongTouchListener {
-
         /**
          * 处理长按的方法
          */

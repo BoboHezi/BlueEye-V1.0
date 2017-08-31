@@ -5,7 +5,7 @@
         <attr name="photo_backColor" format="color"/>
     </declare-styleable>
 
-    <declare-styleable name="styleable_video_seekBar">
+    <declare-styleable name="styleable_video_seek_bar">
         <attr name="seekBar_backColor" format="color"></attr>
         <attr name="seekBar_backHeight" format="dimension"></attr>
         <attr name="seekBar_progressColor" format="color"></attr>
