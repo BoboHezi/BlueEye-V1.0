@@ -22,7 +22,7 @@ import eli.blueeye.v1.entity.LoadListView;
  */
 public abstract class BaseDialog extends Dialog {
 
-    public final String TAG = this.getClass().getName();
+    public final String TAG = "BaseDialog";
 
     private Context context;
     private Activity activity;

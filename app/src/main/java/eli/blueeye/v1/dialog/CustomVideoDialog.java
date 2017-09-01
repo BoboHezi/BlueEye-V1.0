@@ -35,10 +35,12 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
 
     private CustomSeekBar eSeekBar;
     private UpdateThread eUpdateThread;
+    private LoadListView.RefreshHandler eRefreshHandler;
 
     public CustomVideoDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
         super(context, activity, files, refreshHandler, R.style.style_image_dialog);
         this.files = files;
+        this.eRefreshHandler = refreshHandler;
         initView();
         initVideo();
 
@@ -50,6 +52,9 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
              */
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (eRefreshHandler != null) {
+                    eRefreshHandler.sendEmptyMessage(LoadListView.HANDLER_STATE_DISMISS);
+                }
                 dismiss();
                 return super.onSingleTapConfirmed(e);
             }

@@ -8,12 +8,12 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.io.File;
-
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.entity.LoadListView;
 import eli.blueeye.v1.inter.OnPressActionListener;
 import eli.blueeye.v1.view.CustomImageView;
+
+import java.io.File;
 
 /**
  * 显示图片的Dialog
@@ -25,9 +25,11 @@ public class CustomPhotoDialog extends BaseDialog implements OnPressActionListen
     private CustomImageView eImageView;
     private ImageButton eButtonMore;
     private Bitmap bitmap;
+    private LoadListView.RefreshHandler eRefreshHandler;
 
     public CustomPhotoDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
         super(context, activity, files, refreshHandler, R.style.style_image_dialog);
+        this.eRefreshHandler = refreshHandler;
         initView();
     }
 
@@ -73,6 +75,9 @@ public class CustomPhotoDialog extends BaseDialog implements OnPressActionListen
      */
     @Override
     public void singleTap() {
+        if (eRefreshHandler != null) {
+            eRefreshHandler.sendEmptyMessage(LoadListView.HANDLER_STATE_DISMISS);
+        }
         dismiss();
     }
 

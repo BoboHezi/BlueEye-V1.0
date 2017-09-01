@@ -42,6 +42,7 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
     public static final int HANDLER_STATE_LOAD_ALL = 2;
     public static final int HANDLER_STATE_DELETE = 3;
     public static final int HANDLER_STATE_DELETE_MULTI = 4;
+    public static final int HANDLER_STATE_DISMISS = 5;
 
     private Context context;
     private Activity activity;
@@ -213,6 +214,14 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
     }
 
     /**
+     * 当前是否有文件被选择
+     * @return
+     */
+    public boolean isSelectedState() {
+        return eSelectedFile != null;
+    }
+
+    /**
      * 取消所有的标记
      */
     public void cancelAllSelectItem() {
@@ -299,7 +308,6 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
             eFiles.remove(index);
             //取消所有选中文件
             cancelAllSelectItem();
-            eSelectedFile = null;
         }
     }
 
@@ -328,7 +336,6 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
      * 更新视图的Handler
      */
     public class RefreshHandler extends Handler {
-
         @Override
         public void handleMessage(Message msg) {
             //刷新ListView
@@ -351,6 +358,7 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
                 //取消所有被选中的文件
                 cancelAllSelectItem();
             }
+            eSelectedFile = null;
         }
     }
 

@@ -447,6 +447,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 eSensorListener.disableLAND();
             }
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //当处于显示文件的状态下，不转为横屏
+            if (eLoadListView != null && eLoadListView.isSelectedState()) {
+                return;
+            }
             //设置全屏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             //设置横屏
