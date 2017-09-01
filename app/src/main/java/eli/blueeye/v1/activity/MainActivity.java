@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.entity.LoadListView;
@@ -80,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton eShareButton;
     //删除按钮
     private ImageButton eDeleteButton;
+    //网速信息
+    private TextView eRateText;
+    //信号强度
+    private TextView eRSSIText;
 
     //播放状态
     private boolean isPlayer = true;
@@ -190,6 +195,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //删除按钮
         eDeleteButton = (ImageButton) findViewById(R.id.main_button_delete);
         eDeleteButton.setOnClickListener(this);
+
+        //网速信息
+        eRateText = (TextView) findViewById(R.id.main_text_rate);
+        //信号强度
+        eRSSIText = (TextView) findViewById(R.id.main_text_rssi);
     }
 
     /**
@@ -528,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //设置中间按钮位置
         RelativeLayout centerArea = (RelativeLayout) findViewById(R.id.main_center_button_area);
         LinearLayout.LayoutParams centerAreaLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip60);
-        centerAreaLP.setMargins(0, height / 2 - dip60 / 2 - dip30, 0, 0);
+        centerAreaLP.setMargins(0, height / 2 - dip60 / 2, 0, 0);
         centerArea.setLayoutParams(centerAreaLP);
 
         //设置播放按钮位置
@@ -670,7 +680,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (msg.what == HANDLER_INFO) {
                 float rate = msg.getData().getFloat("RATE");
                 int rssi = msg.getData().getInt("RSSI");
-
+                eRateText.setText("Rate: " + rate);
+                eRSSIText.setText("RSSI: " + rssi);
                 Log.i(TAG, "Speed: " + rate + "\tRSSI: " + rssi);
             }
         }
