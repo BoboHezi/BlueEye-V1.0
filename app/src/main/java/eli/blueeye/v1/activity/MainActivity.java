@@ -4,6 +4,9 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.net.TrafficStats;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import eli.blueeye.v1.entity.LoadListView;
 import eli.blueeye.v1.entity.ShareEntity;
 import eli.blueeye.v1.inter.LongTouchListener;
 import eli.blueeye.v1.server.GravitySensorListener;
+import eli.blueeye.v1.server.ReadInfoThread;
 import eli.blueeye.v1.util.Util;
 import eli.blueeye.v1.view.TakePhotoView;
 import eli.blueeye.v1.entity.VlcPlayer;
@@ -49,8 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //两种文件类型
     public static final int CAPTURE_PHOTO = 1;
     public static final int CAPTURE_VIDEO = 2;
+    public static final int HANDLER_INFO = 3;
     //路径
-    private static final String eUrl = "rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov";
+    private static final String eUrl = "http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4";
     //上下文
     private Context context;
     //按键管理
@@ -85,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //截屏结果的回调方法
     private SnapHandler eSnapHandler;
+    //信息更新的Handler
+    private RefreshInfoHandler eRefreshInfoHandler;
     //隐藏按钮区域的Handler
     private Handler eHiddenHandler;
     //隐藏按钮区的线程
@@ -93,8 +100,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GravitySensorListener eSensorListener;
     //文件管理实现类
     private LoadListView eLoadListView;
-    //分享实现类
-    private ShareEntity eShareEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,6 +215,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             eSnapHandler = new SnapHandler();
         if (eHiddenHandler == null)
             eHiddenHandler = new Handler();
+        if (eRefreshInfoHandler == null)
+            eRefreshInfoHandler = new RefreshInfoHandler();
+
+        new ReadInfoThread(this, eRefreshInfoHandler).start();
         addHiddenThread();
     }
 
@@ -509,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         final int dip30 = Util.dip2px(context, 30);
         final int dip60 = Util.dip2px(context, 60);
-        final int dip20 = Util.dip2px(context, 20);
+        final int dip22 = Util.dip2px(context, 22);
         final int offset = Util.dip2px(context, 5);
 
         //设置功能区域宽高
@@ -519,7 +528,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //设置中间按钮位置
         RelativeLayout centerArea = (RelativeLayout) findViewById(R.id.main_center_button_area);
         LinearLayout.LayoutParams centerAreaLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip60);
-        centerAreaLP.setMargins(0, height / 2 - dip60 / 2, 0, 0);
+        centerAreaLP.setMargins(0, height / 2 - dip60 / 2 - dip30, 0, 0);
         centerArea.setLayoutParams(centerAreaLP);
 
         //设置播放按钮位置
@@ -545,8 +554,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //设置工具条位置
         LinearLayout toolBar = (LinearLayout) findViewById(R.id.main_tool_bar_area);
-        LinearLayout.LayoutParams toolBarLP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dip20);
-        toolBarLP.setMargins(0, height / 2 - dip60 / 2 - dip20 - offset, 0, 0);
+        LinearLayout.LayoutParams toolBarLP = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dip22);
+        toolBarLP.setMargins(0, height / 2 - dip60 / 2 - dip22 - offset, 0, 0);
         toolBar.setLayoutParams(toolBarLP);
 
         if (isShowSetup) {
@@ -620,7 +629,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 隐藏按钮区的线程
      */
     class HiddenRunnable implements Runnable {
-
         @Override
         public void run() {
             if (eButtonArea.getVisibility() == View.VISIBLE) {
@@ -636,7 +644,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 用于获取异步截图的Handler
      */
     public class SnapHandler extends Handler {
-
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -650,6 +657,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //更新ListView最新数据
             if (eLoadListView != null && filePath != null) {
                 eLoadListView.addFile(filePath);
+            }
+        }
+    }
+
+    /**
+     * 更新显示信息的Handler
+     */
+    public class RefreshInfoHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == HANDLER_INFO) {
+                float rate = msg.getData().getFloat("RATE");
+                int rssi = msg.getData().getInt("RSSI");
+
+                Log.i(TAG, "Speed: " + rate + "\tRSSI: " + rssi);
             }
         }
     }
