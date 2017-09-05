@@ -35,9 +35,6 @@ public class ReadInfoThread extends Thread {
         WifiManager wifiService = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         while (true) {
             try {
-                //暂停1秒
-                Thread.sleep(1000);
-
                 //当前数据总量和时间戳
                 long nowTotalRXBytes = getNowRXBytes();
                 long nowTimeStamp = System.currentTimeMillis();
@@ -48,9 +45,10 @@ public class ReadInfoThread extends Thread {
 
                 //获取信号强度
                 int rssi = wifiService.getConnectionInfo().getRssi();
-                Log.i(TAG, "Speed: " + rate + "\tRSSI: " + rssi);
                 //发送信息
                 sendInfo(rate, rssi);
+                //暂停2秒
+                Thread.sleep(2000);
             } catch (Exception e) {
             }
         }

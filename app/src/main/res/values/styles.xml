@@ -16,8 +16,8 @@
 
     <!--图片/视频，播放Dialog动画-->
     <style name="animation_image_dialog">
-        <item name="android:windowEnterAnimation">@anim/anim_dialog_popup_enter</item>
-        <item name="android:windowExitAnimation">@anim/anim_dialog_popup_exit</item>
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_image_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_image_exit</item>
     </style>
 
     <!--更多操作Dialog动画-->
@@ -61,5 +61,20 @@
     <style name="animation_share_dialog">
         <item name="android:windowEnterAnimation">@anim/share_platform_enter</item>
         <item name="android:windowExitAnimation">@anim/share_platform_exit</item>
+    </style>
+
+    <!--控制界面动画-->
+    <style name="animation_control_dialog">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_control_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_control_exit</item>
+    </style>
+    <!--控制界面样式-->
+    <style name="style_dialog_control">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:background">#44ffffff</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 </resources>

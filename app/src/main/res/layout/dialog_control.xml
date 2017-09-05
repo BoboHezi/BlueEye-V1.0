@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:background="#00000000"
+            android:text="分辨率"/>
+        <!--分辨率选择-->
+        <eli.blueeye.v1.view.ItemSelectView
+            android:id="@+id/control_resolution"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="20dp"
+            android:background="#00000000"
+            app:select_circleColor="#095954"
+            app:select_lineColor="#09938c"
+            app:select_textColor="#767676"
+            app:select_circleRadius="15"
+            app:select_lineHeight="4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="#00000000"
+            android:text="灯光"/>
+        <!--LED开关按钮-->
+        <eli.blueeye.v1.view.LightSwitchView
+            android:id="@+id/control_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="#00000000"
+            app:switch_borderWidth="0"
+            app:switch_circleRadius="50"
+            app:switch_closeColor="#ffffff"
+            app:switch_openColor="#40a8cc" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <!--移动控制面板-->
+        <eli.blueeye.v1.view.MoveControlView
+            android:id="@+id/control_view"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:background="#00000000"
+            app:control_borderlineColor="#01514d"
+            app:control_pointColor="#40a8cc" />
+    </RelativeLayout>
+</LinearLayout>

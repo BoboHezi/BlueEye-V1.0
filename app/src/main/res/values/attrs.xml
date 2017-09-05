@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!--截图按钮-->
     <declare-styleable name="styleable_take_photo">
         <attr name="photo_backColor" format="color" />
     </declare-styleable>
-
+    <!--进度条-->
     <declare-styleable name="styleable_video_seek_bar">
         <attr name="seekBar_backColor" format="color"></attr>
         <attr name="seekBar_backHeight" format="dimension"></attr>
@@ -14,5 +14,42 @@
         <attr name="seekBar_textHeight" format="dimension"></attr>
         <attr name="seekBar_totalTime" format="integer"></attr>
     </declare-styleable>
-
+    <!--移动控制-->
+    <declare-styleable name="styleable_move_control">
+        <attr name="control_borderlineColor" format="color" />
+        <attr name="control_pointColor" format="color" />
+        <attr name="control_pointRadius" format="float" />
+        <attr name="control_textColor" format="color" />
+        <attr name="control_strokeWidth" format="integer" />
+    </declare-styleable>
+    <!--分辨率选择-->
+    <declare-styleable name="styleable_item_select">
+        <attr name="select_lineColor" format="color" />
+        <attr name="select_circleColor" format="color" />
+        <attr name="select_textColor" format="color" />
+        <attr name="select_lineHeight" format="integer" />
+        <attr name="select_circleRadius" format="integer" />
+    </declare-styleable>
+    <!--载入视图-->
+    <declare-styleable name="styleable_progress_loading">
+        <attr name="loading_circleColor" format="color" />
+        <attr name="loading_circleRadius" format="float" />
+    </declare-styleable>
+    <!--开关-->
+    <declare-styleable name="styleable_light_switch">
+        <attr name="switch_borderWidth" format="float" />
+        <attr name="switch_borderColor" format="color" />
+        <attr name="switch_closeColor" format="color" />
+        <attr name="switch_openColor" format="color" />
+        <attr name="switch_circleRadius" format="float" />
+    </declare-styleable>
+    <!--网速-->
+    <declare-styleable name="styleable_view_rate">
+        <attr name="rate_paintColor" format="color" />
+    </declare-styleable>
+    <!--信号强度-->
+    <declare-styleable name="styleable_view_rssi">
+        <attr name="rssi_lineColor" format="color" />
+        <attr name="rssi_textColor" format="color" />
+    </declare-styleable>
 </resources>

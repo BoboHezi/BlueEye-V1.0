@@ -20,16 +20,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--主页面-->
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!--微信分享回调-->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true" />
@@ -54,16 +56,18 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
+                <data android:scheme="tencent1106253699" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="tencent1106253699" />
             </intent-filter>
         </activity>
 
+        <!--腾讯QQ APPID-->
         <meta-data
             android:name="TA_APPKEY"
             android:value="Aqc1106253699" />
+        <!---腾讯QQ 发布渠道-->
         <meta-data
             android:name="InstallChannel"
             android:value="play" />

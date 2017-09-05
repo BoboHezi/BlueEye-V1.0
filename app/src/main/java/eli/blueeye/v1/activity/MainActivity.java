@@ -4,9 +4,6 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.net.TrafficStats;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -22,15 +19,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import eli.blueeye.v1.R;
+import eli.blueeye.v1.dialog.ControlDialog;
 import eli.blueeye.v1.entity.LoadListView;
-import eli.blueeye.v1.entity.ShareEntity;
 import eli.blueeye.v1.inter.LongTouchListener;
 import eli.blueeye.v1.server.GravitySensorListener;
 import eli.blueeye.v1.server.ReadInfoThread;
 import eli.blueeye.v1.util.Util;
+import eli.blueeye.v1.view.NetWorkSpeedView;
+import eli.blueeye.v1.view.RSSIView;
 import eli.blueeye.v1.view.TakePhotoView;
 import eli.blueeye.v1.entity.VlcPlayer;
 
@@ -51,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
 
     private static final String TAG = "MainActivity";
-    //两种文件类型
+    //两种截取文件类型
     public static final int CAPTURE_PHOTO = 1;
     public static final int CAPTURE_VIDEO = 2;
     public static final int HANDLER_INFO = 3;
@@ -82,16 +80,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //删除按钮
     private ImageButton eDeleteButton;
     //网速信息
-    private TextView eRateText;
+    private NetWorkSpeedView eNetWorkSpeedView;
     //信号强度
-    private TextView eRSSIText;
+    private RSSIView eRssiView;
 
     //播放状态
     private boolean isPlayer = true;
     //截录屏按钮显示状态
     private boolean isShowCamera = false;
-    //控制区域显示状态
-    private boolean isShowSetup = false;
+    //设置按钮的旋转角度
+    private int rotateDegree = 90;
 
     //截屏结果的回调方法
     private SnapHandler eSnapHandler;
@@ -105,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GravitySensorListener eSensorListener;
     //文件管理实现类
     private LoadListView eLoadListView;
+    //控制面板
+    private ControlDialog eControlDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eDeleteButton.setOnClickListener(this);
 
         //网速信息
-        eRateText = (TextView) findViewById(R.id.main_text_rate);
+        eNetWorkSpeedView = (NetWorkSpeedView) findViewById(R.id.main_view_rate);
         //信号强度
-        eRSSIText = (TextView) findViewById(R.id.main_text_rssi);
+        eRssiView = (RSSIView) findViewById(R.id.main_view_rssi);
     }
 
     /**
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
         eSurfaceView.setLayoutParams(layoutParams);
         //设置工具条布局
-        setToolBarPosition(width, height);
+        resetLayout(width, height);
     }
 
     /**
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             layoutParams = new FrameLayout.LayoutParams(screenWidth, screenHeight);
             eSurfaceView.setLayoutParams(layoutParams);
             //设置工具条布局
-            setToolBarPosition(screenWidth, screenHeight);
+            resetLayout(screenWidth, screenHeight);
         }
         //竖屏
         else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
             eSurfaceView.setLayoutParams(layoutParams);
             //设置工具条布局
-            setToolBarPosition(screenWidth, height);
+            resetLayout(screenWidth, height);
         }
     }
 
@@ -441,13 +441,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!Util.isLandscape(context)) {
             return;
         }
-
-        if (!isShowSetup) {
-            view.animate().rotation(90f).setDuration(100).start();
+        //旋转按钮
+        view.animate().rotation(rotateDegree).setDuration(100).start();
+        //显示控制面板
+        eControlDialog = new ControlDialog(this);
+        eControlDialog.show();
+        //切换角度
+        if (rotateDegree == 90) {
+            rotateDegree = 0;
         } else {
-            view.animate().rotation(0).setDuration(100).start();
+            rotateDegree = 90;
         }
-        isShowSetup = !isShowSetup;
     }
 
     /**
@@ -522,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param width  总体宽度
      * @param height 总体高度
      */
-    private void setToolBarPosition(int width, int height) {
+    private void resetLayout(int width, int height) {
         //判断屏幕方向
         final boolean isLand = Util.isLandscape(context);
 
@@ -568,11 +572,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolBarLP.setMargins(0, height / 2 - dip60 / 2 - dip22 - offset, 0, 0);
         toolBar.setLayoutParams(toolBarLP);
 
-        if (isShowSetup) {
-            //当设置按钮处于旋转90度的状态，将其动画复位
-            eSetUpButton.animate().rotation(0).setDuration(1).start();
-        }
-        isShowSetup = false;
+        //当设置按钮处于旋转90度的状态，将其动画复位
+        eSetUpButton.animate().rotation(0).setDuration(1).start();
+
         if (isLand) {
             //重置控制面板
         }
@@ -586,6 +588,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //取消文件列表中的所有标记
         if (isLand && eLoadListView != null) {
             eLoadListView.cancelAllSelectItem();
+        }
+
+        //隐藏控制面板
+        if (eControlDialog != null) {
+            eControlDialog.dismiss();
         }
     }
 
@@ -638,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 隐藏按钮区的线程
      */
-    class HiddenRunnable implements Runnable {
+    private class HiddenRunnable implements Runnable {
         @Override
         public void run() {
             if (eButtonArea.getVisibility() == View.VISIBLE) {
@@ -680,9 +687,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (msg.what == HANDLER_INFO) {
                 float rate = msg.getData().getFloat("RATE");
                 int rssi = msg.getData().getInt("RSSI");
-                eRateText.setText("Rate: " + rate);
-                eRSSIText.setText("RSSI: " + rssi);
-                Log.i(TAG, "Speed: " + rate + "\tRSSI: " + rssi);
+                if (eNetWorkSpeedView != null) {
+                    eNetWorkSpeedView.setSpeed(rate);
+                }
+                if (eRssiView != null) {
+                    eRssiView.setRssi(rssi);
+                }
             }
         }
     }

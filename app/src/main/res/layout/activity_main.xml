@@ -19,25 +19,41 @@
         <!--顶部信息区域-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="#22000000">
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1">
 
-            <!--网速信息-->
-            <TextView
-                android:id="@+id/main_text_rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <!--网速信息-->
+                <eli.blueeye.v1.view.NetWorkSpeedView
+                    android:id="@+id/main_view_rate"
+                    android:layout_width="85dp"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    app:rate_paintColor="#fff" />
+            </RelativeLayout>
 
-            <!--信号强度信息-->
-            <TextView
-                android:id="@+id/main_text_rssi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:layout_weight="1"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <!--信号强度信息-->
+                <eli.blueeye.v1.view.RSSIView
+                    android:id="@+id/main_view_rssi"
+                    android:layout_width="67dp"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    app:rssi_lineColor="#fff"
+                    app:rssi_textColor="#fff" />
+            </RelativeLayout>
         </LinearLayout>
 
         <!--功能按钮区域-->
