@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //截录屏按钮显示状态
     private boolean isShowCamera = false;
     //设置按钮的旋转角度
-    private int rotateDegree = 90;
+    private long rotateDegree = 90;
 
     //截屏结果的回调方法
     private SnapHandler eSnapHandler;
@@ -447,11 +447,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eControlDialog = new ControlDialog(this);
         eControlDialog.show();
         //切换角度
-        if (rotateDegree == 90) {
-            rotateDegree = 0;
-        } else {
-            rotateDegree = 90;
-        }
+        rotateDegree += 90;
     }
 
     /**
