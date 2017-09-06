@@ -2,8 +2,11 @@ package eli.blueeye.v1.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,8 +20,6 @@ public class MoveControlView extends View {
 
     private static final String TAG = "MoveControlView";
     private Context context;
-    //描边颜色
-    private int borderLineColor;
     //圆点颜色
     private int pointColor;
     //字体颜色
@@ -71,7 +72,6 @@ public class MoveControlView extends View {
         velocity = new Velocity(0, Velocity.Direction.front);
 
         TypedArray ta = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_move_control);
-        borderLineColor = ta.getColor(R.styleable.styleable_move_control_control_borderlineColor, 0xff000000);
         pointColor = ta.getColor(R.styleable.styleable_move_control_control_pointColor, 0xff000000);
         textColor = ta.getColor(R.styleable.styleable_move_control_control_textColor, 0xff000000);
         strokeWidth = ta.getFloat(R.styleable.styleable_move_control_control_strokeWidth, 3);
@@ -152,11 +152,33 @@ public class MoveControlView extends View {
         canvas.drawCircle(radiusX, radiusY, pointRadius, paint);
 
         //绘制边线
-        paint.setColor(borderLineColor);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(strokeWidth);
+        paint.setColor(0x5553AEBA);
         canvas.drawCircle(width / 2, height, height - strokeWidth, paint);
-        canvas.drawLine(strokeWidth, height - strokeWidth / 2, width - strokeWidth, height - strokeWidth / 2, paint);
+        paint.setColor(0x77085660);
+        canvas.drawCircle(width / 2, height, height - pointRadius * 2 - strokeWidth, paint);
+
+        //绘制圆点
+        paint.setColor(pointColor);
+        canvas.drawCircle(radiusX, radiusY, pointRadius, paint);
+
+        //绘制箭头
+        Bitmap arrowHead = BitmapFactory.decodeResource(context.getResources(), R.drawable.arrowhead);
+        Rect rectF = new Rect(0, 0, 80, 40);
+        canvas.translate(height - 40, 20);
+        canvas.drawBitmap(arrowHead, null, rectF, paint);
+        //复位
+        canvas.translate(40 - height, -20);
+        //绘制箭头
+        canvas.translate(pointRadius * 4 / 3, (float) (height * 0.65));
+        canvas.rotate(-60);
+        canvas.drawBitmap(arrowHead, null, rectF, paint);
+        //复位
+        canvas.rotate(60);
+        canvas.translate(-pointRadius * 4 / 3, (float) -(height * 0.65));
+        //绘制箭头
+        canvas.translate(height * 2 - pointRadius - 50, (float) (height * 0.44));
+        canvas.rotate(61);
+        canvas.drawBitmap(arrowHead, null, rectF, paint);
     }
 
     @Override
@@ -170,7 +192,7 @@ public class MoveControlView extends View {
         float distance = (float) Math.sqrt((touchX - defaultRadiusX) * (touchX - defaultRadiusX) + (touchY - defaultRadiusY) * (touchY - defaultRadiusY));
 
         //当距离大于大圆的半径时，重新计算坐标
-        if ((distance + pointRadius) > height) {
+        if ((distance + pointRadius * 3) > height) {
 
             //X，Y偏移
             float offsetX = height - touchX;
@@ -181,8 +203,8 @@ public class MoveControlView extends View {
             float sin = offsetY / distance;
 
             //触点与圆心的连线，和圆弧的交点的位置
-            float pointX = height - (height - (pointRadius + strokeWidth)) * cos;
-            float pointY = height - (height - (pointRadius + strokeWidth)) * sin;
+            float pointX = height - (height - (pointRadius * 3 + strokeWidth)) * cos;
+            float pointY = height - (height - (pointRadius * 3 + strokeWidth)) * sin;
 
             //定义圆点的位置
             radiusX = pointX;
@@ -238,14 +260,14 @@ public class MoveControlView extends View {
             angle = (float) ((Math.PI / 2 - Math.asin(cos)) / Math.PI * 180);
         }
         //计算对应的速度
-        int speed = (int) (offset / (height - pointRadius) * 15);
+        int speed = (int) (offset / (height - pointRadius * 3) * 15);
         Velocity.Direction direction = Velocity.Direction.front;
         //计算方向
-        if (angle > 0 && angle < 70) {
+        if (angle > 0 && angle < 60) {
             direction = Velocity.Direction.left;
-        } else if (angle >= 70 && angle < 110) {
+        } else if (angle >= 60 && angle < 120) {
             direction = Velocity.Direction.front;
-        } else if (angle >= 110 && angle <= 180) {
+        } else if (angle >= 120 && angle <= 180) {
             direction = Velocity.Direction.right;
         }
 

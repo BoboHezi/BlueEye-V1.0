@@ -16,7 +16,6 @@
     </declare-styleable>
     <!--移动控制-->
     <declare-styleable name="styleable_move_control">
-        <attr name="control_borderlineColor" format="color" />
         <attr name="control_pointColor" format="color" />
         <attr name="control_pointRadius" format="float" />
         <attr name="control_textColor" format="color" />

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int CAPTURE_VIDEO = 2;
     public static final int HANDLER_INFO = 3;
     //路径
-    private static final String eUrl = "http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4";
+    private static final String eUrl = "rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov";
     //上下文
     private Context context;
     //按键管理
@@ -448,6 +448,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eControlDialog.show();
         //切换角度
         rotateDegree += 90;
+        //隐藏按钮区
+        setAreaVisibility(false);
     }
 
     /**

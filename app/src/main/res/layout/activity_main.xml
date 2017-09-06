@@ -27,30 +27,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
-                <!--网速信息-->
-                <eli.blueeye.v1.view.NetWorkSpeedView
-                    android:id="@+id/main_view_rate"
-                    android:layout_width="85dp"
-                    android:layout_height="20dp"
-                    android:layout_centerHorizontal="true"
-                    app:rate_paintColor="#fff" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"></RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_weight="1">
+                <!--网速信息-->
+                <eli.blueeye.v1.view.NetWorkSpeedView
+                    android:id="@+id/main_view_rate"
+                    android:layout_width="85dp"
+                    android:layout_height="20dp"
+                    android:layout_toLeftOf="@+id/main_view_rssi"
+                    app:rate_paintColor="#fff" />
                 <!--信号强度信息-->
                 <eli.blueeye.v1.view.RSSIView
                     android:id="@+id/main_view_rssi"
                     android:layout_width="67dp"
                     android:layout_height="20dp"
-                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentRight="true"
                     app:rssi_lineColor="#fff"
                     app:rssi_textColor="#fff" />
             </RelativeLayout>
