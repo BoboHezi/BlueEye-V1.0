@@ -17,7 +17,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:background="#00000000"
-            android:text="分辨率"/>
+            android:text="@string/resolution_ratio"/>
         <!--分辨率选择-->
         <eli.blueeye.v1.view.ItemSelectView
             android:id="@+id/control_resolution"
@@ -44,7 +44,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:background="#00000000"
-            android:text="灯光"/>
+            android:text="@string/light"/>
         <!--LED开关按钮-->
         <eli.blueeye.v1.view.LightSwitchView
             android:id="@+id/control_switch"

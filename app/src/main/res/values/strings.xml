@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">BlueEye_V1.0</string>
-    <string name="delete_waring">确定从本地设备中删除它？</string>
+    <string name="delete_warning">确定从本地设备中删除它？</string>
     <string name="cancel">取消</string>
     <string name="delete">删除</string>
     <string name="share">分享</string>
@@ -15,4 +15,6 @@
     <string name="errcode_deny">发送被拒绝</string>
     <string name="errcode_unsupported">不支持错误</string>
     <string name="errcode_unknown">发送返回</string>
+    <string name="resolution_ratio">分辨率</string>
+    <string name="light">light</string>
 </resources>

@@ -165,6 +165,6 @@
             android:textAlignment="center"
             android:textSize="17dp"
             android:letterSpacing="0.5"
-            android:text="取消" />
+            android:text="@string/cancel" />
     </LinearLayout>
 </LinearLayout>
