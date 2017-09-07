@@ -61,6 +61,7 @@ public class TakePhotoView extends View {
         TypedArray ta = context.getTheme().obtainStyledAttributes(attributeSet, R.styleable.styleable_take_photo, defStyleAttr, 0);
         eBackColor = ta.getColor(0, Color.WHITE);
         paint = new Paint();
+        paint.setAntiAlias(true);
     }
 
     @Override
@@ -68,16 +69,16 @@ public class TakePhotoView extends View {
 
         int width = Math.min(getMeasuredHeight(), getMeasuredWidth());
         int paintWidth = width / 25;
+
+        //绘制外环
         paint.setColor(eBackColor);
         paint.setAlpha(eAlpha);
-        paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(paintWidth);
-        //绘制外环
         canvas.drawCircle(width / 2, width / 2, width / 2 - paintWidth * 2, paint);
 
-        paint.setStyle(Paint.Style.FILL);
         //绘制内圆
+        paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle(width / 2, width / 2, width / 2 - paintWidth * 3, paint);
     }
 
@@ -85,7 +86,7 @@ public class TakePhotoView extends View {
      * 设置为可见状态
      */
     public void setVisible() {
-        this.eAlpha = 255;
+        this.eAlpha = 150;
         this.setClickable(true);
         this.clickAble = true;
         postInvalidate();

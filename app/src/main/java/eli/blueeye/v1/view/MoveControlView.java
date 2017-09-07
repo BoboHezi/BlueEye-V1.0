@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import eli.blueeye.v1.R;
+import eli.blueeye.v1.data.Direction;
 import eli.blueeye.v1.data.Velocity;
 import eli.blueeye.v1.dialog.ControlDialog;
 import eli.blueeye.v1.inter.OnControlStateChangeListener;
@@ -69,7 +70,7 @@ public class MoveControlView extends View {
         this.context = context;
         paint = new Paint();
         paint.setAntiAlias(true);
-        velocity = new Velocity(0, Velocity.Direction.front);
+        velocity = new Velocity(0, Direction.front);
 
         TypedArray ta = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_move_control);
         pointColor = ta.getColor(R.styleable.styleable_move_control_control_pointColor, 0xff000000);
@@ -246,6 +247,14 @@ public class MoveControlView extends View {
     }
 
     /**
+     * 获取速度信息
+     * @return
+     */
+    public Velocity getVelocity() {
+        return this.velocity;
+    }
+
+    /**
      * 计算位移和角度
      */
     private void calculate() {
@@ -260,15 +269,15 @@ public class MoveControlView extends View {
             angle = (float) ((Math.PI / 2 - Math.asin(cos)) / Math.PI * 180);
         }
         //计算对应的速度
-        int speed = (int) (offset / (height - pointRadius * 3) * 15);
-        Velocity.Direction direction = Velocity.Direction.front;
+        int speed = (int) (offset / (height - pointRadius * 3) * 4);
+        Direction direction = Direction.front;
         //计算方向
         if (angle > 0 && angle < 60) {
-            direction = Velocity.Direction.left;
+            direction = Direction.left;
         } else if (angle >= 60 && angle < 120) {
-            direction = Velocity.Direction.front;
+            direction = Direction.front;
         } else if (angle >= 120 && angle <= 180) {
-            direction = Velocity.Direction.right;
+            direction = Direction.right;
         }
 
         //当速度或者方向发生变化时，调用接口
@@ -292,7 +301,7 @@ public class MoveControlView extends View {
                 if (offset <= OFFSET_PIX * 2 || this.isInterrupted()) {
                     //退出循环之前调用状态改变的接口
                     if (changeListener != null) {
-                        changeListener.onVelocityStateChanged(new Velocity(0, Velocity.Direction.front));
+                        changeListener.onVelocityStateChanged(new Velocity(0, Direction.front));
                     }
                     break;
                 }

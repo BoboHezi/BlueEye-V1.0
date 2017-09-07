@@ -16,5 +16,6 @@
     <string name="errcode_unsupported">不支持错误</string>
     <string name="errcode_unknown">发送返回</string>
     <string name="resolution_ratio">分辨率</string>
-    <string name="light">light</string>
+    <string name="light">灯光</string>
+    <string name="line_control">线控</string>
 </resources>

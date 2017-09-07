@@ -2,12 +2,6 @@ package eli.blueeye.v1.data;
 
 public class Velocity {
 
-    public enum Direction {
-        front,
-        left,
-        right
-    }
-
     private int speed;
     private Direction direction;
 

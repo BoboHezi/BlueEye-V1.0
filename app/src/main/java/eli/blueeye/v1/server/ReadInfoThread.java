@@ -48,7 +48,7 @@ public class ReadInfoThread extends Thread {
                 //发送信息
                 sendInfo(rate, rssi);
                 //暂停2秒
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (Exception e) {
             }
         }

@@ -159,7 +159,7 @@ public class NetWorkSpeedView extends View {
                 return;
             }
             //计算每次应该延时的时间，确保每次更新用事1.7秒
-            int delay = (int) (700 / Math.abs(nowSpeed - speed) * 10);
+            int delay = (int) (500 / Math.abs(nowSpeed - speed) * 10);
             //判断是增大还是减小
             int offset = (nowSpeed > speed) ? 1 : -1;
 

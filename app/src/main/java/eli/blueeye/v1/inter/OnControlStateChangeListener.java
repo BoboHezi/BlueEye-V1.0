@@ -12,4 +12,6 @@ public interface OnControlStateChangeListener {
     void onVelocityStateChanged(Velocity velocity);
 
     void onSwitchStateChanged(boolean isOpen);
+
+    void onLineControlChanged(int lineState);
 }
