@@ -66,6 +66,7 @@ public class SendCommandThread extends Thread {
 
     /**
      * 读取字节数据
+     *
      * @return
      */
     private byte[] readBytes() {

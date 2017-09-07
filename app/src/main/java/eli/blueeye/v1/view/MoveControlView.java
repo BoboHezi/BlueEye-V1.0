@@ -248,6 +248,7 @@ public class MoveControlView extends View {
 
     /**
      * 获取速度信息
+     *
      * @return
      */
     public Velocity getVelocity() {

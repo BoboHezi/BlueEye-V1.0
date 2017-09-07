@@ -19,7 +19,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:background="#00000000"
-            android:text="@string/resolution_ratio"/>
+            android:text="@string/resolution_ratio" />
         <!--分辨率选择-->
         <eli.blueeye.v1.view.ItemSelectView
             android:id="@+id/control_resolution"
@@ -53,14 +53,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:text="@string/line_control"/>
+                android:text="@string/line_control" />
 
             <eli.blueeye.v1.view.TernarySelectView
                 android:id="@+id/control_line_control"
                 android:layout_width="30dp"
                 android:layout_height="70dp"
                 android:layout_centerInParent="true"
-                android:background="#00000000"/>
+                android:background="#00000000" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:text="@string/light"/>
+                android:text="@string/light" />
 
             <!--LED开关按钮-->
             <eli.blueeye.v1.view.LightSwitchView

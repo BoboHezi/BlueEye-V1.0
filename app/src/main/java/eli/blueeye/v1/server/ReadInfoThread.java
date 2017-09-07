@@ -56,6 +56,7 @@ public class ReadInfoThread extends Thread {
 
     /**
      * 获取当前下行数据总量
+     *
      * @return
      */
     private long getNowRXBytes() {
@@ -66,6 +67,7 @@ public class ReadInfoThread extends Thread {
 
     /**
      * 发送信息数据
+     *
      * @param rate 网速
      * @param rssi WIFI信号强度
      */

@@ -10,6 +10,11 @@ import android.view.View;
 import eli.blueeye.v1.dialog.ControlDialog;
 import eli.blueeye.v1.inter.OnControlStateChangeListener;
 
+/**
+ * 三元选择视图 本项目中用于线控的选择操作
+ *
+ * @author eli chang
+ */
 public class TernarySelectView extends View {
 
     private static final String TAG = "TernarySelectView";
@@ -124,6 +129,7 @@ public class TernarySelectView extends View {
 
     /**
      * 获取当前指针状态
+     *
      * @return
      */
     public int getState() {

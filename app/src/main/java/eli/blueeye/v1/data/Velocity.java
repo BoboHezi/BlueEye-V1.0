@@ -1,5 +1,10 @@
 package eli.blueeye.v1.data;
 
+/**
+ * 速度（方向和大小）
+ *
+ * @author eli chang
+ */
 public class Velocity {
 
     private int speed;

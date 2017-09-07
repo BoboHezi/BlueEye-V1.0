@@ -24,6 +24,8 @@
  * LibVlcException: exceptions thrown by the native LibVLC interface
  * <p>
  * LibVlcException: exceptions thrown by the native LibVLC interface
+ * <p>
+ * LibVlcException: exceptions thrown by the native LibVLC interface
  */
 
 /**

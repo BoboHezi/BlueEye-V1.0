@@ -22,6 +22,11 @@ import eli.blueeye.v1.view.LightSwitchView;
 import eli.blueeye.v1.view.MoveControlView;
 import eli.blueeye.v1.view.TernarySelectView;
 
+/**
+ * 控制面板
+ *
+ * @author eli chang
+ */
 public class ControlDialog extends Dialog implements OnControlStateChangeListener {
 
     private static final String TAG = "ControlDialog";
@@ -137,6 +142,7 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
 
     /**
      * 读取状态数据
+     *
      * @return
      */
     private int getCommandData() {
@@ -162,6 +168,7 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
 
     /**
      * 计算为Int数据
+     *
      * @return
      */
     private int convertInteger(boolean isOpen, String resolutionRatio, int stepMotor, Velocity velocity) {

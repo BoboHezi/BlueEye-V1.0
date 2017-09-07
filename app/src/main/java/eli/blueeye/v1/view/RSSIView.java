@@ -10,6 +10,11 @@ import android.view.View;
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.util.Util;
 
+/**
+ * 显示WIFI信号强度的组件
+ *
+ * @author eli chang
+ */
 public class RSSIView extends View {
 
     private static final String TAG = "RSSIView";

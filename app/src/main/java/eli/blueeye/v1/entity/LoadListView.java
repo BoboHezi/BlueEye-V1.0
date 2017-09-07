@@ -215,6 +215,7 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
 
     /**
      * 当前是否有文件被选择
+     *
      * @return
      */
     public boolean isSelectedState() {
