@@ -719,7 +719,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.i(TAG, "handleMessage: ");
             //获取到截取的文件路径
             String filePath = msg.getData().getString("path");
             if (msg.what == CAPTURE_VIDEO) {
