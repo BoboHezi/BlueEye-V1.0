@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.dialog.ControlDialog;
@@ -53,8 +54,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int CAPTURE_PHOTO = 1;
     public static final int CAPTURE_VIDEO = 2;
     public static final int HANDLER_INFO = 3;
+    public static final int HANDLER_RECORD_TIME = 4;
+    //最长录制时长
+    private static final int LONGEST_RECORD_TIME = 60;
     //路径
-    private static final String eUrl = "http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4";
+    private static final String eUrl = "rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov";
     //上下文
     private Context context;
     //按键管理
@@ -83,11 +87,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NetWorkSpeedView eNetWorkSpeedView;
     //信号强度
     private RSSIView eRssiView;
+    //录制时间
+    private TextView eRecordTime;
 
     //播放状态
     private boolean isPlayer = true;
     //截录屏按钮显示状态
     private boolean isShowCamera = false;
+    //录屏时间溢出标志
+    private boolean isTimeOverFlow = false;
     //设置按钮的旋转角度
     private long rotateDegree = 90;
 
@@ -98,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //隐藏按钮区域的Handler
     private Handler eHiddenHandler;
     //隐藏按钮区的线程
-    private HiddenRunnable eHiddenRunnable;
+    private HiddenButtonThread eHiddenButtonThread;
     //重力传感器实现类
     private GravitySensorListener eSensorListener;
     //文件管理实现类
@@ -128,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
-        Log.i(TAG, "onResume: ");
         if (eVlcPlayer != null) {
             eVlcPlayer.play();
         }
@@ -139,11 +146,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onStop() {
-        Log.i(TAG, "onStop: ");
-        //应用失去焦点时，暂停播放
-        /*if (eVlcPlayer != null) {
-            eVlcPlayer.pause();
-        }*/
         super.onStop();
         //显示按钮区域
         setAreaVisibility(true);
@@ -200,6 +202,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eNetWorkSpeedView = (NetWorkSpeedView) findViewById(R.id.main_view_rate);
         //信号强度
         eRssiView = (RSSIView) findViewById(R.id.main_view_rssi);
+
+        //录制时间
+        eRecordTime = (TextView) findViewById(R.id.main_text_record_time);
     }
 
     /**
@@ -230,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         new ReadInfoThread(this, eRefreshInfoHandler).start();
         addHiddenThread();
+
+        new RecordStateRefreshThread().start();
     }
 
     /**
@@ -377,7 +384,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 开始截屏
      */
     private void startCapture() {
-        if (eVlcPlayer == null || !eVlcPlayer.isPlaying()) {
+        if (eVlcPlayer == null || !eVlcPlayer.isPlaying() || isTimeOverFlow) {
+            isTimeOverFlow = false;
             //当视频停止时，不进行截图
             return;
         }
@@ -392,6 +400,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void startRecord() {
         if (eVlcPlayer == null || !eVlcPlayer.isPlaying()) {
+            eTakePhotoView.cancelTouchState();
             //当视频停止时，不进行录像
             return;
         }
@@ -405,14 +414,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 结束录屏
      */
     private void stopRecord() {
-        if (eVlcPlayer == null || !eVlcPlayer.isPlaying()) {
+        if (eVlcPlayer == null) {
             //当视频停止时，不进行录像
             return;
         }
-        if (eVlcPlayer.isRecording()) {
-            //结束录屏
-            eVlcPlayer.stopRecord();
-        }
+        //结束录屏
+        eVlcPlayer.stopRecord();
     }
 
     /**
@@ -625,25 +632,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 启动隐藏按钮区的线程
      */
     private void addHiddenThread() {
-        if (eHiddenRunnable == null)
-            eHiddenRunnable = new HiddenRunnable();
-        eHiddenHandler.postDelayed(eHiddenRunnable, 5000);
+        if (eHiddenButtonThread == null)
+            eHiddenButtonThread = new HiddenButtonThread();
+        eHiddenHandler.postDelayed(eHiddenButtonThread, 5000);
     }
 
     /**
      * 取消隐藏按钮区的线程
      */
     private void removeHiddenThread() {
-        if (eHiddenRunnable == null)
+        if (eHiddenButtonThread == null)
             return;
-        eHiddenHandler.removeCallbacks(eHiddenRunnable);
-        eHiddenRunnable = null;
+        eHiddenHandler.removeCallbacks(eHiddenButtonThread);
+        eHiddenButtonThread = null;
     }
 
     /**
      * 隐藏按钮区的线程
      */
-    private class HiddenRunnable implements Runnable {
+    private class HiddenButtonThread extends Thread {
         @Override
         public void run() {
             if (eButtonArea.getVisibility() == View.VISIBLE) {
@@ -656,13 +663,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 录屏时间更新
+     */
+    private class RecordStateRefreshThread extends Thread {
+        @Override
+        public void run() {
+
+            long lastTime = System.currentTimeMillis();
+            int time;
+
+            while (true) {
+                if (eVlcPlayer != null) {
+                    if (eVlcPlayer.isRecording()) {
+                        time = (int) ((System.currentTimeMillis() - lastTime) / 1000);
+                        if (time <= 60) {
+                            postRecordTime(time);
+                            isTimeOverFlow = true;
+                        } else {
+                            eTakePhotoView.cancelTouchState();
+                        }
+                    } else {
+                        lastTime = System.currentTimeMillis();
+                        postRecordTime(-1);
+                        time = 0;
+                    }
+                }
+
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+
+        /**
+         * 发送更新数据
+         * @param time
+         */
+        private void postRecordTime(int time) {
+            if (eRefreshInfoHandler != null) {
+                Message msg = eRefreshInfoHandler.obtainMessage();
+                msg.what = HANDLER_RECORD_TIME;
+                Bundle bundle = new Bundle();
+                bundle.putInt("time", time);
+                msg.setData(bundle);
+                eRefreshInfoHandler.sendMessage(msg);
+            }
+        }
+    }
+
+    /**
      * 用于获取异步截图的Handler
      */
     public class SnapHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
+            Log.i(TAG, "handleMessage: ");
             //获取到截取的文件路径
             String filePath = msg.getData().getString("path");
             if (msg.what == CAPTURE_VIDEO) {
@@ -690,6 +747,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if (eRssiView != null) {
                     eRssiView.setRssi(rssi);
+                }
+            } else if (msg.what == HANDLER_RECORD_TIME) {
+                //获取录制时间
+                int time = msg.getData().getInt("time");
+                //更新文字
+                if (eRecordTime != null && eTakePhotoView != null) {
+                    if (time >= 0 && time <= LONGEST_RECORD_TIME) {
+                        String timeText = Util.formatTime(time);
+                        eRecordTime.setText(timeText);
+                    } else {
+                        eRecordTime.setText("");
+                    }
                 }
             }
         }

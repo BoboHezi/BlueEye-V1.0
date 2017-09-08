@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import eli.blueeye.v1.R;
+import eli.blueeye.v1.util.Util;
 
 /**
  * 自定义进度条
@@ -71,13 +72,13 @@ public class CustomSeekBar extends View {
         //计算分割点位置
         float end_X = (getCurrentTime() * 1.0f / eTotalTime) * realWidth;
         //设置时间数字
-        String text = formatTime(eCurrentTime / 1000) + "/" + formatTime(eTotalTime / 1000);
+        String text = Util.formatTime(eCurrentTime / 1000) + "/" + Util.formatTime(eTotalTime / 1000);
 
         if (isTouching) {
             //处于触摸状态下，通过触摸点来设置分割点和数字
             end_X = eTouchX;
             eSeekTime = (int) (end_X / realWidth * eTotalTime);
-            text = formatTime(eSeekTime / 1000) + "/" + formatTime(eTotalTime / 1000);
+            text = Util.formatTime(eSeekTime / 1000) + "/" + Util.formatTime(eTotalTime / 1000);
         }
 
         //文字
@@ -138,20 +139,6 @@ public class CustomSeekBar extends View {
             this.eCurrentTime = time;
             postInvalidate();
         }
-    }
-
-    /**
-     * 格式化显示的时间
-     *
-     * @param time
-     * @return
-     */
-    private String formatTime(int time) {
-        String result;
-        int min = time / 60;
-        int sen = time % 60;
-        result = String.format("%02d", min) + ":" + String.format("%02d", sen);
-        return result;
     }
 
     /**

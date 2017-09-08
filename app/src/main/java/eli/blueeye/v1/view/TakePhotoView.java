@@ -141,6 +141,24 @@ public class TakePhotoView extends View {
     }
 
     /**
+     * 取消触摸状态
+     */
+    public void cancelTouchState() {
+        /**
+         * 背景颜色设为红色
+         * 不透明度设为150
+         */
+        eBackColor = Color.WHITE;
+        eAlpha = 150;
+        this.animate().scaleX(1).scaleY(1).setDuration(duration).setInterpolator(interpolator);
+        postInvalidate();
+        isTouch = false;
+        if (eLongTouchListener != null) {
+            eLongTouchListener.onTouchStop();
+        }
+    }
+
+    /**
      * @param listener 监听器
      * @param time     回调的时间间隔
      */

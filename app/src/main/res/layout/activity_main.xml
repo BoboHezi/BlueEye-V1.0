@@ -20,7 +20,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1">
 
             <LinearLayout
@@ -31,23 +31,37 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"></LinearLayout>
+                android:layout_weight="1">
+
+                <!--显示录制时间-->
+                <TextView
+                    android:id="@+id/main_text_record_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#c20404"
+                    android:letterSpacing="0.1"
+                    android:textAlignment="center"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <!--网速信息-->
                 <eli.blueeye.v1.view.NetWorkSpeedView
                     android:id="@+id/main_view_rate"
-                    android:layout_width="64dp"
-                    android:layout_height="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"
+                    android:layout_weight="1"
                     app:rate_paintColor="#fff" />
+
                 <!--信号强度信息-->
                 <eli.blueeye.v1.view.RSSIView
                     android:id="@+id/main_view_rssi"
-                    android:layout_width="50dp"
-                    android:layout_height="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"
+                    android:layout_weight="1"
                     app:rssi_lineColor="#fff"
                     app:rssi_textColor="#fff" />
             </LinearLayout>

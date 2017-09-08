@@ -233,13 +233,7 @@ public class LightSwitchView extends View {
      * @return
      */
     public boolean isOpen() {
-        if (offset <= 5) {
-            return false;
-        } else if ((radius * 2 - offset) <= 5) {
-            return true;
-        } else {
-            return isOpen;
-        }
+        return isOpen;
     }
 
     /**

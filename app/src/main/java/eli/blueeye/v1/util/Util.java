@@ -221,4 +221,18 @@ public class Util {
             return FileType.OTHER;
         }
     }
+
+    /**
+     * 格式化显示的时间
+     *
+     * @param time
+     * @return
+     */
+    public static String formatTime(int time) {
+        String result;
+        int min = time / 60;
+        int sen = time % 60;
+        result = String.format("%02d", min) + ":" + String.format("%02d", sen);
+        return result;
+    }
 }
