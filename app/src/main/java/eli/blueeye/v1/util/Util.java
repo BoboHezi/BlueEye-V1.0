@@ -2,6 +2,7 @@ package eli.blueeye.v1.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -11,12 +12,14 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import eli.blueeye.v1.data.FileType;
+import eli.blueeye.v1.data.HistoryControlData;
 
 /**
  * 工具类
@@ -234,5 +237,55 @@ public class Util {
         int sen = time % 60;
         result = String.format("%02d", min) + ":" + String.format("%02d", sen);
         return result;
+    }
+
+    /**
+     * 获取历史控制命令
+     * @param context
+     * @return
+     */
+    public static HistoryControlData readHistoryControlData(Context context) {
+        HistoryControlData controlData = new HistoryControlData();
+        try {
+            SharedPreferences preferences = context.getSharedPreferences("HistoryControlData", 0);
+            if (preferences != null) {
+                boolean isFirst = preferences.getBoolean("isFirstLauncher", true);
+                boolean isLightOpen = preferences.getBoolean("isLightOpen", false);
+                int resolutionRatio = preferences.getInt("resolutionRatio", 0x02);
+                controlData.setFirstFlag(isFirst);
+                controlData.setLightSwitch(isLightOpen);
+                controlData.setResolutionRatio(resolutionRatio);
+            }
+        } catch (Exception e) {
+        } finally {
+            return controlData;
+        }
+    }
+
+    /**
+     * 存储配置信息
+     * @param controlData
+     */
+    public static void writeHistoryControlData(Context context, HistoryControlData controlData) {
+        try {
+            SharedPreferences preferences = context.getSharedPreferences("HistoryControlData", 0);
+            if (preferences != null) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isFirstLauncher", controlData.isFirstLauncher());
+                editor.putBoolean("isLightOpen", controlData.isLightOpen());
+                editor.putInt("resolutionRatio", controlData.getResolutionRatio());
+                editor.commit();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    /**
+     * 判断对象是否为空
+     * @param object
+     * @return
+     */
+    public static boolean isValue(Object object) {
+        return object != null;
     }
 }

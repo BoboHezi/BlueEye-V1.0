@@ -140,10 +140,14 @@ public class ItemSelectView extends View {
      * @param index
      */
     public void setIndex(int index) {
-        selectedIndex = index;
-        float pieceWidth = windowWidth / selectItems.size();
-        pointRadiusX = selectedIndex * pieceWidth + pieceWidth / 2;
-        postInvalidate();
+        if (index < selectItems.size()) {
+            selectedIndex = index;
+            float pieceWidth = windowWidth / selectItems.size();
+            pointRadiusX = selectedIndex * pieceWidth + pieceWidth / 2;
+            postInvalidate();
+        } else {
+            throw new IllegalStateException("Index is lager than the size!");
+        }
     }
 
     @Override

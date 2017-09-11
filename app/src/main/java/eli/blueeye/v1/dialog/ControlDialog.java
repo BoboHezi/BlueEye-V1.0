@@ -13,6 +13,7 @@ import java.util.List;
 
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.data.Direction;
+import eli.blueeye.v1.data.HistoryControlData;
 import eli.blueeye.v1.data.Velocity;
 import eli.blueeye.v1.inter.OnControlStateChangeListener;
 import eli.blueeye.v1.server.SendCommandThread;
@@ -44,10 +45,13 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
     private List<String> items;
     //计算和发送命令的线程
     private SendControlCommand sendControlCommand;
+    //配置信息
+    private HistoryControlData controlData;
 
     public ControlDialog(Context context) {
         super(context, R.style.style_dialog_control);
         this.context = context;
+        controlData = Util.readHistoryControlData(context);
         items = new ArrayList<>();
         items.add("0");
         items.add("480");
@@ -74,10 +78,15 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
         itemSelectView.setOnControlStateChangeListener(this);
         //设置可选的分辨率
         itemSelectView.setSelectItems(items);
+        if (controlData != null) {
+            itemSelectView.setIndex(controlData.getResolutionRatio());
+        }
         //LED开关控制视图
         lightSwitchView = (LightSwitchView) findViewById(R.id.control_switch);
         lightSwitchView.setOnControlStateChangedListener(this);
-        lightSwitchView.setSwitch(true);
+        if (controlData != null) {
+            lightSwitchView.setSwitch(controlData.isLightOpen());
+        }
         //线控视图
         ternarySelectView = (TernarySelectView) findViewById(R.id.control_line_control);
         ternarySelectView.setOnControlStateChangedListener(this);
@@ -108,11 +117,19 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
     @Override
     public void onItemSelectedChanged(int index) {
         refreshCommand();
+        if (controlData != null) {
+            controlData.setResolutionRatio(index);
+            Util.writeHistoryControlData(context, controlData);
+        }
     }
 
     @Override
     public void onSwitchStateChanged(boolean isOpen) {
         refreshCommand();
+        if (controlData != null) {
+            controlData.setLightSwitch(isOpen);
+            Util.writeHistoryControlData(context, controlData);
+        }
     }
 
     @Override
