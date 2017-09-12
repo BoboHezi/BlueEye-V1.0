@@ -8,4 +8,8 @@
     <color name="gray">#e6e6e6</color>
     <color name="light">#ffffff</color>
     <color name="white">#f7f7f7</color>
+    <color name="colorLightGray">#eeeeee</color>
+    <color name="colorTextWarning">#de0000</color>
+    <color name="colorGray">#aaaaaa</color>
+    <color name="colorGreenLight">#10b193</color>
 </resources>

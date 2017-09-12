@@ -57,6 +57,27 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
+    <!--控制界面样式-->
+    <style name="style_dialog_control">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:background">#44ffffff</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!--WIFI断开警告Dialog-->
+    <style name="dialog_wifi_waring" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
     <!--分享平台动画-->
     <style name="animation_share_dialog">
         <item name="android:windowEnterAnimation">@anim/share_platform_enter</item>
@@ -68,13 +89,10 @@
         <item name="android:windowEnterAnimation">@anim/anim_dialog_control_enter</item>
         <item name="android:windowExitAnimation">@anim/anim_dialog_control_exit</item>
     </style>
-    <!--控制界面样式-->
-    <style name="style_dialog_control">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:background">#44ffffff</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:backgroundDimEnabled">false</item>
+
+    <!--WIFI断开警告Dialog动画-->
+    <style name="animation_dialog_wifi">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_wifi_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_wifi_exit</item>
     </style>
 </resources>

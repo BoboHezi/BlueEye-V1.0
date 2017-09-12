@@ -2,8 +2,10 @@ package eli.blueeye.v1.activity;
 
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import eli.blueeye.v1.R;
+import eli.blueeye.v1.broadcast.NetStatusReceiver;
 import eli.blueeye.v1.dialog.ControlDialog;
 import eli.blueeye.v1.entity.LoadListView;
 import eli.blueeye.v1.inter.LongTouchListener;
@@ -95,8 +98,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isShowCamera = false;
     //录屏时间溢出标志
     private boolean isTimeOverFlow = false;
-    //设置按钮的旋转角度
-    private long rotateDegree = 90;
 
     //截屏结果的回调方法
     private SnapHandler eSnapHandler;
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LoadListView eLoadListView;
     //控制面板
     private ControlDialog eControlDialog;
+    //网络状态接收
+    private NetStatusReceiver eNetStatusReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initHandlerThread();
         //初始化播放器
         initSurface();
+        //初始化广播
+        eNetStatusReceiver = new NetStatusReceiver();
+        registerNetReceiver();
     }
 
     @Override
@@ -156,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         //释放资源
         eVlcPlayer.releasePlayer();
+        //注销广播
+        unRegisterNetReceiver();
     }
 
     /**
@@ -244,6 +252,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initSurface() {
         eVlcPlayer = new VlcPlayer(eSurfaceView, this, eUrl, eSnapHandler);
         eVlcPlayer.createPlayer();
+    }
+
+    /**
+     * 为广播注册过滤器
+     */
+    private void registerNetReceiver() {
+        if (eNetStatusReceiver != null) {
+            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+            this.registerReceiver(eNetStatusReceiver, filter);
+        }
+    }
+
+    /**
+     * 注销广播过滤器
+     */
+    private void unRegisterNetReceiver() {
+        if (eNetStatusReceiver != null) {
+            this.unregisterReceiver(eNetStatusReceiver);
+        }
     }
 
     /**
@@ -447,13 +474,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!Util.isLandscape(context)) {
             return;
         }
-        //旋转按钮
-        view.animate().rotation(rotateDegree).setDuration(100).start();
         //显示控制面板
         eControlDialog = new ControlDialog(this);
         eControlDialog.show();
-        //切换角度
-        rotateDegree += 90;
         //隐藏按钮区
         setAreaVisibility(false);
     }

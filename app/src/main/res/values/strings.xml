@@ -18,4 +18,7 @@
     <string name="resolution_ratio">分辨率</string>
     <string name="light">灯光</string>
     <string name="line_control">线控</string>
+    <string name="waring_wifi_disconnect">无线网未连接</string>
+    <string name="waring_wifi_know">知道了</string>
+    <string name="waring_wifi_connect">点击连接</string>
 </resources>
