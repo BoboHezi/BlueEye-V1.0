@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4
      * http://img95.699pic.com/videos/2016/09/19/eb3b9233-d919-46ce-b2d5-a30e4dd9fcdb.mp4
      * http://img95.699pic.com/videos/2016/09/18/38d63eab-796a-43be-998f-c00308d186f0.mp4
-     * rtsp://10.42.0.1/
+     * rtsp://10.42.0.1/test.h264
      * rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov
      * sdcard/1/video.mov
      */
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //最长录制时长
     private static final int LONGEST_RECORD_TIME = 60;
     //路径
-    private static final String eUrl = "rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov";
+    private static final String eUrl = "http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4";
     //上下文
     private Context context;
     //按键管理
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //摄像头
     private ImageButton eCameraButton;
     //设置按钮
-    private ImageButton eSetUpButton;
+    private ImageButton eConsoleButton;
     //分享按钮
     private ImageButton eShareButton;
     //删除按钮
@@ -195,8 +195,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eTakePhotoView.setOnLongTouchListener(this, 500);
 
         //设置按钮
-        eSetUpButton = (ImageButton) findViewById(R.id.main_button_setup);
-        eSetUpButton.setOnClickListener(this);
+        eConsoleButton = (ImageButton) findViewById(R.id.main_button_console);
+        eConsoleButton.setOnClickListener(this);
 
         //分享按钮
         eShareButton = (ImageButton) findViewById(R.id.main_button_share);
@@ -327,9 +327,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switchShowCamera(view);
                 break;
 
-            case R.id.main_button_setup:
+            case R.id.main_button_console:
                 //设置
-                switchShowSetup(view);
+                switchShowConsole(view);
                 break;
 
             case R.id.main_button_share:
@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 切换控制区域的显示
      */
-    private void switchShowSetup(View view) {
+    private void switchShowConsole(View view) {
         //当处于竖屏状态下，则不进行更新
         if (!Util.isLandscape(context)) {
             return;
@@ -600,7 +600,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolBar.setLayoutParams(toolBarLP);
 
         //当设置按钮处于旋转90度的状态，将其动画复位
-        eSetUpButton.animate().rotation(0).setDuration(1).start();
+        eConsoleButton.animate().rotation(0).setDuration(1).start();
 
         if (isLand) {
             //重置控制面板

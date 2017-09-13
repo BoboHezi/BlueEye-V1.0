@@ -13,6 +13,11 @@ import android.widget.TextView;
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.util.Util;
 
+/**
+ * 显示WIFI状态的dialog
+ *
+ * @author eli chang
+ */
 public class WifiStatusDialog extends Dialog implements View.OnClickListener{
 
     private Context context;

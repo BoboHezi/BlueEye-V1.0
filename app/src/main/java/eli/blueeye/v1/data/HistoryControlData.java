@@ -7,28 +7,10 @@ package eli.blueeye.v1.data;
  */
 public class HistoryControlData {
 
-    //首次使用标记
-    private boolean isFirstLauncher = true;
     //灯光开关
     private boolean isLightOpen = false;
     //分辨率
     private int resolutionRatio = 0x02;
-
-    /**
-     * 判断是否为首次使用APP
-     * @return
-     */
-    public boolean isFirstLauncher() {
-        return isFirstLauncher;
-    }
-
-    /**
-     * 设置首次标记
-     * @param isFirst
-     */
-    public void setFirstFlag(boolean isFirst) {
-        this.isFirstLauncher = isFirst;
-    }
 
     /**
      * 获取灯光开关状态

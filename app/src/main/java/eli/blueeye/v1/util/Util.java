@@ -12,7 +12,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
@@ -247,12 +246,10 @@ public class Util {
     public static HistoryControlData readHistoryControlData(Context context) {
         HistoryControlData controlData = new HistoryControlData();
         try {
-            SharedPreferences preferences = context.getSharedPreferences("HistoryControlData", 0);
+            SharedPreferences preferences = context.getSharedPreferences("HistoryControlData", Context.MODE_PRIVATE);
             if (preferences != null) {
-                boolean isFirst = preferences.getBoolean("isFirstLauncher", true);
                 boolean isLightOpen = preferences.getBoolean("isLightOpen", false);
                 int resolutionRatio = preferences.getInt("resolutionRatio", 0x02);
-                controlData.setFirstFlag(isFirst);
                 controlData.setLightSwitch(isLightOpen);
                 controlData.setResolutionRatio(resolutionRatio);
             }
@@ -268,12 +265,44 @@ public class Util {
      */
     public static void writeHistoryControlData(Context context, HistoryControlData controlData) {
         try {
-            SharedPreferences preferences = context.getSharedPreferences("HistoryControlData", 0);
+            SharedPreferences preferences = context.getSharedPreferences("HistoryControlData", Context.MODE_PRIVATE);
             if (preferences != null) {
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("isFirstLauncher", controlData.isFirstLauncher());
                 editor.putBoolean("isLightOpen", controlData.isLightOpen());
                 editor.putInt("resolutionRatio", controlData.getResolutionRatio());
+                editor.commit();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    /**
+     * 判断是否第一次启动
+     * @param context
+     * @return
+     */
+    public static boolean isFirstLauncher(Context context) {
+        boolean isFirstLauncher = true;
+        try {
+            SharedPreferences preferences = context.getSharedPreferences("FirstLauncherFlag", Context.MODE_PRIVATE);
+            if (preferences != null) {
+                isFirstLauncher = preferences.getBoolean("isFirstLauncher", true);
+            }
+        } catch (Exception e) {
+        }
+        return isFirstLauncher;
+    }
+
+    /**
+     * 设置已经启动一次了
+     * @param context
+     */
+    public static void setAlreadyLauncher(Context context) {
+        try {
+            SharedPreferences preferences = context.getSharedPreferences("FirstLauncherFlag", Context.MODE_PRIVATE);
+            if (preferences != null) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isFirstLauncher", false);
                 editor.commit();
             }
         } catch (Exception e) {

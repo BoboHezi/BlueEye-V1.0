@@ -117,11 +117,11 @@
 
                     <!--设置按钮-->
                     <ImageButton
-                        android:id="@+id/main_button_setup"
+                        android:id="@+id/main_button_console"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:layout_centerHorizontal="true"
-                        android:background="@drawable/setup" />
+                        android:background="@drawable/console" />
                 </RelativeLayout>
 
                 <RelativeLayout
