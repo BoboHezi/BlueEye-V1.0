@@ -18,6 +18,7 @@ public class NetStatusReceiver extends BroadcastReceiver {
 
     //WIFI状态的提示对话框
     private WifiStatusDialog eWifiStatusDialog;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         boolean isWifiConnected = false;

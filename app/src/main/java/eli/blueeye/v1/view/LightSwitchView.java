@@ -11,6 +11,11 @@ import eli.blueeye.v1.R;
 import eli.blueeye.v1.dialog.ControlDialog;
 import eli.blueeye.v1.inter.OnControlStateChangeListener;
 
+/**
+ * 自定义开关
+ *
+ * @author eli chang
+ */
 public class LightSwitchView extends View {
 
     private static final String TAG = "LightSwitchView";
@@ -18,29 +23,29 @@ public class LightSwitchView extends View {
     private Paint paint;
 
     //组件宽度
-    private float windowWidth;
+    private float eWindowWidth;
     //组件高度
-    private float windowHeight;
+    private float eWindowHeight;
     //边框宽度
-    private float borderWidth;
+    private float eBorderWidth;
     //边框颜色
-    private int borderColor;
+    private int eBorderColor;
     //关闭时的颜色
-    private int closeColor;
+    private int eCloseColor;
     //开启时的颜色
-    private int openColor;
+    private int eOpenColor;
     //小球半径
     private float radius;
     //偏移
     private int offset;
     //组件基线（Y轴中心）
-    private float baseLine;
+    private float eBaseLine;
     //绘制区域左边界
-    private float leftBorder;
+    private float eLeftBorder;
     //开关状态
     private boolean isOpen = false;
     //开关改变的接口
-    private OnControlStateChangeListener changeListener;
+    private OnControlStateChangeListener eChangeListener;
 
     public LightSwitchView(Context context) {
         this(context, null);
@@ -58,10 +63,10 @@ public class LightSwitchView extends View {
         paint.setAntiAlias(true);
         //获取配置值
         TypedArray ta = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_light_switch);
-        borderWidth = ta.getFloat(R.styleable.styleable_light_switch_switch_borderWidth, 2);
-        borderColor = ta.getColor(R.styleable.styleable_light_switch_switch_borderColor, 0xffffffff);
-        closeColor = ta.getColor(R.styleable.styleable_light_switch_switch_closeColor, 0xff888888);
-        openColor = ta.getColor(R.styleable.styleable_light_switch_switch_openColor, 0x40a8cc);
+        eBorderWidth = ta.getFloat(R.styleable.styleable_light_switch_switch_borderWidth, 2);
+        eBorderColor = ta.getColor(R.styleable.styleable_light_switch_switch_borderColor, 0xffffffff);
+        eCloseColor = ta.getColor(R.styleable.styleable_light_switch_switch_closeColor, 0xff888888);
+        eOpenColor = ta.getColor(R.styleable.styleable_light_switch_switch_openColor, 0x40a8cc);
         radius = ta.getFloat(R.styleable.styleable_light_switch_switch_circleRadius, 70);
 
         //设置点击事件
@@ -72,8 +77,8 @@ public class LightSwitchView extends View {
                 isOpen = !isOpen;
                 new SwitchAnimationThread().start();
 
-                if (changeListener != null) {
-                    changeListener.onSwitchStateChanged(isOpen);
+                if (eChangeListener != null) {
+                    eChangeListener.onSwitchStateChanged(isOpen);
                 }
             }
         });
@@ -96,12 +101,12 @@ public class LightSwitchView extends View {
         setMeasuredDimension(widthSpecSize, heightSpecSize);
 
         //获取当前组件宽高
-        windowWidth = getMeasuredWidth();
-        windowHeight = getMeasuredHeight();
+        eWindowWidth = getMeasuredWidth();
+        eWindowHeight = getMeasuredHeight();
 
         //计算基线和左边界
-        baseLine = windowHeight / 2;
-        leftBorder = (windowWidth - radius * 4) / 2;
+        eBaseLine = eWindowHeight / 2;
+        eLeftBorder = (eWindowWidth - radius * 4) / 2;
     }
 
     @Override
@@ -109,30 +114,30 @@ public class LightSwitchView extends View {
 
         //绘制描边
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(borderColor);
-        paint.setStrokeWidth(borderWidth);
-        if (borderWidth != 0) {
-            canvas.drawArc(leftBorder + borderWidth / 2, borderWidth / 2, leftBorder + radius * 2 - borderWidth / 2, radius * 2 - borderWidth / 2, 90, 180, false, paint);
-            canvas.drawLine(leftBorder + radius, borderWidth / 2, leftBorder + radius * 3, borderWidth / 2, paint);
-            canvas.drawLine(leftBorder + radius, radius * 2 - borderWidth / 2, leftBorder + radius * 3, radius * 2 - borderWidth / 2, paint);
-            canvas.drawArc(leftBorder + radius * 2 + borderWidth / 2, borderWidth / 2, leftBorder + radius * 4 - borderWidth / 2, radius * 2 - borderWidth / 2, -90, 180, false, paint);
+        paint.setColor(eBorderColor);
+        paint.setStrokeWidth(eBorderWidth);
+        if (eBorderWidth != 0) {
+            canvas.drawArc(eLeftBorder + eBorderWidth / 2, eBorderWidth / 2, eLeftBorder + radius * 2 - eBorderWidth / 2, radius * 2 - eBorderWidth / 2, 90, 180, false, paint);
+            canvas.drawLine(eLeftBorder + radius, eBorderWidth / 2, eLeftBorder + radius * 3, eBorderWidth / 2, paint);
+            canvas.drawLine(eLeftBorder + radius, radius * 2 - eBorderWidth / 2, eLeftBorder + radius * 3, radius * 2 - eBorderWidth / 2, paint);
+            canvas.drawArc(eLeftBorder + radius * 2 + eBorderWidth / 2, eBorderWidth / 2, eLeftBorder + radius * 4 - eBorderWidth / 2, radius * 2 - eBorderWidth / 2, -90, 180, false, paint);
         }
 
         //绘制中间区域
         float scale = offset / (radius * 2);
         //获取渐变色
-        int bannerColor = getBannerColor(closeColor, openColor, scale);
+        int bannerColor = getBannerColor(eCloseColor, eOpenColor, scale);
         paint.setColor(bannerColor);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(leftBorder + radius, baseLine, radius - borderWidth, paint);
-        canvas.drawCircle(leftBorder + radius * 3, baseLine, radius - borderWidth, paint);
-        canvas.drawRect(leftBorder + radius, borderWidth, leftBorder + radius * 3, radius * 2 - borderWidth, paint);
+        canvas.drawCircle(eLeftBorder + radius, eBaseLine, radius - eBorderWidth, paint);
+        canvas.drawCircle(eLeftBorder + radius * 3, eBaseLine, radius - eBorderWidth, paint);
+        canvas.drawRect(eLeftBorder + radius, eBorderWidth, eLeftBorder + radius * 3, radius * 2 - eBorderWidth, paint);
 
         //绘制小球
-        bannerColor = getBannerColor(openColor, closeColor, scale);
+        bannerColor = getBannerColor(eOpenColor, eCloseColor, scale);
         paint.setColor(bannerColor);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(leftBorder + radius + offset, baseLine, radius - borderWidth - 2, paint);
+        canvas.drawCircle(eLeftBorder + radius + offset, eBaseLine, radius - eBorderWidth - 2, paint);
 
         //绘制灯
         drawLight(canvas, scale);
@@ -185,24 +190,24 @@ public class LightSwitchView extends View {
      */
     private void drawLight(Canvas canvas, float scale) {
         //计算渐变色
-        int bannerColor = getBannerColor(closeColor, openColor, scale);
+        int bannerColor = getBannerColor(eCloseColor, eOpenColor, scale);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2);
         paint.setColor(bannerColor);
         //circle
-        canvas.drawArc(leftBorder + offset + radius * 2 / 3, baseLine - radius / 2, leftBorder + offset + radius * 4 / 3, baseLine + radius / 6, 120, 300, false, paint);
+        canvas.drawArc(eLeftBorder + offset + radius * 2 / 3, eBaseLine - radius / 2, eLeftBorder + offset + radius * 4 / 3, eBaseLine + radius / 6, 120, 300, false, paint);
         //Line 1
-        canvas.drawLine(leftBorder + offset + radius * 8 / 9, baseLine - radius / 6, leftBorder + offset + radius * 10 / 9, baseLine - radius / 6, paint);
+        canvas.drawLine(eLeftBorder + offset + radius * 8 / 9, eBaseLine - radius / 6, eLeftBorder + offset + radius * 10 / 9, eBaseLine - radius / 6, paint);
         //Line 2
-        canvas.drawLine(leftBorder + offset + radius, baseLine - radius / 6, leftBorder + offset + radius, baseLine + radius / 2, paint);
+        canvas.drawLine(eLeftBorder + offset + radius, eBaseLine - radius / 6, eLeftBorder + offset + radius, eBaseLine + radius / 2, paint);
         //Line 3
-        canvas.drawLine(leftBorder + offset + radius * 7 / 6, (float) (baseLine + radius * 0.732 / 6), leftBorder + offset + radius * 7 / 6, baseLine + radius / 2, paint);
+        canvas.drawLine(eLeftBorder + offset + radius * 7 / 6, (float) (eBaseLine + radius * 0.732 / 6), eLeftBorder + offset + radius * 7 / 6, eBaseLine + radius / 2, paint);
         //Line 4
-        canvas.drawLine(leftBorder + offset + radius * 5 / 6, (float) (baseLine + radius * 0.732 / 6), leftBorder + offset + radius * 5 / 6, baseLine + radius / 2, paint);
+        canvas.drawLine(eLeftBorder + offset + radius * 5 / 6, (float) (eBaseLine + radius * 0.732 / 6), eLeftBorder + offset + radius * 5 / 6, eBaseLine + radius / 2, paint);
         //Line 5
-        canvas.drawLine(leftBorder + offset + radius * 5 / 6, baseLine + radius / 3, leftBorder + offset + radius * 7 / 6, baseLine + radius / 3, paint);
+        canvas.drawLine(eLeftBorder + offset + radius * 5 / 6, eBaseLine + radius / 3, eLeftBorder + offset + radius * 7 / 6, eBaseLine + radius / 3, paint);
         //Line 6
-        canvas.drawLine(leftBorder + offset + radius * 5 / 6, baseLine + radius / 2, leftBorder + offset + radius * 7 / 6, baseLine + radius / 2, paint);
+        canvas.drawLine(eLeftBorder + offset + radius * 5 / 6, eBaseLine + radius / 2, eLeftBorder + offset + radius * 7 / 6, eBaseLine + radius / 2, paint);
     }
 
     /**
@@ -214,17 +219,17 @@ public class LightSwitchView extends View {
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2);
-        paint.setColor(openColor);
+        paint.setColor(eOpenColor);
         //ray 1
-        canvas.drawLine((float) (leftBorder + offset + radius * (1 - 1 / 1.732)), baseLine + radius / 6, (float) (leftBorder + offset + radius * (1 - 2 / (3 * 1.732))), baseLine + radius / 18, paint);
+        canvas.drawLine((float) (eLeftBorder + offset + radius * (1 - 1 / 1.732)), eBaseLine + radius / 6, (float) (eLeftBorder + offset + radius * (1 - 2 / (3 * 1.732))), eBaseLine + radius / 18, paint);
         //ray 2
-        canvas.drawLine((float) (leftBorder + offset + radius * (1 - 1 / 1.732)), baseLine - radius / 3, (float) (leftBorder + offset + radius * (1 - 2 / (3 * 1.732))), baseLine - radius * 5 / 18, paint);
+        canvas.drawLine((float) (eLeftBorder + offset + radius * (1 - 1 / 1.732)), eBaseLine - radius / 3, (float) (eLeftBorder + offset + radius * (1 - 2 / (3 * 1.732))), eBaseLine - radius * 5 / 18, paint);
         //ray 3
-        canvas.drawLine(leftBorder + offset + radius, baseLine - radius * 5 / 6, leftBorder + offset + radius, baseLine - radius * 11 / 18, paint);
+        canvas.drawLine(eLeftBorder + offset + radius, eBaseLine - radius * 5 / 6, eLeftBorder + offset + radius, eBaseLine - radius * 11 / 18, paint);
         //ray 4
-        canvas.drawLine((float) (leftBorder + offset + radius * (1 + 1 / 1.732)), baseLine - radius / 3, (float) (leftBorder + offset + radius * (1 + 2 / (3 * 1.732))), baseLine - radius * 5 / 18, paint);
+        canvas.drawLine((float) (eLeftBorder + offset + radius * (1 + 1 / 1.732)), eBaseLine - radius / 3, (float) (eLeftBorder + offset + radius * (1 + 2 / (3 * 1.732))), eBaseLine - radius * 5 / 18, paint);
         //ray 5
-        canvas.drawLine((float) (leftBorder + offset + radius * (1 + 1 / 1.732)), baseLine + radius / 6, (float) (leftBorder + offset + radius * (1 + 2 / (3 * 1.732))), baseLine + radius / 18, paint);
+        canvas.drawLine((float) (eLeftBorder + offset + radius * (1 + 1 / 1.732)), eBaseLine + radius / 6, (float) (eLeftBorder + offset + radius * (1 + 2 / (3 * 1.732))), eBaseLine + radius / 18, paint);
     }
 
     /**
@@ -257,7 +262,7 @@ public class LightSwitchView extends View {
      * @param changedListener
      */
     public void setOnControlStateChangedListener(ControlDialog changedListener) {
-        this.changeListener = changedListener;
+        this.eChangeListener = changedListener;
     }
 
     /**

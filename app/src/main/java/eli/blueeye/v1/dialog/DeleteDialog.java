@@ -17,18 +17,21 @@ import eli.blueeye.v1.entity.LoadListView;
  *
  * @author eli chang
  */
-public class CustomDeleteDialog extends BaseDialog implements View.OnClickListener {
+public class DeleteDialog extends BaseDialog implements View.OnClickListener {
 
-    private final String TAG = this.getClass().getName();
+    private final String TAG = "DeleteDialog";
 
     private Context context;
+    //多图标记
     private boolean isMultiImage = false;
-
+    //取消按钮
     private Button eButtonCancel;
+    //删除按钮
     private Button eButtonDelete;
+    //更新的Handler
     private LoadListView.RefreshHandler eRefreshHandler;
 
-    public CustomDeleteDialog(Context context, Activity activity, LoadListView.RefreshHandler eRefreshHandler) {
+    public DeleteDialog(Context context, Activity activity, LoadListView.RefreshHandler eRefreshHandler) {
         super(context, activity, null, null, R.style.style_dialog_action);
         this.context = context;
         this.eRefreshHandler = eRefreshHandler;

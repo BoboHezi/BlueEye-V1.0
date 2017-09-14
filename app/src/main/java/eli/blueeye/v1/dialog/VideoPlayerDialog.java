@@ -24,7 +24,7 @@ import eli.blueeye.v1.view.CustomSeekBar;
  *
  * @author eli chang
  */
-public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callback, View.OnClickListener {
+public class VideoPlayerDialog extends BaseDialog implements SurfaceHolder.Callback, View.OnClickListener {
 
     private SurfaceView eSurfaceView;
     private SurfaceHolder eSurfaceHolder;
@@ -37,7 +37,7 @@ public class CustomVideoDialog extends BaseDialog implements SurfaceHolder.Callb
     private UpdateThread eUpdateThread;
     private LoadListView.RefreshHandler eRefreshHandler;
 
-    public CustomVideoDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
+    public VideoPlayerDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
         super(context, activity, files, refreshHandler, R.style.style_image_dialog);
         this.files = files;
         this.eRefreshHandler = refreshHandler;

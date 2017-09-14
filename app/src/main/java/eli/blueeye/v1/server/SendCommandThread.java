@@ -7,6 +7,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * 发送控制命令的线程
+ *
+ * @author eli chang
+ */
 public class SendCommandThread extends Thread {
 
     private static final String TAG = "TestCommand";
@@ -15,9 +20,9 @@ public class SendCommandThread extends Thread {
 
     private int commandData;
 
-    private Socket clientSocket;
-    private DataInputStream inputStream;
-    private DataOutputStream outputStream;
+    private Socket eClientSocket;
+    private DataInputStream eInputStream;
+    private DataOutputStream eOutputStream;
     private int valueLength = 32;
 
     public SendCommandThread(int commandData) {
@@ -27,10 +32,10 @@ public class SendCommandThread extends Thread {
     @Override
     public void run() {
         try {
-            clientSocket = new Socket(host, port);
+            eClientSocket = new Socket(host, port);
 
-            inputStream = new DataInputStream(clientSocket.getInputStream());
-            outputStream = new DataOutputStream(clientSocket.getOutputStream());
+            eInputStream = new DataInputStream(eClientSocket.getInputStream());
+            eOutputStream = new DataOutputStream(eClientSocket.getOutputStream());
 
             byte buffers[];
 
@@ -43,24 +48,23 @@ public class SendCommandThread extends Thread {
             //乘以3
             verifyData = verifyData * 3;
             //发送验证数据
-            outputStream.write((verifyData + "").getBytes());
+            eOutputStream.write((verifyData + "").getBytes());
 
             //接收验证结果
             buffers = readBytes();
 
             //发送控制命令
-            outputStream.writeInt(commandData);
+            eOutputStream.writeInt(commandData);
 
             //结束
-            if (inputStream != null)
-                inputStream.close();
-            if (outputStream != null)
-                outputStream.close();
-            if (clientSocket != null)
-                clientSocket.close();
-            Log.i(TAG, "Closed...");
+            if (eInputStream != null)
+                eInputStream.close();
+            if (eOutputStream != null)
+                eOutputStream.close();
+            if (eClientSocket != null)
+                eClientSocket.close();
         } catch (Exception e) {
-            Log.e(TAG, "", e);
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -73,11 +77,10 @@ public class SendCommandThread extends Thread {
         byte buffer[] = new byte[10240];
         byte data[] = null;
         try {
-            int length = inputStream.read(buffer);
+            int length = eInputStream.read(buffer);
             data = new byte[length];
             System.arraycopy(buffer, 0, data, 0, length);
             for (int i = 0; i < data.length; i++) {
-                Log.i(TAG, "readBytes: " + data[i]);
                 if (data[i] <= 0) {
                     valueLength = i;
                     break;

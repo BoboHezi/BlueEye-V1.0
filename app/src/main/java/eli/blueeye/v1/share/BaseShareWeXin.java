@@ -26,6 +26,7 @@ import eli.blueeye.v1.util.Util;
  * 分享到微信平台的实体类
  *
  * @author eli chang
+ * @see BaseShare
  * @see ShareCircleFriends
  * @see ShareWeChat
  */

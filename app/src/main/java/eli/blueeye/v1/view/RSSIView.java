@@ -22,18 +22,18 @@ public class RSSIView extends View {
     private Context context;
     private Paint paint;
     //画笔颜色
-    private int lineColor;
-    private int lineNegativeColor;
+    private int eLineColor;
+    private int eLineNegativeColor;
     //字体颜色
-    private int textColor;
+    private int eTextColor;
     //最外层圆半径
     float radius3;
     //画笔宽度
-    float lineWidth;
+    float eLineWidth;
     //信号强度
     private int rssi;
     //组件高度
-    private float viewHeight;
+    private float eViewHeight;
 
     public RSSIView(Context context) {
         this(context, null);
@@ -49,10 +49,10 @@ public class RSSIView extends View {
 
         //获取配置值
         TypedArray typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_view_rssi);
-        lineColor = typedArray.getColor(R.styleable.styleable_view_rssi_rssi_lineColor, 0xff000000);
-        textColor = typedArray.getColor(R.styleable.styleable_view_rssi_rssi_textColor, 0xff000000);
+        eLineColor = typedArray.getColor(R.styleable.styleable_view_rssi_rssi_lineColor, 0xff000000);
+        eTextColor = typedArray.getColor(R.styleable.styleable_view_rssi_rssi_textColor, 0xff000000);
         typedArray.recycle();
-        lineNegativeColor = (lineColor << 8 >>> 8) + 0x66000000;
+        eLineNegativeColor = (eLineColor << 8 >>> 8) + 0x66000000;
 
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -76,10 +76,10 @@ public class RSSIView extends View {
         setMeasuredDimension(widthSpecSize, heightSpecSize);
 
         //获取组件高度
-        viewHeight = getMeasuredHeight();
+        eViewHeight = getMeasuredHeight();
         //最外层圆半径
-        radius3 = viewHeight / 2;
-        lineWidth = viewHeight / 30;
+        radius3 = eViewHeight / 2;
+        eLineWidth = eViewHeight / 30;
     }
 
     @Override
@@ -89,57 +89,57 @@ public class RSSIView extends View {
 
         //绘制弧线
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(lineWidth);
-        paint.setColor(lineNegativeColor);
+        paint.setStrokeWidth(eLineWidth);
+        paint.setColor(eLineNegativeColor);
 
         if (count == 4) {
-            paint.setColor(lineColor);
+            paint.setColor(eLineColor);
         }
         //radian out left
-        canvas.drawArc(lineWidth / 2, -viewHeight * 3 / 20, viewHeight * 59 / 60, viewHeight * 49 / 60, 137, 86, false, paint);
+        canvas.drawArc(eLineWidth / 2, -eViewHeight * 3 / 20, eViewHeight * 59 / 60, eViewHeight * 49 / 60, 137, 86, false, paint);
         //radian out right
-        canvas.drawArc(lineWidth / 2, -viewHeight * 3 / 20, viewHeight * 59 / 60, viewHeight * 49 / 60, 317, 90, false, paint);
+        canvas.drawArc(eLineWidth / 2, -eViewHeight * 3 / 20, eViewHeight * 59 / 60, eViewHeight * 49 / 60, 317, 90, false, paint);
 
         if (count >= 3) {
-            paint.setColor(lineColor);
+            paint.setColor(eLineColor);
         } else {
-            paint.setColor(lineNegativeColor);
+            paint.setColor(eLineNegativeColor);
         }
         //radian center left
-        canvas.drawArc(viewHeight * 7 / 60, -viewHeight / 60, viewHeight * 17 / 20, viewHeight * 41 / 60, 135, 90, false, paint);
+        canvas.drawArc(eViewHeight * 7 / 60, -eViewHeight / 60, eViewHeight * 17 / 20, eViewHeight * 41 / 60, 135, 90, false, paint);
         //radian center right
-        canvas.drawArc(viewHeight * 7 / 60, -viewHeight / 60, viewHeight * 17 / 20, viewHeight * 41 / 60, 315, 90, false, paint);
+        canvas.drawArc(eViewHeight * 7 / 60, -eViewHeight / 60, eViewHeight * 17 / 20, eViewHeight * 41 / 60, 315, 90, false, paint);
 
         if (count >= 2) {
-            paint.setColor(lineColor);
+            paint.setColor(eLineColor);
         } else {
-            paint.setColor(lineNegativeColor);
+            paint.setColor(eLineNegativeColor);
         }
         //radian inner left
-        canvas.drawArc(viewHeight / 4, viewHeight / 10, viewHeight * 11 / 15, viewHeight * 17 / 30, 135, 90, false, paint);
+        canvas.drawArc(eViewHeight / 4, eViewHeight / 10, eViewHeight * 11 / 15, eViewHeight * 17 / 30, 135, 90, false, paint);
         //radian inner right
-        canvas.drawArc(viewHeight / 4, viewHeight / 10, viewHeight * 11 / 15, viewHeight * 17 / 30, 315, 90, false, paint);
+        canvas.drawArc(eViewHeight / 4, eViewHeight / 10, eViewHeight * 11 / 15, eViewHeight * 17 / 30, 315, 90, false, paint);
 
         //绘制中心点
         if (count >= 1) {
-            paint.setColor(lineColor);
+            paint.setColor(eLineColor);
         } else {
-            paint.setColor(lineNegativeColor);
+            paint.setColor(eLineNegativeColor);
         }
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(radius3, (float) (viewHeight * 0.35), 5, paint);
+        canvas.drawCircle(radius3, (float) (eViewHeight * 0.35), 5, paint);
 
         //绘制竖线
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(lineColor);
-        canvas.drawLine(radius3, viewHeight / 2, radius3, viewHeight, paint);
+        paint.setColor(eLineColor);
+        canvas.drawLine(radius3, eViewHeight / 2, radius3, eViewHeight, paint);
 
         //绘制文字
         String text = rssi + " dBm";
-        paint.setTextSize(viewHeight / 2);
-        paint.setColor(textColor);
+        paint.setTextSize(eViewHeight / 2);
+        paint.setColor(eTextColor);
         float textHeight = -(paint.descent() + paint.ascent());
-        canvas.drawText(text, (float) (radius3 * 2.5), (viewHeight + textHeight) / 2, paint);
+        canvas.drawText(text, (float) (radius3 * 2.5), (eViewHeight + textHeight) / 2, paint);
     }
 
     /**

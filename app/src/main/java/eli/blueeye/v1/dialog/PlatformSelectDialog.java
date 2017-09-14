@@ -22,13 +22,18 @@ import eli.blueeye.v1.inter.OnPlatformSelected;
 public class PlatformSelectDialog extends Dialog implements View.OnClickListener {
 
     private Context context;
-
-    private ImageButton buttonShareSina;
-    private ImageButton buttonShareCircleFriends;
-    private ImageButton buttonShareWeChat;
-    private ImageButton buttonShareQQ;
-    private ImageButton buttonShareQZone;
-    private Button buttonCancel;
+    //新浪
+    private ImageButton eButtonShareSina;
+    //朋友圈
+    private ImageButton eButtonShareCircleFriends;
+    //微信
+    private ImageButton eButtonShareWeChat;
+    //QQ
+    private ImageButton eButtonShareQQ;
+    //空间
+    private ImageButton eButtonShareQZone;
+    //取消
+    private Button eButtonCancel;
 
     private OnPlatformSelected platformSelected;
 
@@ -38,22 +43,25 @@ public class PlatformSelectDialog extends Dialog implements View.OnClickListener
         initView();
     }
 
+    /**
+     * 初始化视图
+     */
     private void initView() {
         setContentView(R.layout.dialog_share_platform);
         getWindow().setWindowAnimations(R.style.animation_share_dialog);
 
-        buttonShareSina = (ImageButton) findViewById(R.id.share_sina);
-        buttonShareSina.setOnClickListener(this);
-        buttonShareCircleFriends = (ImageButton) findViewById(R.id.share_circle_friends);
-        buttonShareCircleFriends.setOnClickListener(this);
-        buttonShareWeChat = (ImageButton) findViewById(R.id.share_we_chat);
-        buttonShareWeChat.setOnClickListener(this);
-        buttonShareQQ = (ImageButton) findViewById(R.id.share_qq);
-        buttonShareQQ.setOnClickListener(this);
-        buttonShareQZone = (ImageButton) findViewById(R.id.share_qq_zone);
-        buttonShareQZone.setOnClickListener(this);
-        buttonCancel = (Button) findViewById(R.id.share_cancel);
-        buttonCancel.setOnClickListener(this);
+        eButtonShareSina = (ImageButton) findViewById(R.id.share_sina);
+        eButtonShareSina.setOnClickListener(this);
+        eButtonShareCircleFriends = (ImageButton) findViewById(R.id.share_circle_friends);
+        eButtonShareCircleFriends.setOnClickListener(this);
+        eButtonShareWeChat = (ImageButton) findViewById(R.id.share_we_chat);
+        eButtonShareWeChat.setOnClickListener(this);
+        eButtonShareQQ = (ImageButton) findViewById(R.id.share_qq);
+        eButtonShareQQ.setOnClickListener(this);
+        eButtonShareQZone = (ImageButton) findViewById(R.id.share_qq_zone);
+        eButtonShareQZone.setOnClickListener(this);
+        eButtonCancel = (Button) findViewById(R.id.share_cancel);
+        eButtonCancel.setOnClickListener(this);
     }
 
     /**
@@ -74,11 +82,11 @@ public class PlatformSelectDialog extends Dialog implements View.OnClickListener
                 break;
 
             case R.id.share_circle_friends:
-                id = ShareEntity.PLATFORM_ID_CIRCLEFRIENDS;
+                id = ShareEntity.PLATFORM_ID_CIRCLE_FRIENDS;
                 break;
 
             case R.id.share_we_chat:
-                id = ShareEntity.PLATFORM_ID_WENCAHT;
+                id = ShareEntity.PLATFORM_ID_WE_CHAT;
                 break;
 
             case R.id.share_qq:
@@ -86,7 +94,7 @@ public class PlatformSelectDialog extends Dialog implements View.OnClickListener
                 break;
 
             case R.id.share_qq_zone:
-                id = ShareEntity.PLATFORM_ID_QZONE;
+                id = ShareEntity.PLATFORM_ID_QQ_ZONE;
                 break;
 
             case R.id.share_cancel:

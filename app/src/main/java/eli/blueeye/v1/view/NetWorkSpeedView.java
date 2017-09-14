@@ -22,22 +22,22 @@ public class NetWorkSpeedView extends View {
     private Context context;
 
     //组件高度
-    private float viewHeight;
+    private float eViewHeight;
     //画笔颜色
-    private int paintColor;
+    private int ePaintColor;
     //画笔
     private Paint paint;
     //网速
     private float speed;
     //更新动画线程
-    private TransitionThread transitionThread;
+    private TransitionThread eTransitionThread;
 
     //圆半径
     private float radius;
     //画笔宽度
-    private float lineWidth;
+    private float eLineWidth;
     //圆点半径
-    private float pointRadius;
+    private float ePointRadius;
 
     public NetWorkSpeedView(Context context) {
         this(context, null);
@@ -53,11 +53,11 @@ public class NetWorkSpeedView extends View {
 
         //获取配置值
         TypedArray typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_view_rate);
-        paintColor = typedArray.getColor(R.styleable.styleable_view_rate_rate_paintColor, 0xff1fa58a);
+        ePaintColor = typedArray.getColor(R.styleable.styleable_view_rate_rate_paintColor, 0xff1fa58a);
 
         paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(paintColor);
+        paint.setColor(ePaintColor);
     }
 
     @Override
@@ -78,13 +78,13 @@ public class NetWorkSpeedView extends View {
         setMeasuredDimension(widthSpecSize, heightSpecSize);
 
         //获取组件高度
-        viewHeight = getMeasuredHeight();
+        eViewHeight = getMeasuredHeight();
         //计算圆半径
-        radius = (float) (viewHeight / (1 + Math.sin(45 * Math.PI / 180)));
+        radius = (float) (eViewHeight / (1 + Math.sin(45 * Math.PI / 180)));
         //计算画笔宽度
-        lineWidth = radius / 15;
+        eLineWidth = radius / 15;
         //计算圆点半径
-        pointRadius = radius / 10;
+        ePointRadius = radius / 10;
     }
 
     @Override
@@ -94,23 +94,23 @@ public class NetWorkSpeedView extends View {
 
         //绘制圆环
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(lineWidth);
-        paint.setColor(paintColor);
-        canvas.drawArc(lineWidth / 2, lineWidth / 2, radius * 2 - lineWidth / 2, radius * 2 - lineWidth / 2, 135, 270, false, paint);
+        paint.setStrokeWidth(eLineWidth);
+        paint.setColor(ePaintColor);
+        canvas.drawArc(eLineWidth / 2, eLineWidth / 2, radius * 2 - eLineWidth / 2, radius * 2 - eLineWidth / 2, 135, 270, false, paint);
 
         //绘制圆点
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(radius, radius, pointRadius, paint);
+        canvas.drawCircle(radius, radius, ePointRadius, paint);
 
         //绘制三角形
         float scale = (speed / 1000) > 1 ? 1 : (speed / 1000);
         angle = (int) (scale * 270);
         float X1 = (float) (radius * (1 - Math.cos((angle - 45) * Math.PI / 180) * 5 / 6));
         float Y1 = (float) (radius * (1 - Math.sin((angle - 45) * Math.PI / 180) * 5 / 6));
-        float X2 = (float) (radius - pointRadius * Math.cos((135 - angle) * Math.PI / 180));
-        float Y2 = (float) (radius + pointRadius * Math.sin((135 - angle) * Math.PI / 180));
-        float X3 = (float) (radius + pointRadius * Math.cos((135 - angle) * Math.PI / 180));
-        float Y3 = (float) (radius - pointRadius * Math.sin((135 - angle) * Math.PI / 180));
+        float X2 = (float) (radius - ePointRadius * Math.cos((135 - angle) * Math.PI / 180));
+        float Y2 = (float) (radius + ePointRadius * Math.sin((135 - angle) * Math.PI / 180));
+        float X3 = (float) (radius + ePointRadius * Math.cos((135 - angle) * Math.PI / 180));
+        float Y3 = (float) (radius - ePointRadius * Math.sin((135 - angle) * Math.PI / 180));
         Path path = new Path();
         path.moveTo(X1, Y1);
         path.lineTo(X2, Y2);
@@ -120,9 +120,9 @@ public class NetWorkSpeedView extends View {
 
         //绘制文本
         String text = speed + " kb/s";
-        paint.setTextSize(viewHeight / 2);
+        paint.setTextSize(eViewHeight / 2);
         float textHeight = -(paint.descent() + paint.ascent());
-        canvas.drawText(text, (float) (radius * 2.5), (viewHeight + textHeight) / 2, paint);
+        canvas.drawText(text, (float) (radius * 2.5), (eViewHeight + textHeight) / 2, paint);
     }
 
     /**
@@ -131,13 +131,13 @@ public class NetWorkSpeedView extends View {
      * @param speed
      */
     public void setSpeed(float speed) {
-        if (transitionThread != null && !transitionThread.isInterrupted()) {
-            transitionThread.interrupt();
-            transitionThread = null;
+        if (eTransitionThread != null && !eTransitionThread.isInterrupted()) {
+            eTransitionThread.interrupt();
+            eTransitionThread = null;
         }
         //启动更新线程
-        transitionThread = new TransitionThread(speed);
-        transitionThread.start();
+        eTransitionThread = new TransitionThread(speed);
+        eTransitionThread.start();
     }
 
     private class TransitionThread extends Thread {

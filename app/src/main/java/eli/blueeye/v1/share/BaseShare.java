@@ -9,6 +9,10 @@ import java.io.File;
  * 分享类的基类，所有分享实体都要继承该类
  *
  * @author eli chang
+ * @see BaseShareWeXin
+ * @see ShareQQ
+ * @see ShareQZone
+ * @see ShareSina
  */
 public abstract class BaseShare {
 

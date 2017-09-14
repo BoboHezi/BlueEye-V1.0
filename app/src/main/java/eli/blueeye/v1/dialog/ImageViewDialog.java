@@ -20,14 +20,14 @@ import java.io.File;
  *
  * @author eli chang
  */
-public class CustomPhotoDialog extends BaseDialog implements OnPressActionListener, View.OnClickListener {
+public class ImageViewDialog extends BaseDialog implements OnPressActionListener, View.OnClickListener {
 
     private CustomImageView eImageView;
     private ImageButton eButtonMore;
     private Bitmap bitmap;
     private LoadListView.RefreshHandler eRefreshHandler;
 
-    public CustomPhotoDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
+    public ImageViewDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler refreshHandler) {
         super(context, activity, files, refreshHandler, R.style.style_image_dialog);
         this.eRefreshHandler = refreshHandler;
         initView();

@@ -49,7 +49,7 @@ public abstract class BaseDialog extends Dialog {
      * 弹出对话框
      */
     protected void showActionDialog() {
-        CustomActionDialog actionDialog = new CustomActionDialog(context, activity, files, eRefreshHandler);
+        ActionDialog actionDialog = new ActionDialog(context, activity, files, eRefreshHandler);
         actionDialog.show();
     }
 

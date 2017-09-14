@@ -5,7 +5,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.List;
 
 import eli.blueeye.v1.dialog.PlatformSelectDialog;
 import eli.blueeye.v1.inter.OnPlatformSelected;
@@ -23,16 +22,16 @@ import eli.blueeye.v1.share.ShareWeChat;
 public class ShareEntity implements OnPlatformSelected {
 
     public static final int PLATFORM_ID_SINA = 1;
-    public static final int PLATFORM_ID_CIRCLEFRIENDS = 2;
-    public static final int PLATFORM_ID_WENCAHT = 3;
+    public static final int PLATFORM_ID_CIRCLE_FRIENDS = 2;
+    public static final int PLATFORM_ID_WE_CHAT = 3;
     public static final int PLATFORM_ID_QQ = 4;
-    public static final int PLATFORM_ID_QZONE = 5;
+    public static final int PLATFORM_ID_QQ_ZONE = 5;
     public static final int PLATFORM_ID_CANCEL = 6;
 
     public static final int SHARE_TYPE_TEXT = 1;
     public static final int SHARE_TYPE_PHOTO = 2;
     public static final int SHARE_TYPE_VIDEO = 3;
-    public static final int SHARE_TYPE_MULTIIMAGE = 4;
+    public static final int SHARE_TYPE_MULTI_IMAGE = 4;
     public int shareType = SHARE_TYPE_TEXT;
 
     private PlatformSelectDialog ePlatformDialog;
@@ -109,7 +108,7 @@ public class ShareEntity implements OnPlatformSelected {
                 //分享视频
                 eShareToSina.shareVideo(files[0]);
                 break;
-            case SHARE_TYPE_MULTIIMAGE:
+            case SHARE_TYPE_MULTI_IMAGE:
                 //分享多张图片
                 eShareToSina.shareMultiImage(files);
                 break;
@@ -154,7 +153,7 @@ public class ShareEntity implements OnPlatformSelected {
                 //分享视频
                 eShareToQZone.shareVideo(files[0]);
                 break;
-            case SHARE_TYPE_MULTIIMAGE:
+            case SHARE_TYPE_MULTI_IMAGE:
                 //分享多张图片
                 eShareToQZone.shareMultiImage(files);
                 break;
@@ -175,7 +174,7 @@ public class ShareEntity implements OnPlatformSelected {
                 //分享图片
                 eShareToWeChat.shareImage(files[0]);
                 break;
-            case SHARE_TYPE_MULTIIMAGE:
+            case SHARE_TYPE_MULTI_IMAGE:
                 //分享多图
                 eShareToWeChat.shareMultiImage(files);
                 break;
@@ -198,7 +197,7 @@ public class ShareEntity implements OnPlatformSelected {
                 //分享图片
                 shareCircleFriends.shareImage(files[0]);
                 break;
-            case SHARE_TYPE_MULTIIMAGE:
+            case SHARE_TYPE_MULTI_IMAGE:
                 //分享多图
                 shareCircleFriends.shareMultiImage(files);
                 break;
@@ -224,15 +223,15 @@ public class ShareEntity implements OnPlatformSelected {
                 shareQQ();
                 break;
 
-            case PLATFORM_ID_QZONE:
+            case PLATFORM_ID_QQ_ZONE:
                 shareQZone();
                 break;
 
-            case PLATFORM_ID_WENCAHT:
+            case PLATFORM_ID_WE_CHAT:
                 shareWeChat();
                 break;
 
-            case PLATFORM_ID_CIRCLEFRIENDS:
+            case PLATFORM_ID_CIRCLE_FRIENDS:
                 shareCircleFriends();
                 break;
         }

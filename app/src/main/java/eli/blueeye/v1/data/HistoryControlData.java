@@ -1,7 +1,7 @@
 package eli.blueeye.v1.data;
 
 /**
- * 配置信息，首次标记、分辨率
+ * 控制信息
  *
  * @author eli chang
  */
@@ -14,6 +14,7 @@ public class HistoryControlData {
 
     /**
      * 获取灯光开关状态
+     *
      * @return
      */
     public boolean isLightOpen() {
@@ -22,6 +23,7 @@ public class HistoryControlData {
 
     /**
      * 设置开关状态
+     *
      * @param isLightOpen
      */
     public void setLightSwitch(boolean isLightOpen) {
@@ -30,6 +32,7 @@ public class HistoryControlData {
 
     /**
      * 获取分辨率
+     *
      * @return
      */
     public int getResolutionRatio() {
@@ -38,6 +41,7 @@ public class HistoryControlData {
 
     /**
      * 设置分辨率
+     *
      * @param resolutionRatio
      */
     public void setResolutionRatio(int resolutionRatio) {

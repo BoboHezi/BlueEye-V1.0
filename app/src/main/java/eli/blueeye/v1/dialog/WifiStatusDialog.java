@@ -18,11 +18,12 @@ import eli.blueeye.v1.util.Util;
  *
  * @author eli chang
  */
-public class WifiStatusDialog extends Dialog implements View.OnClickListener{
+public class WifiStatusDialog extends Dialog implements View.OnClickListener {
 
     private Context context;
-
+    //取消按钮
     private TextView eCancelButton;
+    //连接按钮
     private TextView eConnectButton;
 
     public WifiStatusDialog(Context context) {
@@ -31,6 +32,9 @@ public class WifiStatusDialog extends Dialog implements View.OnClickListener{
         initView();
     }
 
+    /**
+     * 初始化视图
+     */
     private void initView() {
         setContentView(R.layout.dialog_wifi_waring);
         getWindow().setWindowAnimations(R.style.animation_dialog_wifi);

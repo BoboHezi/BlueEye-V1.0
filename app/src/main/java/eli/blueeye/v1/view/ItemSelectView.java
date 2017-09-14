@@ -15,36 +15,41 @@ import eli.blueeye.v1.R;
 import eli.blueeye.v1.dialog.ControlDialog;
 import eli.blueeye.v1.inter.OnControlStateChangeListener;
 
+/**
+ * 条目选择视图
+ *
+ * @author eli chang
+ */
 public class ItemSelectView extends View {
 
     private static final String TAG = "ItemSelect";
 
     //线条颜色
-    private int lineColor;
+    private int eLineColor;
     //圆点颜色
-    private int pointColor;
+    private int ePointColor;
     //字体颜色
-    private int textColor;
+    private int eTextColor;
     //线条高度
-    private float lineHeight;
+    private float eLineHeight;
     //圆点半径
-    private float pointRadius;
+    private float ePointRadius;
     //选择条目
-    private List<String> selectItems;
+    private List<String> eSelectItems;
     //组件宽度
-    private float windowWidth;
+    private float eWindowWidth;
     //组件高度
-    private float windowHeight;
+    private float eWindowHeight;
     //内部向下偏移值
     private float offset;
     //圆点位置X值
-    private float pointRadiusX;
+    private float ePointRadiusX;
     //圆点位置Y值
-    private float pointRadiusY;
+    private float ePointRadiusY;
     //被选择的index
-    private int selectedIndex;
+    private int eSelectedIndex;
     //选择条目改变接口
-    private OnControlStateChangeListener changeListener;
+    private OnControlStateChangeListener eChangeListener;
 
     private Context context;
     private Paint paint;
@@ -64,14 +69,14 @@ public class ItemSelectView extends View {
         paint = new Paint();
         paint.setAntiAlias(true);
         //初始化条目
-        selectItems = new ArrayList<>();
+        eSelectItems = new ArrayList<>();
         //获取配置值
         TypedArray ta = context.obtainStyledAttributes(attributeSet, R.styleable.styleable_item_select);
-        lineColor = ta.getColor(R.styleable.styleable_item_select_select_lineColor, 0xff777777);
-        pointColor = ta.getColor(R.styleable.styleable_item_select_select_circleColor, 0xff000000);
-        textColor = ta.getColor(R.styleable.styleable_item_select_select_textColor, 0xff000000);
-        lineHeight = ta.getInt(R.styleable.styleable_item_select_select_lineHeight, 5);
-        pointRadius = ta.getInt(R.styleable.styleable_item_select_select_circleRadius, 10);
+        eLineColor = ta.getColor(R.styleable.styleable_item_select_select_lineColor, 0xff777777);
+        ePointColor = ta.getColor(R.styleable.styleable_item_select_select_circleColor, 0xff000000);
+        eTextColor = ta.getColor(R.styleable.styleable_item_select_select_textColor, 0xff000000);
+        eLineHeight = ta.getInt(R.styleable.styleable_item_select_select_lineHeight, 5);
+        ePointRadius = ta.getInt(R.styleable.styleable_item_select_select_circleRadius, 10);
         ta.recycle();
 
         this.setOnClickListener(new OnClickListener() {
@@ -85,15 +90,15 @@ public class ItemSelectView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         //获取组件宽高
-        windowWidth = getMeasuredWidth();
-        windowHeight = getMeasuredHeight();
+        eWindowWidth = getMeasuredWidth();
+        eWindowHeight = getMeasuredHeight();
         //设置内部向下偏移值
-        offset = windowHeight / 6;
+        offset = eWindowHeight / 6;
         //设置圆点坐标的Y值，固定
-        pointRadiusY = windowHeight / 2 + offset;
+        ePointRadiusY = eWindowHeight / 2 + offset;
         //重置坐标
-        float pieceWidth = windowWidth / selectItems.size();
-        pointRadiusX = selectedIndex * pieceWidth + pieceWidth / 2;
+        float pieceWidth = eWindowWidth / eSelectItems.size();
+        ePointRadiusX = eSelectedIndex * pieceWidth + pieceWidth / 2;
     }
 
     /**
@@ -102,7 +107,7 @@ public class ItemSelectView extends View {
      * @param changeListener
      */
     public void setOnControlStateChangeListener(ControlDialog changeListener) {
-        this.changeListener = changeListener;
+        this.eChangeListener = changeListener;
     }
 
     /**
@@ -111,7 +116,7 @@ public class ItemSelectView extends View {
      * @param items
      */
     public void setSelectItems(List<String> items) {
-        this.selectItems = items;
+        this.eSelectItems = items;
     }
 
     /**
@@ -120,8 +125,8 @@ public class ItemSelectView extends View {
      * @return
      */
     private int calculateIndex() {
-        float pieceWidth = windowWidth / selectItems.size();
-        int index = (int) (pointRadiusX / pieceWidth);
+        float pieceWidth = eWindowWidth / eSelectItems.size();
+        int index = (int) (ePointRadiusX / pieceWidth);
         return index;
     }
 
@@ -140,10 +145,10 @@ public class ItemSelectView extends View {
      * @param index
      */
     public void setIndex(int index) {
-        if (index < selectItems.size()) {
-            selectedIndex = index;
-            float pieceWidth = windowWidth / selectItems.size();
-            pointRadiusX = selectedIndex * pieceWidth + pieceWidth / 2;
+        if (index < eSelectItems.size()) {
+            eSelectedIndex = index;
+            float pieceWidth = eWindowWidth / eSelectItems.size();
+            ePointRadiusX = eSelectedIndex * pieceWidth + pieceWidth / 2;
             postInvalidate();
         } else {
             throw new IllegalStateException("Index is lager than the size!");
@@ -154,57 +159,57 @@ public class ItemSelectView extends View {
     protected void onDraw(Canvas canvas) {
 
         //绘制线条
-        paint.setColor(lineColor);
-        paint.setStrokeWidth(lineHeight);
-        canvas.drawLine(0, windowHeight / 2 + offset, windowWidth, windowHeight / 2 + offset, paint);
+        paint.setColor(eLineColor);
+        paint.setStrokeWidth(eLineHeight);
+        canvas.drawLine(0, eWindowHeight / 2 + offset, eWindowWidth, eWindowHeight / 2 + offset, paint);
 
-        float itemWidth = windowWidth / selectItems.size();
+        float itemWidth = eWindowWidth / eSelectItems.size();
 
         //绘制条目
         paint.setTextSize(26);
-        for (int i = 0; i < selectItems.size(); i++) {
-            paint.setColor(textColor);
-            String itemText = selectItems.get(i);
+        for (int i = 0; i < eSelectItems.size(); i++) {
+            paint.setColor(eTextColor);
+            String itemText = eSelectItems.get(i);
             float itemTextWidth = paint.measureText(itemText);
             float itemTextHeight = -(paint.descent() + paint.ascent());
             float start = i * itemWidth + itemWidth / 2;
             //绘制条目文本
             canvas.drawText(itemText, start - itemTextWidth / 2, itemTextHeight + offset, paint);
-            paint.setColor(pointColor);
+            paint.setColor(ePointColor);
             //绘制对应小点
-            canvas.drawCircle(start, windowHeight / 2 + offset, (float) (lineHeight * 1.5), paint);
+            canvas.drawCircle(start, eWindowHeight / 2 + offset, (float) (eLineHeight * 1.5), paint);
         }
 
         //绘制圆点
-        paint.setColor(pointColor);
-        if (pointRadiusX == 0) {
-            pointRadiusX = itemWidth / 2;
+        paint.setColor(ePointColor);
+        if (ePointRadiusX == 0) {
+            ePointRadiusX = itemWidth / 2;
         }
-        canvas.drawCircle(pointRadiusX, pointRadiusY, pointRadius, paint);
+        canvas.drawCircle(ePointRadiusX, ePointRadiusY, ePointRadius, paint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
         //获得触点的X值
-        pointRadiusX = event.getX();
+        ePointRadiusX = event.getX();
 
         //控制圆点坐标不会溢出
-        if (pointRadiusX < pointRadius / 2)
-            pointRadiusX = pointRadius / 2;
-        if (pointRadiusX > windowWidth - pointRadius / 2)
-            pointRadiusX = windowWidth - pointRadius / 2;
+        if (ePointRadiusX < ePointRadius / 2)
+            ePointRadiusX = ePointRadius / 2;
+        if (ePointRadiusX > eWindowWidth - ePointRadius / 2)
+            ePointRadiusX = eWindowWidth - ePointRadius / 2;
 
         //当手指抬起时，计算并定位到最近的条目
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            float pieceWidth = windowWidth / selectItems.size();
+            float pieceWidth = eWindowWidth / eSelectItems.size();
             int index = calculateIndex();
-            pointRadiusX = index * pieceWidth + pieceWidth / 2;
-            if (changeListener != null) {
+            ePointRadiusX = index * pieceWidth + pieceWidth / 2;
+            if (eChangeListener != null) {
                 int nowIndex = calculateIndex();
-                if (nowIndex != selectedIndex) {
-                    selectedIndex = nowIndex;
-                    changeListener.onItemSelectedChanged(selectedIndex);
+                if (nowIndex != eSelectedIndex) {
+                    eSelectedIndex = nowIndex;
+                    eChangeListener.onItemSelectedChanged(eSelectedIndex);
                 }
             }
         }

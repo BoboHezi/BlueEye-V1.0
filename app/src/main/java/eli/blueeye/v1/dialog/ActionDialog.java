@@ -22,7 +22,7 @@ import eli.blueeye.v1.util.Util;
  *
  * @author eli chang
  */
-public class CustomActionDialog extends BaseDialog implements View.OnClickListener {
+public class ActionDialog extends BaseDialog implements View.OnClickListener {
 
     private Context context;
     private Activity activity;
@@ -39,7 +39,7 @@ public class CustomActionDialog extends BaseDialog implements View.OnClickListen
     //刷新的Handler
     private LoadListView.RefreshHandler eRefreshHandler;
 
-    public CustomActionDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler eRefreshHandler) {
+    public ActionDialog(Context context, Activity activity, File[] files, LoadListView.RefreshHandler eRefreshHandler) {
         super(context, activity, null, null, R.style.style_dialog_action);
         this.context = context;
         this.activity = activity;
@@ -102,7 +102,7 @@ public class CustomActionDialog extends BaseDialog implements View.OnClickListen
 
             case R.id.dialog_action_button_delete:
                 //显示删除界面
-                CustomDeleteDialog deleteDialog = new CustomDeleteDialog(context, activity, eRefreshHandler);
+                DeleteDialog deleteDialog = new DeleteDialog(context, activity, eRefreshHandler);
                 deleteDialog.show();
                 break;
 

@@ -7,9 +7,9 @@
         android:fromXScale="100%"
         android:fromYScale="100%"
         android:toXScale="50%"
-        android:toYScale="50%"/>
+        android:toYScale="50%" />
     <alpha
         android:duration="150"
         android:fromAlpha="1.0"
-        android:toAlpha="0.0"/>
+        android:toAlpha="0.0" />
 </set>

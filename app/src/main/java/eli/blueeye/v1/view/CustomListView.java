@@ -83,7 +83,7 @@ public class CustomListView extends ListView implements AbsListView.OnScrollList
     }
 
     //设置加载监听器
-    public void seteLoadMoreListener(OnLoadMoreListener eLoadMoreListener) {
+    public void setLoadMoreListener(OnLoadMoreListener eLoadMoreListener) {
         this.eLoadMoreListener = eLoadMoreListener;
     }
 

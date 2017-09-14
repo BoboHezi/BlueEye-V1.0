@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#c20404"
                     android:letterSpacing="0.1"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
             </LinearLayout>
 
             <LinearLayout

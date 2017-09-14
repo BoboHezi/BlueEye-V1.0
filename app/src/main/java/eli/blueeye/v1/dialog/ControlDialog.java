@@ -34,32 +34,32 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
     private Context context;
 
     //分辨率选择视图
-    private ItemSelectView itemSelectView;
+    private ItemSelectView eItemSelectView;
     //LED开关视图
-    private LightSwitchView lightSwitchView;
+    private LightSwitchView eLightSwitchView;
     //移动控制视图
-    private MoveControlView moveControlView;
+    private MoveControlView eMoveControlView;
     //线控视图
-    private TernarySelectView ternarySelectView;
+    private TernarySelectView eTernarySelectView;
     //分辨率的可选条目
-    private List<String> items;
+    private List<String> eResolutionRatioItems;
     //计算和发送命令的线程
-    private SendControlCommand sendControlCommand;
+    private SendControlCommand eSendControlCommand;
     //配置信息
-    private HistoryControlData controlData;
+    private HistoryControlData eHistoryControlData;
 
     public ControlDialog(Context context) {
         super(context, R.style.style_dialog_control);
         this.context = context;
-        controlData = Util.readHistoryControlData(context);
-        items = new ArrayList<>();
-        items.add("0");
-        items.add("480");
-        items.add("720");
-        items.add("1080");
+        eHistoryControlData = Util.readHistoryControlData(context);
+        eResolutionRatioItems = new ArrayList<>();
+        eResolutionRatioItems.add("0");
+        eResolutionRatioItems.add("480");
+        eResolutionRatioItems.add("720");
+        eResolutionRatioItems.add("1080");
         initView();
-        sendControlCommand = new SendControlCommand();
-        sendControlCommand.start();
+        eSendControlCommand = new SendControlCommand();
+        eSendControlCommand.start();
     }
 
     /**
@@ -71,25 +71,25 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
         setCanceledOnTouchOutside(true);
 
         //初始化移动控制视图
-        moveControlView = (MoveControlView) findViewById(R.id.control_view);
-        moveControlView.setOnControlStateChangedListener(this);
+        eMoveControlView = (MoveControlView) findViewById(R.id.control_view);
+        eMoveControlView.setOnControlStateChangedListener(this);
         //初始化分辨率选择视图
-        itemSelectView = (ItemSelectView) findViewById(R.id.control_resolution);
-        itemSelectView.setOnControlStateChangeListener(this);
+        eItemSelectView = (ItemSelectView) findViewById(R.id.control_resolution);
+        eItemSelectView.setOnControlStateChangeListener(this);
         //设置可选的分辨率
-        itemSelectView.setSelectItems(items);
-        if (controlData != null) {
-            itemSelectView.setIndex(controlData.getResolutionRatio());
+        eItemSelectView.setSelectItems(eResolutionRatioItems);
+        if (eHistoryControlData != null) {
+            eItemSelectView.setIndex(eHistoryControlData.getResolutionRatio());
         }
         //LED开关控制视图
-        lightSwitchView = (LightSwitchView) findViewById(R.id.control_switch);
-        lightSwitchView.setOnControlStateChangedListener(this);
-        if (controlData != null) {
-            lightSwitchView.setSwitch(controlData.isLightOpen());
+        eLightSwitchView = (LightSwitchView) findViewById(R.id.control_switch);
+        eLightSwitchView.setOnControlStateChangedListener(this);
+        if (eHistoryControlData != null) {
+            eLightSwitchView.setSwitch(eHistoryControlData.isLightOpen());
         }
         //线控视图
-        ternarySelectView = (TernarySelectView) findViewById(R.id.control_line_control);
-        ternarySelectView.setOnControlStateChangedListener(this);
+        eTernarySelectView = (TernarySelectView) findViewById(R.id.control_line_control);
+        eTernarySelectView.setOnControlStateChangedListener(this);
     }
 
     @Override
@@ -109,34 +109,54 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
     @Override
     public void dismiss() {
         super.dismiss();
-        if (sendControlCommand != null) {
-            sendControlCommand.interrupt();
+        if (eSendControlCommand != null) {
+            eSendControlCommand.interrupt();
         }
     }
 
+    /**
+     * 分辨率改变
+     *
+     * @param index
+     */
     @Override
     public void onItemSelectedChanged(int index) {
         refreshCommand();
-        if (controlData != null) {
-            controlData.setResolutionRatio(index);
-            Util.writeHistoryControlData(context, controlData);
+        if (eHistoryControlData != null) {
+            eHistoryControlData.setResolutionRatio(index);
+            Util.writeHistoryControlData(context, eHistoryControlData);
         }
     }
 
+    /**
+     * LED开关状态改变
+     *
+     * @param isOpen
+     */
     @Override
     public void onSwitchStateChanged(boolean isOpen) {
         refreshCommand();
-        if (controlData != null) {
-            controlData.setLightSwitch(isOpen);
-            Util.writeHistoryControlData(context, controlData);
+        if (eHistoryControlData != null) {
+            eHistoryControlData.setLightSwitch(isOpen);
+            Util.writeHistoryControlData(context, eHistoryControlData);
         }
     }
 
+    /**
+     * 线控状态改变
+     *
+     * @param lineState
+     */
     @Override
     public void onLineControlChanged(int lineState) {
         refreshCommand();
     }
 
+    /**
+     * 速度状态改变
+     *
+     * @param velocity
+     */
     @Override
     public void onVelocityStateChanged(Velocity velocity) {
         refreshCommand();
@@ -147,14 +167,14 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
      */
     private void refreshCommand() {
         //停止发送线程
-        if (sendControlCommand != null) {
-            sendControlCommand.interrupt();
+        if (eSendControlCommand != null) {
+            eSendControlCommand.interrupt();
         }
         //发送命令
         sendCommand();
         //重新开启线程
-        sendControlCommand = new SendControlCommand();
-        sendControlCommand.start();
+        eSendControlCommand = new SendControlCommand();
+        eSendControlCommand.start();
     }
 
     /**
@@ -166,18 +186,18 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
         int command;
         //获取移动信息
         Velocity velocity = null;
-        if (moveControlView != null) {
-            velocity = moveControlView.getVelocity();
+        if (eMoveControlView != null) {
+            velocity = eMoveControlView.getVelocity();
         }
 
         //获取LED开关状态
-        boolean isOpen = lightSwitchView.isOpen();
+        boolean isOpen = eLightSwitchView.isOpen();
 
         //获取分辨率
-        String resolutionRatio = items.get(itemSelectView.getIndex());
+        String resolutionRatio = eResolutionRatioItems.get(eItemSelectView.getIndex());
 
         //获取线控状态
-        int lineState = ternarySelectView.getState();
+        int lineState = eTernarySelectView.getState();
 
         command = convertInteger(isOpen, resolutionRatio, lineState, velocity);
         return command;
@@ -193,7 +213,7 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
         //灯光
         byte led = (byte) (isOpen ? 1 : 0);
         //分辨率
-        byte camera = (byte) items.indexOf(resolutionRatio);
+        byte camera = (byte) eResolutionRatioItems.indexOf(resolutionRatio);
         //移动方向
         byte direction = 0;
         if (velocity.getDirection() == Direction.left) {

@@ -18,6 +18,7 @@ import eli.blueeye.v1.inter.Constants;
  * 分享到QQ的实体
  *
  * @author eli chang
+ * @see BaseShare
  */
 public class ShareQQ extends BaseShare implements IUiListener {
 

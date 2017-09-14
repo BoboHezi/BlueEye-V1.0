@@ -22,13 +22,13 @@ import java.util.Map;
 
 import eli.blueeye.v1.R;
 import eli.blueeye.v1.data.FileType;
-import eli.blueeye.v1.dialog.CustomDeleteDialog;
+import eli.blueeye.v1.dialog.DeleteDialog;
 import eli.blueeye.v1.inter.OnLoadMoreListener;
 import eli.blueeye.v1.util.Util;
 import eli.blueeye.v1.view.CustomListAdapter;
 import eli.blueeye.v1.view.CustomListView;
-import eli.blueeye.v1.dialog.CustomPhotoDialog;
-import eli.blueeye.v1.dialog.CustomVideoDialog;
+import eli.blueeye.v1.dialog.ImageViewDialog;
+import eli.blueeye.v1.dialog.VideoPlayerDialog;
 
 /**
  * 载入文件列表的实体
@@ -55,8 +55,8 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
     private List<File> eFiles;
     private File eSelectedFile;
 
-    private CustomPhotoDialog ePhotoDialog;
-    private CustomVideoDialog eVideoDialog;
+    private ImageViewDialog ePhotoDialog;
+    private VideoPlayerDialog eVideoDialog;
     private ShareEntity eShareEntity;
     private List<Integer> eSelectedItems;
 
@@ -73,7 +73,7 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
 
         this.eFileListView.setOnItemClickListener(this);
         this.eFileListView.setOnItemLongClickListener(this);
-        this.eFileListView.seteLoadMoreListener(this);
+        this.eFileListView.setLoadMoreListener(this);
 
         initList();
     }
@@ -129,11 +129,11 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
 
         if (Util.checkFileType(eSelectedFile) == FileType.PHOTO) {
             //点击图片文件
-            ePhotoDialog = new CustomPhotoDialog(context, activity, files, eRefreshHandler);
+            ePhotoDialog = new ImageViewDialog(context, activity, files, eRefreshHandler);
             ePhotoDialog.show();
         } else if (Util.checkFileType(eSelectedFile) == FileType.VIDEO) {
             //点击视频文件
-            eVideoDialog = new CustomVideoDialog(context, activity, files, eRefreshHandler);
+            eVideoDialog = new VideoPlayerDialog(context, activity, files, eRefreshHandler);
             eVideoDialog.show();
         }
     }
@@ -236,7 +236,7 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
      * 删除选择的条目
      */
     public void deleteSelectedItems() {
-        CustomDeleteDialog deleteDialog = new CustomDeleteDialog(context, activity, eRefreshHandler);
+        DeleteDialog deleteDialog = new DeleteDialog(context, activity, eRefreshHandler);
         deleteDialog.setIsMultiImage(true);
         deleteDialog.show();
     }
@@ -256,7 +256,7 @@ public class LoadListView implements OnLoadMoreListener, AdapterView.OnItemClick
             }
             //分享多张图片
             eShareEntity = new ShareEntity(context, activity, files);
-            eShareEntity.setShareType(ShareEntity.SHARE_TYPE_MULTIIMAGE);
+            eShareEntity.setShareType(ShareEntity.SHARE_TYPE_MULTI_IMAGE);
         } else if (files.length == 1) {
             eShareEntity = new ShareEntity(context, activity, files);
             if (Util.checkFileType(files[0]) == FileType.PHOTO) {

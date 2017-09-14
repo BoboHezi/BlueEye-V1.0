@@ -29,11 +29,11 @@ public class TernarySelectView extends View {
     private Context context;
     private Paint paint;
 
-    private float viewWidth;
-    private float viewHeight;
-    private float horizontalBaseLine;
-    private float lineWidth;
-    private float pointRadius;
+    private float eViewWidth;
+    private float eViewHeight;
+    private float eHorizontalBaseLine;
+    private float eLineWidth;
+    private float ePointRadius;
     private float pointY;
 
     private int state = STATE_CENTER;
@@ -63,14 +63,14 @@ public class TernarySelectView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        viewHeight = getMeasuredHeight();
-        viewWidth = getMeasuredWidth();
+        eViewHeight = getMeasuredHeight();
+        eViewWidth = getMeasuredWidth();
 
-        lineWidth = viewWidth / 3;
-        pointRadius = lineWidth;
+        eLineWidth = eViewWidth / 3;
+        ePointRadius = eLineWidth;
 
-        horizontalBaseLine = viewWidth / 2;
-        pointY = viewHeight / 2;
+        eHorizontalBaseLine = eViewWidth / 2;
+        pointY = eViewHeight / 2;
     }
 
     @Override
@@ -78,32 +78,32 @@ public class TernarySelectView extends View {
 
         //绘制竖线
         paint.setColor(LINE_COLOR);
-        canvas.drawRect(horizontalBaseLine - lineWidth / 2, pointRadius, horizontalBaseLine + lineWidth / 2, viewHeight - pointRadius, paint);
-        canvas.drawCircle(horizontalBaseLine, pointRadius, lineWidth / 2, paint);
-        canvas.drawCircle(horizontalBaseLine, viewHeight - pointRadius, lineWidth / 2, paint);
+        canvas.drawRect(eHorizontalBaseLine - eLineWidth / 2, ePointRadius, eHorizontalBaseLine + eLineWidth / 2, eViewHeight - ePointRadius, paint);
+        canvas.drawCircle(eHorizontalBaseLine, ePointRadius, eLineWidth / 2, paint);
+        canvas.drawCircle(eHorizontalBaseLine, eViewHeight - ePointRadius, eLineWidth / 2, paint);
 
         //绘制大圆
         paint.setColor(POINT_COLOR);
-        canvas.drawCircle(horizontalBaseLine, pointY, pointRadius, paint);
+        canvas.drawCircle(eHorizontalBaseLine, pointY, ePointRadius, paint);
 
         //绘制小圆
         paint.setColor(CENTER_COLOR);
-        canvas.drawCircle(horizontalBaseLine, pointY, lineWidth / 2, paint);
+        canvas.drawCircle(eHorizontalBaseLine, pointY, eLineWidth / 2, paint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //手指离开屏幕时，重新定位到中间
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            pointY = viewHeight / 2;
+            pointY = eViewHeight / 2;
         } else {
             //获取Y值
             pointY = event.getY();
             //当手指离开激活区域，控制其偏移位置
-            if (pointY < pointRadius) {
-                pointY = pointRadius;
-            } else if (pointY > viewHeight - pointRadius) {
-                pointY = viewHeight - pointRadius;
+            if (pointY < ePointRadius) {
+                pointY = ePointRadius;
+            } else if (pointY > eViewHeight - ePointRadius) {
+                pointY = eViewHeight - ePointRadius;
             }
         }
         postInvalidate();
@@ -133,9 +133,9 @@ public class TernarySelectView extends View {
      * @return
      */
     public int getState() {
-        if (pointY < viewHeight / 2 - 10)
+        if (pointY < eViewHeight / 2 - 10)
             return STATE_UP;
-        else if (pointY > viewHeight / 2 + 10)
+        else if (pointY > eViewHeight / 2 + 10)
             return STATE_DOWN;
         else
             return STATE_CENTER;

@@ -240,6 +240,7 @@ public class Util {
 
     /**
      * 获取历史控制命令
+     *
      * @param context
      * @return
      */
@@ -261,6 +262,7 @@ public class Util {
 
     /**
      * 存储配置信息
+     *
      * @param controlData
      */
     public static void writeHistoryControlData(Context context, HistoryControlData controlData) {
@@ -278,6 +280,7 @@ public class Util {
 
     /**
      * 判断是否第一次启动
+     *
      * @param context
      * @return
      */
@@ -295,6 +298,7 @@ public class Util {
 
     /**
      * 设置已经启动一次了
+     *
      * @param context
      */
     public static void setAlreadyLauncher(Context context) {
@@ -311,6 +315,7 @@ public class Util {
 
     /**
      * 判断对象是否为空
+     *
      * @param object
      * @return
      */

@@ -26,6 +26,7 @@ import eli.blueeye.v1.inter.Constants;
  * 分享到新浪微博的实体
  *
  * @author eli chang
+ * @see BaseShare
  */
 public class ShareSina extends BaseShare implements WbShareCallback {
 

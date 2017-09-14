@@ -720,6 +720,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * 发送更新数据
+         *
          * @param time
          */
         private void postRecordTime(int time) {
