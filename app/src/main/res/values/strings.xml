@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BlueEye_V1.0</string>
+    <string name="app_name">蔚蓝之眼</string>
     <string name="delete_warning">确定从本地设备中删除它？</string>
     <string name="cancel">取消</string>
     <string name="delete">删除</string>
