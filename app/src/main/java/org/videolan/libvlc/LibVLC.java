@@ -164,7 +164,7 @@ public class LibVLC {
     }
 
     /**
-     * Get the media list that LibVLC is following right now.
+     * Get the media list that LibVLC is following RIGHT now.
      *
      * @return The media list object being followed
      */

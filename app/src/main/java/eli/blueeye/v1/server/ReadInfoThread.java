@@ -2,11 +2,9 @@ package eli.blueeye.v1.server;
 
 import android.content.Context;
 import android.net.TrafficStats;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 import eli.blueeye.v1.activity.MainActivity;
 
