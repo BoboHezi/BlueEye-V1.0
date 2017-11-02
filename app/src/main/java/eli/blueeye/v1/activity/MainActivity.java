@@ -26,6 +26,7 @@ import eli.blueeye.v1.R;
 import eli.blueeye.v1.broadcast.NetStatusReceiver;
 import eli.blueeye.v1.dialog.ControlDialog;
 import eli.blueeye.v1.entity.LoadListView;
+import eli.blueeye.v1.entity.VlcPlayer;
 import eli.blueeye.v1.inter.LongTouchListener;
 import eli.blueeye.v1.server.GravitySensorListener;
 import eli.blueeye.v1.server.ReadInfoThread;
@@ -33,7 +34,6 @@ import eli.blueeye.v1.util.Util;
 import eli.blueeye.v1.view.NetWorkSpeedView;
 import eli.blueeye.v1.view.RSSIView;
 import eli.blueeye.v1.view.TakePhotoView;
-import eli.blueeye.v1.entity.VlcPlayer;
 
 /**
  * Activity
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //最长录制时长
     private static final int LONGEST_RECORD_TIME = 60;
     //路径
-    private static final String eUrl = "http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4";
+    private static final String eUrl = "rtsp://192.168.2.10/media/stream1";
     //上下文
     private Context context;
     //按键管理
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //视频播放界面
     private SurfaceView eSurfaceView;
     //rtsp实体
-    private VlcPlayer eVlcPlayer;
+    //private VlcPlayer eVlcPlayer;
     //按钮区域
     private LinearLayout eButtonArea;
     //播放/暂停按钮
@@ -137,13 +137,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化广播
         eNetStatusReceiver = new NetStatusReceiver();
         registerNetReceiver();
+
+        new VlcPlayer(eSurfaceView, this, this, eUrl).createPlayer();
     }
 
     @Override
     protected void onResume() {
-        if (eVlcPlayer != null) {
+/*        if (eVlcPlayer != null) {
             eVlcPlayer.play();
-        }
+        }*/
         super.onResume();
         //设置视频尺寸
         resetViewSize();
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         //释放资源
-        eVlcPlayer.releasePlayer();
+        //eVlcPlayer.releasePlayer();
         //注销广播
         unRegisterNetReceiver();
     }
@@ -250,8 +252,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 初始化播放器
      */
     private void initSurface() {
-        eVlcPlayer = new VlcPlayer(eSurfaceView, this, eUrl, eSnapHandler);
-        eVlcPlayer.createPlayer();
+/*        eVlcPlayer = new VlcPlayer(eSurfaceView, this, eUrl, eSnapHandler);
+        eVlcPlayer.createPlayer();*/
     }
 
     /**
@@ -355,9 +357,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onLongTouch() {
         //停止隐藏线程
         removeHiddenThread();
-        //开始录屏
+        /*//开始录屏
         if (!eVlcPlayer.isRecording())
-            startRecord();
+            startRecord();*/
     }
 
     /**
@@ -365,12 +367,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onTouchStop() {
-        if (eVlcPlayer.isRecording()) {
+        /*if (eVlcPlayer.isRecording()) {
             //结束录屏
             stopRecord();
             //重新开始隐藏线程
             addHiddenThread();
-        }
+        }*/
     }
 
     /**
@@ -410,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 开始截屏
      */
     private void startCapture() {
-        if (eVlcPlayer == null || !eVlcPlayer.isPlaying() || isTimeOverFlow) {
+        /*if (eVlcPlayer == null || !eVlcPlayer.isPlaying() || isTimeOverFlow) {
             isTimeOverFlow = false;
             //当视频停止时，不进行截图
             return;
@@ -418,14 +420,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!eVlcPlayer.isRecording()) {
             //截图
             eVlcPlayer.snapShot();
-        }
+        }*/
     }
 
     /**
      * 开始录屏
      */
     private void startRecord() {
-        if (eVlcPlayer == null || !eVlcPlayer.isPlaying()) {
+        /*if (eVlcPlayer == null || !eVlcPlayer.isPlaying()) {
             eTakePhotoView.cancelTouchState();
             //当视频停止时，不进行录像
             return;
@@ -433,19 +435,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!eVlcPlayer.isRecording()) {
             //录屏
             eVlcPlayer.startRecord();
-        }
+        }*/
     }
 
     /**
      * 结束录屏
      */
     private void stopRecord() {
-        if (eVlcPlayer == null) {
+        /*if (eVlcPlayer == null) {
             //当视频停止时，不进行录像
             return;
         }
         //结束录屏
-        eVlcPlayer.stopRecord();
+        eVlcPlayer.stopRecord();*/
     }
 
     /**
@@ -454,7 +456,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param view 点击事件的View对象
      */
     private void switchControlButton(View view) {
-        if (isPlayer) {
+        /*if (isPlayer) {
             //播放暂停
             Util.setBackImage(context, view, R.drawable.start);
             eVlcPlayer.pause();
@@ -462,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //播放开始
             Util.setBackImage(context, view, R.drawable.stop);
             eVlcPlayer.play();
-        }
+        }*/
         isPlayer = !isPlayer;
     }
 
@@ -695,7 +697,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int time;
 
             while (true) {
-                if (eVlcPlayer != null) {
+                /*if (eVlcPlayer != null) {
                     if (eVlcPlayer.isRecording()) {
                         time = (int) ((System.currentTimeMillis() - lastTime) / 1000);
                         if (time <= 60) {
@@ -709,7 +711,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         postRecordTime(-1);
                         time = 0;
                     }
-                }
+                }*/
 
                 try {
                     Thread.sleep(200);
