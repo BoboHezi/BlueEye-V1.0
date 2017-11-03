@@ -30,6 +30,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
+
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -39,6 +40,7 @@ import android.view.SurfaceView;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
+
 
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;

@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/main_millis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorGreenLight"
+            android:textSize="60dp"
+            android:text="0" />
+
         <!--播放器区域-->
         <SurfaceView
             android:id="@+id/main_surface"

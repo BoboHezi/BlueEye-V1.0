@@ -438,6 +438,8 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
     }
 
     private long getEncodingFlags(int encodings[]) {
+        if (encodings == null)
+            return 0;
         long encodingFlags = 0;
         for (int encoding : encodings) {
             if (isEncoded(encoding))
@@ -996,7 +998,7 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
      * @return true on success.
      */
     public boolean addSlave(int type, Uri uri, boolean select) {
-        return nativeAddSlave(type, VLCUtil.locationFromUri(uri), select);
+        return nativeAddSlave(type, VLCUtil.encodeVLCUri(uri), select);
     }
 
     /**
@@ -1148,6 +1150,7 @@ public class MediaPlayer extends VLCObject<MediaPlayer.Event> {
 
         if (mMedia != null)
             mMedia.release();
+        mVoutCount = 0;
         nativeRelease();
     }
 

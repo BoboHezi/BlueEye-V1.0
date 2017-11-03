@@ -45,7 +45,7 @@ public class MediaBrowser {
     private boolean mAlive;
 
     private static final String IGNORE_LIST_OPTION = ":ignore-filetypes=";
-    private String mIgnoreList = "db,nfo,ini,jpg,jpeg,ljpg,gif,png,pgm,pgmyuv,pbm,pam,tga,bmp,pnm,xpm,xcf,pcx,tif,tiff,lbm,sfv,txt,sub,idx,srt,cue,ssa";
+    private String mIgnoreList = "db,nfo,ini,jpg,jpeg,ljpg,gif,png,pgm,pgmyuv,pbm,pam,tga,bmp,pnm,xpm,xcf,pcx,tif,tiff,lbm,sfv,txt,sub,idx,srt,ssa,ass,smi,utf,utf-8,rt,aqt,txt,usf,jss,cdg,psb,mpsub,mpl2,pjs,dks,stl,vtt,ttml";
 
     public static class Flag {
         /**
@@ -56,6 +56,10 @@ public class MediaBrowser {
          * If this flag is set, slaves won't be attached to medias but will be added as a media.
          */
         public final static int NoSlavesAutodetect = 1 << 1;
+        /**
+         * If this flag is set, hidden fils won't be ignored
+         */
+        public final static int ShowHiddenFiles = 1 << 2;
     }
 
     /**
@@ -226,6 +230,8 @@ public class MediaBrowser {
         media.addOption(IGNORE_LIST_OPTION + mIgnoreList);
         if ((flags & Flag.NoSlavesAutodetect) != 0)
             media.addOption(":no-sub-autodetect-file");
+        if ((flags & Flag.ShowHiddenFiles) != 0)
+            media.addOption(":show-hiddenfiles");
         int mediaFlags = Media.Parse.ParseNetwork;
         if ((flags & Flag.Interact) != 0)
             mediaFlags |= Media.Parse.DoInteract;

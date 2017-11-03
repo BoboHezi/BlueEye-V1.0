@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -46,9 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * http://img95.699pic.com/videos/2016/09/05/65b0f4fc-c8da-4287-bdae-603a492c519f.mp4
      * http://img95.699pic.com/videos/2016/09/19/eb3b9233-d919-46ce-b2d5-a30e4dd9fcdb.mp4
      * http://img95.699pic.com/videos/2016/09/18/38d63eab-796a-43be-998f-c00308d186f0.mp4
-     * rtsp://10.42.0.1/test.h264
+     * rtsp://192.168.2.10/media/stream1
      * rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov
-     * sdcard/1/video.mov
      */
 
     private static final String TAG = "MainActivity";
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int CAPTURE_VIDEO = 2;
     public static final int HANDLER_INFO = 3;
     public static final int HANDLER_RECORD_TIME = 4;
+    public static final int HANDLER_MILLIS = 5;
     //最长录制时长
     private static final int LONGEST_RECORD_TIME = 60;
     //路径
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //视频播放界面
     private SurfaceView eSurfaceView;
     //rtsp实体
-    //private VlcPlayer eVlcPlayer;
+    private VlcPlayer eVlcPlayer;
     //按钮区域
     private LinearLayout eButtonArea;
     //播放/暂停按钮
@@ -91,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RSSIView eRssiView;
     //录制时间
     private TextView eRecordTime;
+    //秒表
+    private TextView millisText;
 
     //播放状态
     private boolean isPlayer = true;
@@ -137,15 +140,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化广播
         eNetStatusReceiver = new NetStatusReceiver();
         registerNetReceiver();
-
-        new VlcPlayer(eSurfaceView, this, this, eUrl).createPlayer();
     }
 
     @Override
     protected void onResume() {
-/*        if (eVlcPlayer != null) {
-            eVlcPlayer.play();
-        }*/
         super.onResume();
         //设置视频尺寸
         resetViewSize();
@@ -163,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         //释放资源
-        //eVlcPlayer.releasePlayer();
+        eVlcPlayer.releasePlayer();
         //注销广播
         unRegisterNetReceiver();
     }
@@ -214,6 +212,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //录制时间
         eRecordTime = (TextView) findViewById(R.id.main_text_record_time);
+
+        //秒表
+        millisText = (TextView) findViewById(R.id.main_millis);
     }
 
     /**
@@ -246,14 +247,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addHiddenThread();
 
         new RecordStateRefreshThread().start();
+
+        new MillisCount().start();
     }
 
     /**
      * 初始化播放器
      */
     private void initSurface() {
-/*        eVlcPlayer = new VlcPlayer(eSurfaceView, this, eUrl, eSnapHandler);
-        eVlcPlayer.createPlayer();*/
+        eVlcPlayer = new VlcPlayer(eSurfaceView, this, this, eUrl);
+        eVlcPlayer.createPlayer();
     }
 
     /**
@@ -456,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param view 点击事件的View对象
      */
     private void switchControlButton(View view) {
-        /*if (isPlayer) {
+        if (isPlayer) {
             //播放暂停
             Util.setBackImage(context, view, R.drawable.start);
             eVlcPlayer.pause();
@@ -464,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //播放开始
             Util.setBackImage(context, view, R.drawable.stop);
             eVlcPlayer.play();
-        }*/
+        }
         isPlayer = !isPlayer;
     }
 
@@ -697,7 +700,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int time;
 
             while (true) {
-                /*if (eVlcPlayer != null) {
+                if (eVlcPlayer != null) {
                     if (eVlcPlayer.isRecording()) {
                         time = (int) ((System.currentTimeMillis() - lastTime) / 1000);
                         if (time <= 60) {
@@ -711,7 +714,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         postRecordTime(-1);
                         time = 0;
                     }
-                }*/
+                }
 
                 try {
                     Thread.sleep(200);
@@ -784,6 +787,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         eRecordTime.setText("");
                     }
                 }
+            } else if (msg.what == HANDLER_MILLIS) {
+                try {
+                    int millis = Integer.parseInt(millisText.getText().toString()) + 1;
+                    millisText.setText(millis + "");
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+
+    class MillisCount extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                }
+
+                eRefreshInfoHandler.sendEmptyMessage(HANDLER_MILLIS);
             }
         }
     }

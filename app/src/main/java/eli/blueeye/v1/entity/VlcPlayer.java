@@ -3,7 +3,6 @@ package eli.blueeye.v1.entity;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -14,13 +13,11 @@ import org.videolan.libvlc.MediaPlayer;
 
 import java.util.ArrayList;
 
-/**
- * Created by eli chang on 2017/11/2.
- */
-
-public class VlcPlayer implements SurfaceHolder.Callback {
+public class VlcPlayer implements SurfaceHolder.Callback, IVLCVout.Callback {
 
     private static final String TAG = "VlcPlayer";
+
+    private boolean couldPlayer = false;
 
     private SurfaceHolder surfaceHolder;
     private SurfaceView surfaceView;
@@ -50,65 +47,85 @@ public class VlcPlayer implements SurfaceHolder.Callback {
         releasePlayer();
         try {
             options = new ArrayList<>();
-            options.add(":file-caching=1000");//文件缓存
-            options.add(":network-caching=3000");//网络缓存
-            options.add(":live-caching=1000");//直播缓存
-            options.add(":sout-mux-caching=1000");//输出缓存
-            //options.add(":codec=mediacodec,iomx,all");
+            options.add("--aout=none");
+            options.add("--swscale-mode=0");
 
             libvlc = new LibVLC(context, options);
-            mediaPlayer = new MediaPlayer(libvlc);
+
             media = new Media(libvlc, Uri.parse(url));
+            media.setHWDecoderEnabled(true, true);
+            media.addOption(":network-caching=150");
+            media.addOption(":clock-jitter=0");
+            media.addOption(":clock-synchro=0");
+
+            mediaPlayer = new MediaPlayer(libvlc);
             mediaPlayer.setMedia(media);
 
             iVlcVout = mediaPlayer.getVLCVout();
             iVlcVout.setVideoView(surfaceView);
             iVlcVout.attachViews();
 
-            iVlcVout.addCallback(new IVLCVout.Callback() {
-                @Override
-                public void onSurfacesCreated(IVLCVout vlcVout) {
-                    int width = surfaceView.getWidth();
-                    int height = surfaceView.getHeight();
-
-                    if (width * height == 0) {
-                        return;
-                    }
-
-                    mediaPlayer.getVLCVout().setWindowSize(width, height);
-                    mediaPlayer.setAspectRatio("16:9");
-                    mediaPlayer.setScale(0);
-
-                    play();
-                }
-
-                @Override
-                public void onSurfacesDestroyed(IVLCVout vlcVout) {
-                }
-            });
+            iVlcVout.addCallback(this);
         } catch (Exception e) {
         }
     }
 
-    private void play() {
-        if (mediaPlayer != null) {
+    /**
+     * 开始播放
+     */
+    public void play() {
+        if (mediaPlayer != null && couldPlayer) {
             mediaPlayer.play();
         }
     }
 
+    /**
+     * 暂停播放
+     */
     public void pause() {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
         }
     }
 
-    private void releasePlayer() {
+    /**
+     * 释放资源
+     */
+    public void releasePlayer() {
+        if (libvlc == null) {
+            return;
+        }
 
+        libvlc.release();
+        mediaPlayer.stop();
+    }
+
+    /**
+     * 是否正在播放
+     *
+     * @return
+     */
+    public boolean isPlaying() {
+        if (libvlc == null) {
+            return false;
+        }
+        return mediaPlayer.isPlaying();
+    }
+
+    /**
+     * 是否处于录屏状态
+     *
+     * @return
+     */
+    public boolean isRecording() {
+        if (libvlc == null) {
+            return false;
+        }
+        return false;
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
     }
 
     @Override
@@ -119,5 +136,26 @@ public class VlcPlayer implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
 
+    }
+
+    @Override
+    public void onSurfacesCreated(IVLCVout vlcVout) {
+        int width = surfaceView.getWidth();
+        int height = surfaceView.getHeight();
+
+        if (width * height == 0) {
+            return;
+        }
+
+        mediaPlayer.getVLCVout().setWindowSize(width, height);
+        mediaPlayer.setAspectRatio("16:9");
+        mediaPlayer.setScale(0);
+
+        couldPlayer = true;
+        play();
+    }
+
+    @Override
+    public void onSurfacesDestroyed(IVLCVout vlcVout) {
     }
 }

@@ -463,7 +463,7 @@ public class Media extends VLCObject<Media.Event> {
      */
     public Media(LibVLC libVLC, Uri uri) {
         super(libVLC);
-        nativeNewFromLocation(libVLC, VLCUtil.locationFromUri(uri));
+        nativeNewFromLocation(libVLC, VLCUtil.encodeVLCUri(uri));
         mUri = uri;
     }
 
