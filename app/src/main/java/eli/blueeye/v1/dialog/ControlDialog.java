@@ -16,7 +16,7 @@ import eli.blueeye.v1.data.Direction;
 import eli.blueeye.v1.data.HistoryControlData;
 import eli.blueeye.v1.data.Velocity;
 import eli.blueeye.v1.inter.OnControlStateChangeListener;
-import eli.blueeye.v1.server.SendCommandThread;
+import eli.blueeye.v1.server.CommandServer;
 import eli.blueeye.v1.util.Util;
 import eli.blueeye.v1.view.ItemSelectView;
 import eli.blueeye.v1.view.LightSwitchView;
@@ -31,6 +31,8 @@ import eli.blueeye.v1.view.TernarySelectView;
 public class ControlDialog extends Dialog implements OnControlStateChangeListener {
 
     private static final String TAG = "ControlDialog";
+    private static final String hostOverWater = "192.168.2.20";
+    private static final String hostUnderWater = "192.168.2.128";
     private Context context;
 
     //分辨率选择视图
@@ -45,6 +47,8 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
     private List<String> eResolutionRatioItems;
     //计算和发送命令的线程
     private SendControlCommand eSendControlCommand;
+    //交互数据
+    private CommandServer commandServer;
     //配置信息
     private HistoryControlData eHistoryControlData;
 
@@ -60,6 +64,9 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
         initView();
         eSendControlCommand = new SendControlCommand();
         eSendControlCommand.start();
+
+        commandServer = new CommandServer(hostOverWater);
+        commandServer.connect();
     }
 
     /**
@@ -111,6 +118,10 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
         super.dismiss();
         if (eSendControlCommand != null) {
             eSendControlCommand.interrupt();
+        }
+        if (commandServer != null) {
+            commandServer.destroy();
+            commandServer = null;
         }
     }
 
@@ -239,7 +250,9 @@ public class ControlDialog extends Dialog implements OnControlStateChangeListene
         //获取命令
         int command = getCommandData();
         //发送命令
-        new SendCommandThread(command).start();
+        if (commandServer != null) {
+            commandServer.sendData(command);
+        }
 
         Log.i(TAG, "sendCommand: " + Integer.toBinaryString(command));
 

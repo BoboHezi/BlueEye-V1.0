@@ -3,6 +3,7 @@ package eli.blueeye.v1.entity;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -130,7 +131,7 @@ public class VlcPlayer implements SurfaceHolder.Callback, IVLCVout.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        mediaPlayer.getVLCVout().setWindowSize(width, height);
+        setViewSize(width, height);
     }
 
     @Override
@@ -147,9 +148,7 @@ public class VlcPlayer implements SurfaceHolder.Callback, IVLCVout.Callback {
             return;
         }
 
-        mediaPlayer.getVLCVout().setWindowSize(width, height);
-        mediaPlayer.setAspectRatio("16:9");
-        mediaPlayer.setScale(0);
+        setViewSize(width, height);
 
         couldPlayer = true;
         play();
@@ -157,5 +156,19 @@ public class VlcPlayer implements SurfaceHolder.Callback, IVLCVout.Callback {
 
     @Override
     public void onSurfacesDestroyed(IVLCVout vlcVout) {
+    }
+
+    /**
+     * 设置画面尺寸
+     *
+     * @param width
+     * @param height
+     */
+    private void setViewSize(int width, int height) {
+        if (mediaPlayer != null) {
+            mediaPlayer.getVLCVout().setWindowSize(width, height);
+            mediaPlayer.setAspectRatio(width + ":" + height);
+            mediaPlayer.setScale(0);
+        }
     }
 }
