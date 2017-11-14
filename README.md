@@ -5,7 +5,7 @@
 ### Author: Eli Chang
 ### E-mail: eliflichang@gmail.com
 ***
-###主要功能
+### 主要功能
 * 实现对水下设备的控制；包括设备移动、视频清晰度切换等
 
 * 播放来自水下设备的高清视频
