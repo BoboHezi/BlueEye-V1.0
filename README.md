@@ -14,6 +14,6 @@
 * 一键分享保存的文件
 
 --------------
-![logo](https://github.com/BoboHezi/BlueEye-V1.0/blob/master/app/src/main/res/mipmap-xxxhdpi/logo.png "logo")
+![logo](/app/src/main/res/mipmap-xhdpi/logo.png "logo")
 
 下载地址：https://www.coolapk.com/apk/162501
