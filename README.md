@@ -16,3 +16,8 @@
 |---|---|
 |Logo|下载地址|
 |![logo](/app/src/main/res/mipmap-xhdpi/logo.png "logo")|https://www.coolapk.com/apk/162501|
+
+|#|语法|效果|
+|---|---|----
+|1|`![baidu](http://www.baidu.com/img/bdlogo.gif "百度logo")`|![baidu](http://www.baidu.com/img/bdlogo.gif "百度logo")
+|2|`![][foryou]`|![][foryou]
