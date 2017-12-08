@@ -1,7 +1,7 @@
 ## Blue Eye
 蔚蓝之眼，远届科技一款水下摄像头产品。该项目是产品的移动APP，运行于安卓系统，最低支持安卓5.0。
 ***
-### Author: Eli Chang, lisiyu
+### Author: Eli Chang
 ### E-mail: eliflichang@gmail.com
 ***
 ### 主要功能
